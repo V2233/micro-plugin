@@ -8,12 +8,14 @@
 [![License](https://img.shields.io/static/v1?label=LICENSE&message=GPL-3.0&color=lightrey)](/LICENSE)
 <br>
 Yunzai-Bot低代码开发管理平台，以下简称小微插件
+<br>
+[English](EN_README.md) | 简体中文
 
 </div>
 
 ## 快速开始
 
-- [English](EN_README.md) | 简体中文
+- [基本使用](docs/DOCS.md)
 
 ## 特性
 
@@ -23,7 +25,7 @@ Yunzai-Bot低代码开发管理平台，以下简称小微插件
 
 - 插件面板提供了可视化的图片编辑器，仅通过拖拉拽即可生成美观的图片，您可导出原生HTML或者直接添加到指令列表，后者将自动分配消息段的资源到Yunzai的data/micro-plugin/plugins目录，每个文件夹被视为一个插件包，包括HTML文件、图片、音频、视频、HTML工程文件等，当然面板提供的操作可以让你无视这个资源目录
 
-- 您仍然可以使用模板字符串来插入符合JavaScript语法的变量或表达式，插件提供了消息事件的模板变量，只需要在文本处输入键盘符```/```即可唤出变量列表，这使得您可以制作动态的文本和图片，详情请看[这里](docs/DOCS.md)
+- 您仍然可以使用模板字符串来插入符合JavaScript语法的变量或表达式，插件提供了消息事件的模板变量，只需要在文本处输入键盘符```/```即可唤出变量列表，这使得您可以制作动态的文本和图片
 
 - 插件内置了简易的文件系统，但它能满足您基本的文件操作需求，包含上传、下载、新建、剪切、移动、复制、删除，您还可以通过点击文件名预览图片、音频、视频。当然，如果需要大批量上传文件，您需要使用其它专业的文件上传工具
 
@@ -38,7 +40,7 @@ Yunzai-Bot低代码开发管理平台，以下简称小微插件
 ## 环境准备
 
 - Yunzai V4
-- 如果您还没有安装此应用，请查看以下文档教程进行安装：<a href="https://yunzai-org.github.io/docs/docs/a-v4/translate-your-site">https://yunzai-org.github.io/docs/docs/a-v4/translate-your-site</a>
+- 如果您还没有安装此应用，请查看以下文档教程进行安装：<a href="https://yunzai-org.github.io/docs/docs/a-next/translate-your-site/">https://yunzai-org.github.io/docs/docs/a-next/translate-your-site/</a>
 
 ## 安装插件
 

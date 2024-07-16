@@ -8,12 +8,14 @@
 [![License](https://img.shields.io/static/v1?label=LICENSE&message=GPL-3.0&color=lightrey)](/LICENSE)
 <br>
 Yunzai Bot Low Code Development Management Platform, hereinafter referred to as Micro-Plugin
+<br>
+[简体中文](README.md) | English
 
 </div>
 
 ## 快速开始
 
-- [简体中文](README.md) | English
+- [Basic usage](docs/DOCS.md)
 
 ## Characteristics
 
@@ -23,7 +25,7 @@ Yunzai Bot Low Code Development Management Platform, hereinafter referred to as 
   
 - The plugin panel provides a visual image editor that can generate beautiful images simply by dragging and dropping. You can export native HTML or directly add it to the instruction list, which will automatically allocate message segment resources to Yunzai's data/micro plugin/plugins directory. Each file folder is treated as a plugin package, including HTML files, images, audio, video, HTML project files, etc. Of course, the operations provided by the panel can make you ignore this resource directory
   
-- You can still use template strings to insert variables or expressions that conform to JavaScript syntax. The plugin provides template variables for message events, which can be called up by simply entering keyboard characters in the text field. This allows you to create dynamic text and images, as detailed in [here] (docs/DOCS.md)
+- You can still use template strings to insert variables or expressions that conform to JavaScript syntax. The plugin provides template variables for message events, which can be called up by simply entering keyboard characters in the text field. This allows you to create dynamic text and images
 
 - The plugin comes with a simple file system, but it can meet your basic file operation needs, including uploading, downloading, creating, cutting, moving, copying, and deleting. You can also preview images, audio, and videos by clicking on the file name. Of course, if you need to upload files in large quantities, you will need to use other professional file upload tools
 
@@ -32,12 +34,13 @@ Yunzai Bot Low Code Development Management Platform, hereinafter referred to as 
 - You can view the logs of a robot on a certain day in the log panel
 
 - The status panel provides a cool system status data big screen and friendly support for mobile page layout. You can also view real-time text and image messages here, click on the group number or friends on the big screen to make the robot reply quickly
+
 - In the future, we will focus on expanding the components of image editors to meet complex image style requirements
 
 ## Environmental preparation
 
 - Yunzai V4
-- If you have not yet installed this application, please refer to the following documentation tutorials for installation:<a href="https://yunzai-org.github.io/docs/docs/a-v4/translate-your-site">https://yunzai-org.github.io/docs/docs/a-v4/translate-your-site</a>
+- If you have not yet installed this application, please refer to the following documentation tutorials for installation:<a href="https://yunzai-org.github.io/docs/docs/a-next/translate-your-site/">https://yunzai-org.github.io/docs/docs/a-next/translate-your-site/</a>
 
 ## Installing plugins
 
