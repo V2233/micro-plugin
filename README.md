@@ -1,12 +1,14 @@
 # Micro-Plugin
 
 <div align="center">
-    ![Bot](https://img.shields.io/badge/Yunzaijs-Micro--Plugin-blue)
-    ![Bot](https://img.shields.io/badge/Miao--Yunzai-Micro--Plugin-blue)
-    ![Static Badge](https://img.shields.io/badge/QQGroup-397798018-blue?link=http%3A%2F%2Fqm.qq.com%2Fcgi-bin%2Fqm%2Fqr%3F_wv%3D1027%26k%3D6qeMfgydE5k8e_nTorXz0ywmahixBTFw%26authKey%3D9iCyC5qsuluUfxwz4evh5xPmJb3YwlixjoMTxN9He%252BrGu7WiDf2dY8OGk7t%252BGaIu%26noverify%3D0%26group_code%3D397798018)
-    [![License](https://img.shields.io/static/v1?label=LICENSE&message=GPL-3.0&color=lightrey)](/LICENSE)
-    <br>
-    Yunzai-Bot低代码开发管理平台，以下简称小微插件
+
+![Bot](https://img.shields.io/badge/Yunzaijs-Micro--Plugin-blue)
+![Bot](https://img.shields.io/badge/Miao--Yunzai-Micro--Plugin-blue)
+![Static Badge](https://img.shields.io/badge/QQGroup-397798018-blue?link=http%3A%2F%2Fqm.qq.com%2Fcgi-bin%2Fqm%2Fqr%3F_wv%3D1027%26k%3D6qeMfgydE5k8e_nTorXz0ywmahixBTFw%26authKey%3D9iCyC5qsuluUfxwz4evh5xPmJb3YwlixjoMTxN9He%252BrGu7WiDf2dY8OGk7t%252BGaIu%26noverify%3D0%26group_code%3D397798018)
+[![License](https://img.shields.io/static/v1?label=LICENSE&message=GPL-3.0&color=lightrey)](/LICENSE)
+<br>
+Yunzai-Bot低代码开发管理平台，以下简称小微插件
+
 </div>
 
 ## 快速开始
@@ -54,11 +56,6 @@ git clone --depth=1 https://gitee.com/V2233/micro-plugin.git ./plugins/micro-plu
 
 ```sh
 pnpm i
-```
-
-- 如果您是v3版Yunzai，请执行以下指令（v4跳过）：
-```sh
-pnpm run build --filter ./plugins/micro-plugin
 ```
 
 - 重启Yunzai
