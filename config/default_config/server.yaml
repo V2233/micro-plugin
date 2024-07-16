@@ -1,0 +1,14 @@
+# Web端口号
+server:
+  host: auto
+  port: 23306
+
+# 用户登录信息
+userInfo:
+  - avatar: "" # 如果配置优先使用该头像，如(https://q1.qlogo.cn/g?b=qq&s=0&nk=2330660495)
+    username: "admin"
+    password: "114514"
+    desc: 超级管理员
+    routes: []
+    token: ""
+    skey: ""

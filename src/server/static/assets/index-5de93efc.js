@@ -1,0 +1,1 @@
+import{ac as t}from"./index-9cab0b24.js";const o=e=>t.get("/bot/getcfg?name="+e),n=(e,r)=>t.post("/bot/setcfg?name="+e,r),g=()=>t.get("/user/getcfg"),c=e=>t.post("/user/setcfg",e);export{n as a,g as b,c,o as r};

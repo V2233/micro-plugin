@@ -1,0 +1,8 @@
+node_modules/
+*_test.js
+test.*
+*.log
+.vscode/
+temp/
+dist
+*.css.map

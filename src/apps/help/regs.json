@@ -1,0 +1,24 @@
+[
+    {
+        "id": "micro-help",
+        "event": "message",
+        "reg": "小微帮助",
+        "cron": "",
+        "delayTime": 0,
+        "flag": "",
+        "isGlobal": true,
+        "isAt": false,
+        "isQuote": false,
+        "groups": [],
+        "friends": [],
+        "message": [
+            {
+                "type": "image",
+                "url": "",
+                "data": "",
+                "hash": "2b99c6fe7ae82e53f58cdcb01007eea3",
+                "json": ""
+            }
+        ]
+    }
+]
