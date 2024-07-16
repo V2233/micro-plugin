@@ -66,11 +66,11 @@
 
 - 保存后自动回到插件编辑页，您可以看到图片已制作完成标志
 
-<img width="600" src="images/develop/12.png">
+<img width="600" src="images/develop/13.png">
 
 - 再次点击插件编辑页保存，之后你就可以测试效果啦
   
-<img width="600" src="images/develop/13.png">
+<img width="600" src="images/develop/14.png">
 
 ## 其它消息段
 
@@ -78,11 +78,11 @@
   
 - 表情：
   
-<img width="600" src="images/develop/14.png">
+<img width="600" src="images/develop/15.png">
 
 - 戳一戳
 
-<img width="600" src="images/develop/15.png">
+<img width="600" src="images/develop/16.png">
 
 
 ## 关于前端编译提交方式
