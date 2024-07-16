@@ -1,6 +1,13 @@
 # Micro-Plugin
 
-Yunzai Bot Low Code Development Management Platform, hereinafter referred to as Micro-Plugin
+<div align="center">
+    ![Bot](https://img.shields.io/badge/Yunzaijs-Micro--Plugin-blue)
+    ![Bot](https://img.shields.io/badge/Miao--Yunzai-Micro--Plugin-blue)
+    ![Static Badge](https://img.shields.io/badge/QQGroup-397798018-blue?link=http%3A%2F%2Fqm.qq.com%2Fcgi-bin%2Fqm%2Fqr%3F_wv%3D1027%26k%3D6qeMfgydE5k8e_nTorXz0ywmahixBTFw%26authKey%3D9iCyC5qsuluUfxwz4evh5xPmJb3YwlixjoMTxN9He%252BrGu7WiDf2dY8OGk7t%252BGaIu%26noverify%3D0%26group_code%3D397798018)
+    [![License](https://img.shields.io/static/v1?label=LICENSE&message=GPL-3.0&color=lightrey)](/LICENSE)
+    <br>
+    Yunzai Bot Low Code Development Management Platform, hereinafter referred to as Micro-Plugin
+</div>
 
 ## 快速开始
 
