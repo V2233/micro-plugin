@@ -33,9 +33,6 @@
     "#cfg": "./src/config/index.js"
   },
   "private": true,
-  "workspaces": [
-    "!frontend"
-  ],
   "devDependencies": {
     "@commitlint/config-conventional": "^19.1.0",
     "@types/koa-router": "^7.4.8",
