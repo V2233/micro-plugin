@@ -73,6 +73,15 @@ export default class PluginHandler {
                     break;
                 case 'poke':
                     break;
+                case 'button':
+                    if (!existsSync(pluginPath)) {
+                        mkdirSync(pluginPath, { recursive: true });
+                    }
+                    if (item.content) {
+                        writeFileSync(join(pluginPath, 'button.json'), JSON.stringify(item.content), 'utf-8');
+                        item.content = {};
+                    }
+                    break;
                 default:
                     Promise.reject(new Error('不支持该类型'));
             }

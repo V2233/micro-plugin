@@ -1,10 +1,11 @@
 // 消息段类型
 export interface messageType {
     type: string
-    data: string | number
+    data?: string | number
     url?: string
     json?: string
     hash?: string
+    content?: any
 }
 
 // 插件类型

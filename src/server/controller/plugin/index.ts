@@ -58,7 +58,7 @@ class PluginController {
         }
     }
 
-    // 修改图片数据
+    // 获取图片数据
     async getImageJson(ctx) {
         const { id, hash } = ctx.request.query
         const htmlPath = join(botInfo.WORK_PATH, 'data', 'micro-plugin', 'plugins', id, hash + '.json')
@@ -68,6 +68,28 @@ class PluginController {
             code: 200,
             message: 'success',
             data: imageData
+        }
+    }
+
+    // 进入插件编辑页获取消息段资源
+    async getBtnJson(ctx) {
+        const plugin = ctx.request.body
+
+        for (let i = 0; i < plugin.message.length; i++) {
+            if (plugin.message[i].type == 'button') {
+                const btnJsonPath = join(botInfo.WORK_PATH, 'data', 'micro-plugin', 'plugins', plugin.id, 'button.json')
+                plugin.message[i].content = JSON.parse(readFileSync(btnJsonPath, 'utf8'))
+            }
+            if (plugin.message[i].type == 'markdown') {
+                const mdJsonPath = join(botInfo.WORK_PATH, 'data', 'micro-plugin', 'plugins', plugin.id, 'markdown.json')
+                plugin.message[i].content = JSON.parse(readFileSync(mdJsonPath, 'utf8'))
+            }
+        }
+
+        ctx.body = {
+            code: 200,
+            message: 'success',
+            data: plugin
         }
     }
 }

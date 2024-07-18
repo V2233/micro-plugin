@@ -39,6 +39,7 @@ enum PLUGINSAPI {
     PUT_PLUGIN_URL = '/plugins/put',
     GET_PLUGINLIST_URL = '/plugins/get',
     GET_HTML_PROJECT_URL = '/plugins/imgJSON',
+    GET_BUTTON_PROJECT_URL = '/plugins/btnJSON',
 }
 
 enum BOTAPI {
@@ -102,6 +103,8 @@ router.put(PLUGINSAPI.PUT_PLUGIN_URL, PluginController.editorPlugin)
 router.get(PLUGINSAPI.GET_PLUGINLIST_URL, PluginController.getPluginList)
 
 router.get(PLUGINSAPI.GET_HTML_PROJECT_URL, PluginController.getImageJson)
+
+router.post(PLUGINSAPI.GET_BUTTON_PROJECT_URL, PluginController.getBtnJson)
 
 
 // 文件系统

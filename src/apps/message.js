@@ -1,4 +1,4 @@
-import { existsSync, mkdirSync, rmSync, readFileSync, writeFileSync, copyFileSync } from 'node:fs';
+import { existsSync, mkdirSync, rmSync, readFileSync, writeFileSync, copyFileSync, } from 'node:fs';
 import { copyDirectory } from '../server/controller/fs/tools.js';
 import schedule from 'node-schedule';
 import { join } from 'path';
@@ -166,8 +166,20 @@ export class RunPlugin extends plugin {
                         case 'face':
                             msgSegList.push(segment.face(Number(item.data)));
                             break;
+                        case 'dice':
+                            msgSegList.push(segment.poke(Number(item.data)));
+                            break;
                         case 'poke':
                             msgSegList.push(segment.poke(Number(item.data)));
+                            break;
+                        case 'markdown':
+                            msgSegList.push(segment.markdown(item.data));
+                            break;
+                        case 'button':
+                            if (existsSync(join(pluginPath, 'button.json'))) {
+                                let btnContent = JSON.parse(readFileSync(join(pluginPath, 'button.json'), 'utf8'));
+                                msgSegList.push(segment.button(btnContent));
+                            }
                             break;
                         default:
                             logger.warn('暂不支持该消息类型！');

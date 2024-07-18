@@ -4,7 +4,7 @@ import {
     rmSync,
     readFileSync,
     writeFileSync,
-    copyFileSync
+    copyFileSync,
 } from 'node:fs'
 import { copyDirectory } from '../server/controller/fs/tools.js';
 import schedule from 'node-schedule'
@@ -212,8 +212,8 @@ export class RunPlugin extends plugin {
                 let msgSegList = []
                 for (let item of message) {
                     switch (item.type) {
+                        // 文本
                         case 'text':
-                            // let preText = item.data.replace(/\{\s+([^\s\n]+)\s+\}/,'')
                             try {
                                 let compileText = new Function('e', 'Bot', 'return ' + '`' + item.data + '`')
                                 msgSegList.push(compileText(this.e, Bot))
@@ -222,6 +222,7 @@ export class RunPlugin extends plugin {
                             }
 
                             break
+                        // 图片
                         case 'image':
                             if (item.url) {
                                 msgSegList.push(segment.image(item.url))
@@ -235,21 +236,41 @@ export class RunPlugin extends plugin {
                                 msgSegList.push(img)
                             }
                             break
+                        // 音频
                         case 'record':
                             if (item.url) {
                                 msgSegList.push(segment.record(item.url))
                             }
                             break
+                        // 视频
                         case 'video':
                             if (item.url) {
                                 msgSegList.push(segment.video(item.url))
                             }
                             break
+                        // 表情
                         case 'face':
                             msgSegList.push(segment.face(Number(item.data)))
                             break
+                        // 骰子
+                        case 'dice':
+                            msgSegList.push(segment.poke(Number(item.data)))
+                            break
+                        // 戳一戳(窗口抖动)
                         case 'poke':
                             msgSegList.push(segment.poke(Number(item.data)))
+                            break
+                        // md
+                        case 'markdown':
+                            msgSegList.push(segment.markdown(item.data))
+                            break
+                        // 按钮
+                        case 'button':
+                            if (existsSync(join(pluginPath, 'button.json'))) {
+                                let btnContent = JSON.parse(readFileSync(join(pluginPath, 'button.json'), 'utf8'))
+                                msgSegList.push(segment.button(btnContent))
+                            }
+
                             break
                         default:
                             logger.warn('暂不支持该消息类型！')
