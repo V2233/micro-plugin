@@ -173,7 +173,22 @@ export class RunPlugin extends plugin {
                             msgSegList.push(segment.poke(Number(item.data)));
                             break;
                         case 'markdown':
-                            msgSegList.push(segment.markdown(item.data));
+                            const mdPath = join(pluginPath, 'markdown.json');
+                            if (existsSync(mdPath)) {
+                                let mdContent = JSON.parse(readFileSync(mdPath, 'utf8'));
+                                if (mdContent.content == '') {
+                                    delete mdContent.params;
+                                    msgSegList.push({ type: 'markdown', content: mdContent });
+                                }
+                                else {
+                                    delete mdContent.content;
+                                    mdContent = mdContent.map((item) => {
+                                        delete item.tempString;
+                                        return item;
+                                    });
+                                    msgSegList.push({ type: 'markdown', content: mdContent });
+                                }
+                            }
                             break;
                         case 'button':
                             if (existsSync(join(pluginPath, 'button.json'))) {

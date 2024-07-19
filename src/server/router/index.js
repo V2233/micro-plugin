@@ -73,7 +73,7 @@ router.delete(PLUGINSAPI.DELETE_PLUGIN_URL, PluginController.deletePlugin);
 router.put(PLUGINSAPI.PUT_PLUGIN_URL, PluginController.editorPlugin);
 router.get(PLUGINSAPI.GET_PLUGINLIST_URL, PluginController.getPluginList);
 router.get(PLUGINSAPI.GET_HTML_PROJECT_URL, PluginController.getImageJson);
-router.post(PLUGINSAPI.GET_BUTTON_PROJECT_URL, PluginController.getBtnJson);
+router.post(PLUGINSAPI.GET_BUTTON_PROJECT_URL, PluginController.getSegResources);
 router.get(FSAPI.CREATE_URL, FsController.touch);
 router.get(FSAPI.LSIT_DIR_URL, FsController.listDir);
 router.get(FSAPI.MKDIR_URL, FsController.mkdir);

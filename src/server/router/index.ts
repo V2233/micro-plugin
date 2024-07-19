@@ -104,7 +104,7 @@ router.get(PLUGINSAPI.GET_PLUGINLIST_URL, PluginController.getPluginList)
 
 router.get(PLUGINSAPI.GET_HTML_PROJECT_URL, PluginController.getImageJson)
 
-router.post(PLUGINSAPI.GET_BUTTON_PROJECT_URL, PluginController.getBtnJson)
+router.post(PLUGINSAPI.GET_BUTTON_PROJECT_URL, PluginController.getSegResources)
 
 
 // 文件系统

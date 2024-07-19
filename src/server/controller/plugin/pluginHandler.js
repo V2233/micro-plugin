@@ -73,6 +73,15 @@ export default class PluginHandler {
                     break;
                 case 'poke':
                     break;
+                case 'markdown':
+                    if (!existsSync(pluginPath)) {
+                        mkdirSync(pluginPath, { recursive: true });
+                    }
+                    if (item.content) {
+                        writeFileSync(join(pluginPath, 'markdown.json'), JSON.stringify(item.content), 'utf-8');
+                        item.content = {};
+                    }
+                    break;
                 case 'button':
                     if (!existsSync(pluginPath)) {
                         mkdirSync(pluginPath, { recursive: true });

@@ -1,6 +1,6 @@
 {
   "name": "micro-plugin",
-  "version": "0.1.0-Beta.0",
+  "version": "0.1.0-Beta.1",
   "description": "Yunzai低代码开发管理平台",
   "main": "index.js",
   "type": "module",

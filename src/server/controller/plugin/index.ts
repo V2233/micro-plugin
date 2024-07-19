@@ -72,7 +72,7 @@ class PluginController {
     }
 
     // 进入插件编辑页获取消息段资源
-    async getBtnJson(ctx) {
+    async getSegResources(ctx) {
         const plugin = ctx.request.body
 
         for (let i = 0; i < plugin.message.length; i++) {

@@ -50,7 +50,7 @@ class PluginController {
             data: imageData
         };
     }
-    async getBtnJson(ctx) {
+    async getSegResources(ctx) {
         const plugin = ctx.request.body;
         for (let i = 0; i < plugin.message.length; i++) {
             if (plugin.message[i].type == 'button') {
