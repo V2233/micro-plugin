@@ -1,20 +1,27 @@
 {
-  "name": "micro-plugin",
-  "version": "0.1.0-Beta.1",
+  "name": "yunzai-micro-plugin",
+  "version": "0.1.0-Beta.4",
   "description": "Yunzai低代码开发管理平台",
-  "main": "index.js",
+  "main": "src/index.js",
   "type": "module",
   "scripts": {
+    "app": "node --no-warnings=ExperimentalWarning --loader ts-node/esm src/main.ts",
+    "dev": "nodemon",
     "image": "node react/index.js",
     "css": "tailwindcss -i ./react/input.css -o ./react/public/output.css",
     "test": "node --no-warnings=ExperimentalWarning --loader ts-node/esm test/test.ts",
-    "build": "tsc",
+    "build": "rollup --config rollup.config.js",
     "commitlint": "commitlint --config commitlint.config.cjs -e -V"
   },
-  "keywords": [],
+  "keywords": [
+    "yunzai",
+    "micro-plugin",
+    "low-code-platform"
+  ],
   "author": "Smallv",
-  "license": "ISC",
+  "license": "GPL-3.0-only",
   "dependencies": {
+    "@rollup/plugin-alias": "^5.1.0",
     "directory-tree": "^3.5.1",
     "jsonwebtoken": "^9.0.2",
     "koa": "^2.15.3",
@@ -28,17 +35,32 @@
   },
   "imports": {
     "#bot": "./src/adapter/index.js",
-    "#env": "./src/env/index.js",
+    "#env": "./src/env.js",
     "#utils": "./src/utils/index.js",
     "#cfg": "./src/config/index.js"
   },
-  "private": true,
-  "workspaces": [
-    "!frontend"
-  ],
   "devDependencies": {
     "@commitlint/config-conventional": "^19.1.0",
+    "@rollup/plugin-terser": "^0.4.4",
+    "@rollup/plugin-typescript": "^11.1.6",
     "@types/koa-router": "^7.4.8",
-    "typescript": "^5.4.5"
+    "rollup": "^4.18.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.5",
+    "yunzai": "^1.0.0-rc.6"
+  },
+  "files": [
+    "src/**/*",
+    "config/**/*",
+    "docs/**/*"
+  ],
+  "types": "src/types",
+  "exports": {
+    ".": {
+      "import": "./src/index.js"
+    }
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org"
   }
 }

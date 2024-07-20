@@ -1,0 +1,48 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "rootDir": "./src",
+    "noImplicitAny": false,
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "removeComments": true,
+    "preserveConstEnums": true,
+    "jsx": "react",
+    "allowJs": false,
+    "useDefineForClassFields": true,
+    "lib": [
+      "ES2020",
+      "DOM",
+      "DOM.Iterable"
+    ],
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    /* Linting */
+    // "strict": true, 严格模式
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "forceConsistentCasingInFileNames": true,
+    "baseUrl": ".",
+    "paths": {
+      "#bot": [
+        "src/adapter/index.js"
+      ],
+      "#env": [
+        "src/env/index.js"
+      ],
+      "#utils": [
+        "src/utils/index.js"
+      ],
+      "#cfg": [
+        "src/config/index.js"
+      ],
+    }
+  },
+  "include": [
+    "src/**/*"
+  ],
+  "extends": "yunzai/tsconfig/tsconfig.json"
+}

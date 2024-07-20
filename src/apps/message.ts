@@ -13,7 +13,7 @@ import { botInfo, pluginInfo } from '#env';
 import { Pager } from '#utils';
 import { Segment, Puppeteer, Plugin, Bot, Redis, Logger } from '#bot';
 import type { pluginType } from '../server/controller/plugin/pluginType.js'
-import type { RuleType, EventType } from '../adapter/types/types.js'
+// import type { RuleType, EventType } from '../adapter/types/types.js'
 
 let plugin = await Plugin()
 let segment = await Segment()
@@ -26,16 +26,9 @@ let logger = await Logger()
  * 匹配插件指令
  */
 export class RunPlugin extends plugin {
-    priority: number
-    rule: RuleType
-    e: EventType
     pluginsPath: string
     indexPath: string
     cronTask: {}
-    // htmlPath:string
-    // recordPath:string
-    // videoPath:string
-    // picPath:string
 
     pluginReadMode: string
 
@@ -46,6 +39,10 @@ export class RunPlugin extends plugin {
         })
         this.priority = 4000
         this.rule = [
+            {
+                reg: /(.*)/,
+                fnc: "run",
+            },
             {
                 reg: /小微切换读取模式/,
                 fnc: "checkoutReadMode",
@@ -96,7 +93,7 @@ export class RunPlugin extends plugin {
                     // 指令
                     try {
                         logger.mark(`执行定时任务：${plugin.id}`)
-                        await this.accept({ taskId: plugin.id })
+                        await this.run({ taskId: plugin.id })
                     } catch (error) {
                         logger.error(`定时任务报错：${plugin.id}`)
                         logger.error(error)
@@ -181,7 +178,7 @@ export class RunPlugin extends plugin {
      * 匹配消息核心
      * @returns
      */
-    async accept(e = { taskId: '' }) {
+    async run(e = { taskId: '' }) {
         if (!this.e.message && !e.taskId) return false
 
         if (e.taskId) {

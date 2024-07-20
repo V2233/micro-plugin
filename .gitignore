@@ -5,3 +5,6 @@ test.*
 temp/
 dist
 *.css.map
+logs
+data
+resources

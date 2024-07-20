@@ -40,9 +40,35 @@ Yunzai-Bot低代码开发管理平台，以下简称小微插件
 ## 环境准备
 
 - Yunzai V4
-- 如果您还没有安装此应用，请查看以下文档教程进行安装：<a href="https://yunzai-org.github.io/docs/docs/a-next/translate-your-site/">https://yunzai-org.github.io/docs/docs/a-next/translate-your-site/</a>
+- 如果您还没有安装此应用，请查看以下文档教程进行安装(注意是dev分支)：<a href="https://yunzai-org.github.io/docs/docs/a-next/translate-your-site/">https://yunzai-org.github.io/docs/docs/a-next/translate-your-site/</a>
 
-## 安装插件
+## 安装插件(npm)
+
+- 下载依赖
+
+```sh
+pnpm i yunzai-micro-plugin -w
+```
+
+- 如下示例写入配置文件
+
+```ts
+// yunzai.config.js
+import { defineConfig } from 'yunzai'
+import runtime from 'yz-mw-runtime'
+import starRail from 'yz-mw-star-rail'
+import system from 'yz-system'
+import Micro from 'yunzai-micro-plugin'
+
+export default defineConfig({
+  // 应用
+  applications: [system(), Micro()],
+  // 中间件
+  middlewares: [runtime(), starRail()]
+})
+```
+
+## 安装插件(git)
 
 - 下载源码
 
@@ -82,7 +108,7 @@ pnpm run restart
 | [戳一戳]   |    🟢     |
 | [markdown] |    🔴     |
 | [按钮]     |    🔴     |
-| [合并转发] |    🔴     |
+| [转发]     |    🔴     |
 
 ## 鸣谢
 

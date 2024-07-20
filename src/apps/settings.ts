@@ -1,14 +1,11 @@
 import { Plugin } from '#bot'
 import { Cfg } from '#cfg'
 import { startServer, stopServer, restartServer } from '../server/index.js'
-import type { RuleType, EventType } from '../adapter/types/types.js'
+// import type { RuleType, EventType } from '../adapter/types/types.js'
 
 let plugin = await Plugin()
 
-export class Service extends plugin {
-    priority: number
-    rule: RuleType
-    e: EventType
+export class Settings extends plugin {
     constructor() {
         super({
             name: "设置",

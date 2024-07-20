@@ -13,7 +13,7 @@ Yunzai Bot Low Code Development Management Platform, hereinafter referred to as 
 
 </div>
 
-## 快速开始
+## Quick Start
 
 - [Basic usage](docs/DOCS.md)
 
@@ -40,7 +40,7 @@ Yunzai Bot Low Code Development Management Platform, hereinafter referred to as 
 ## Environmental preparation
 
 - Yunzai V4
-- If you have not yet installed this application, please refer to the following documentation tutorials for installation:<a href="https://yunzai-org.github.io/docs/docs/a-next/translate-your-site/">https://yunzai-org.github.io/docs/docs/a-next/translate-your-site/</a>
+- If you have not yet installed this application, please refer to the following documentation tutorials for installation(dev branch):<a href="https://yunzai-org.github.io/docs/docs/a-next/translate-your-site/">https://yunzai-org.github.io/docs/docs/a-next/translate-your-site/</a>
 
 ## Installing plugins
 
