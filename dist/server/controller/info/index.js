@@ -1,10 +1,7 @@
-import Cfg from '../../../config/config.js';
-import 'fs';
-import 'yaml';
-import 'lodash';
-import 'chokidar';
+import '../../../config/index.js';
 import getBotInfo from './botInfo.js';
 import { path2URI } from '../../../utils/index.js';
+import Cfg from '../../../config/config.js';
 
 class InfoController {
     async botInfo(ctx) {

@@ -3,12 +3,9 @@ import { copyDirectory } from '../server/controller/fs/tools.js';
 import schedule from 'node-schedule';
 import { join } from 'path';
 import { pluginInfo } from '../env.js';
-import 'child_process';
-import '../utils/common.js';
-import '../utils/logger.js';
-import Pager from '../utils/pager.js';
-import '../utils/ipAddress.js';
+import '../utils/index.js';
 import { Plugin, Segment, Puppeteer, Bot, Redis, Logger } from '../adapter/index.js';
+import Pager from '../utils/pager.js';
 
 let plugin = await Plugin();
 let segment = await Segment();
@@ -59,7 +56,7 @@ class RunPlugin extends plugin {
         }
         let plugins = await this.pluginsList() || [];
         plugins.forEach((plugin) => {
-            if (plugin.cron) {
+            if (plugin && plugin?.cron) {
                 this.cronTask[plugin.id].job = schedule.scheduleJob(plugin.cron, async () => {
                     try {
                         logger.mark(`执行定时任务：${plugin.id}`);
@@ -213,6 +210,7 @@ class RunPlugin extends plugin {
                 msgQueue.push(Object.assign(plugin, { message: msgSegList }));
             }
         }
+        ;
         if (msgQueue.length == 0)
             return false;
         for (let msg of msgQueue) {

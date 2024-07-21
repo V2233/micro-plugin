@@ -5,7 +5,7 @@ import { readdirSync } from 'node:fs'
 import { pluginInfo } from '#env'
 import { Cfg } from '#cfg'
 import { Logger } from '#bot'
-import { startServer } from './server/index.js'
+import { startServer } from './dist/server/index.js'
 
 const logger = await Logger()
 
@@ -34,10 +34,9 @@ logger.info(`Created By ${PLUGIN_AUTHOR}`)
 logger.info(chalk.green('-----------------------------------'))
 
 files.forEach((file) => {
-  ret.push(import(`./src/apps/${file}`))
+  ret.push(import(`./dist/apps/${file}`))
 })
 ret = await Promise.allSettled(ret)
-await startServer(Port)
 
 let apps = {}
 for (let i in files) {
@@ -50,5 +49,8 @@ for (let i in files) {
   }
   apps[name] = ret[i].value[Object.keys(ret[i].value)[0]]
 }
+
+// 不想开机自启动可注释掉
+await startServer(Port)
 
 export { apps }

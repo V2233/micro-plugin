@@ -2,14 +2,11 @@ import fs from 'fs';
 import _ from 'lodash';
 import os from 'os';
 import { join } from 'path';
-import 'child_process';
-import { botInfo } from '../../../../env.js';
-import formatDuration from '../../../../utils/formatDuration.js';
-import '../../../../utils/common.js';
-import '../../../../utils/logger.js';
-import '../../../../utils/ipAddress.js';
+import '../../../../utils/index.js';
 import { Loader } from '../../../../adapter/index.js';
+import { botInfo } from '../../../../env.js';
 import { osInfo, si } from './utils.js';
+import formatDuration from '../../../../utils/formatDuration.js';
 
 const loader = await Loader();
 async function getOtherInfo(e = { isPro: false }) {

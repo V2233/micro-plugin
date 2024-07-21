@@ -1,10 +1,7 @@
 import { Plugin } from '../adapter/index.js';
-import Cfg from '../config/config.js';
-import 'fs';
-import 'yaml';
-import 'lodash';
-import 'chokidar';
+import '../config/index.js';
 import { startServer, restartServer, stopServer } from '../server/index.js';
+import Cfg from '../config/config.js';
 
 let plugin = await Plugin();
 class Settings extends plugin {

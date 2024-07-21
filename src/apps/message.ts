@@ -88,7 +88,7 @@ export class RunPlugin extends plugin {
         // 定时任务
         let plugins = await this.pluginsList() || []
         plugins.forEach((plugin: pluginType) => {
-            if (plugin.cron) {
+            if (plugin && plugin?.cron) {
                 this.cronTask[plugin.id].job = schedule.scheduleJob(plugin.cron, async () => {
                     // 指令
                     try {

@@ -2,6 +2,7 @@ import { Logger } from '../../../../adapter/index.js';
 
 let si = false;
 let osInfo = null;
+let colorthief = null;
 const logger = await Logger();
 async function initDependence() {
     if (si)
@@ -47,4 +48,4 @@ function getFileSize(size, { decimalPlaces = 2, showByte = true, showSuffix = tr
     return buildSizeString(size / precalculated[unitIndex], units[unitIndex]);
 }
 
-export { getFileSize, initDependence, osInfo, si };
+export { colorthief, getFileSize, initDependence, osInfo, si };

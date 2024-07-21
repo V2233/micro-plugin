@@ -1,9 +1,6 @@
 import jwt from 'jsonwebtoken';
+import '../../config/index.js';
 import Cfg from '../../config/config.js';
-import 'fs';
-import 'yaml';
-import 'lodash';
-import 'chokidar';
 
 const auth = async (ctx, next) => {
     const { userInfo } = await Cfg.getConfig('server');

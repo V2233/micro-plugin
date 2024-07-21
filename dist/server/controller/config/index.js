@@ -1,9 +1,10 @@
-import Cfg from '../../../config/config.js';
-import YamlHandler from '../../../config/yamlHandler.js';
+import '../../../config/index.js';
 import { botInfo, pluginInfo } from '../../../env.js';
 import { join } from 'path';
-import { group, bot, notice, other, puppeteer, qq, redis, renderer } from './botCfgMap.js';
+import { bot, notice, other, puppeteer, qq, redis, renderer, group } from './botCfgMap.js';
 import { userInfo } from './plugins/microCfgMap.js';
+import Cfg from '../../../config/config.js';
+import YamlHandler from '../../../config/yamlHandler.js';
 
 class ConfigController {
     async getBotConfig(ctx) {

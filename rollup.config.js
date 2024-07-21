@@ -15,6 +15,8 @@ export default [
       sourcemap: false,
       preserveModules: true,
     },
+    // 提高兼容性
+    treeshake: false,
     plugins: [
       typescript({
         compilerOptions: {
@@ -24,7 +26,7 @@ export default [
       }),
       alias({  
         entries: [  
-          { find: '#cfg', replacement: 'src/config/index.js' }, // 将 '#cfg' 替换为你的实际路径  
+          { find: '#cfg', replacement: 'src/config/index.js' }, 
           { find: '#env', replacement: 'src/env.js' },
           { find: '#bot', replacement: 'src/adapter/index.js' }, 
           { find: '#utils', replacement: 'src/utils/index.js' }, 

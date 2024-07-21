@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import { si, getFileSize } from './utils.js';
-import './Monitor.js';
+import Monitor from './Monitor.js';
 
 async function getFsSize() {
     let HardDisk = _.uniqWith(await si.fsSize(), (a, b) => a.used === b.used && a.size === b.size && a.use === b.use && a.available === b.available)
@@ -15,5 +15,15 @@ async function getFsSize() {
         return item;
     });
 }
+function getDiskSpeed() {
+    let fsStats = Monitor.fsStats;
+    if (!fsStats || fsStats.rx_sec == null || fsStats.wx_sec == null) {
+        return false;
+    }
+    return {
+        rx_sec: getFileSize(fsStats.rx_sec, { showByte: false, showSuffix: false }),
+        wx_sec: getFileSize(fsStats.wx_sec, { showByte: false, showSuffix: false })
+    };
+}
 
-export { getFsSize };
+export { getDiskSpeed, getFsSize };

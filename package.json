@@ -33,10 +33,10 @@
     "ws": "^8.17.1"
   },
   "imports": {
-    "#bot": "./src/adapter/index.js",
-    "#env": "./src/env.js",
-    "#utils": "./src/utils/index.js",
-    "#cfg": "./src/config/index.js"
+    "#bot": "./dist/adapter/index.js",
+    "#env": "./dist/env.js",
+    "#utils": "./dist/utils/index.js",
+    "#cfg": "./dist/config/index.js"
   },
   "devDependencies": {
     "@commitlint/config-conventional": "^19.1.0",

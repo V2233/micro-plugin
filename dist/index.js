@@ -1,16 +1,13 @@
 import { applicationOptions } from 'yunzai';
 import chalk from 'chalk';
 import { pluginInfo } from './env.js';
-import Cfg from './config/config.js';
-import 'fs';
-import 'yaml';
-import 'lodash';
-import 'chokidar';
+import './config/index.js';
 import { Logger } from './adapter/index.js';
 import { startServer } from './server/index.js';
 import { RunPlugin } from './apps/message.js';
 import { Service } from './apps/service.js';
 import { Settings } from './apps/settings.js';
+import Cfg from './config/config.js';
 
 const logger = await Logger();
 const { PLUGIN_NAME, PLUGIN_AUTHOR, PLUGIN_DESC, PLUGIN_VERSION } = pluginInfo;

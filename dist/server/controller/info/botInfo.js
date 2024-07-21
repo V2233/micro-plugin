@@ -1,12 +1,8 @@
 import { createRequire } from 'module';
 import moment from 'moment';
-import 'child_process';
-import '../../../env.js';
-import formatDuration from '../../../utils/formatDuration.js';
-import '../../../utils/common.js';
-import '../../../utils/logger.js';
-import '../../../utils/ipAddress.js';
+import '../../../utils/index.js';
 import { Bot, Redis } from '../../../adapter/index.js';
+import formatDuration from '../../../utils/formatDuration.js';
 
 const require = createRequire(import.meta.url);
 const robot = await Bot();
