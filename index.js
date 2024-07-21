@@ -20,7 +20,7 @@ const {
 Cfg.mergeYamlFile()
 const Port = Cfg.getConfig('server').server.port
 
-let useDir = "src"
+let useDir = "dist"
 
 const files = readdirSync(join(ROOT_PATH, useDir,'apps')).filter(file => (/(\.js)$/.test(file)))
 
