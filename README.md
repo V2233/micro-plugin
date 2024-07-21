@@ -39,10 +39,11 @@ Yunzai-Bot低代码开发管理平台，以下简称小微插件
 
 ## 环境准备
 
+- 本仓库已适配Miao-Yunzai(v3)、Yunzai(v4)、Yunzai(npm插件)、Trss-Yunzai(未知，应该没问题),并支持独立启动开发模式而无需git clone yunzai。推荐V4环境安装使用
 - Yunzai V4
-- 如果您还没有安装此应用，请查看以下文档教程进行安装(注意是dev分支)：<a href="https://yunzai-org.github.io/docs/docs/a-next/translate-your-site/">https://yunzai-org.github.io/docs/docs/a-next/translate-your-site/</a>
+- 如果您还没有安装此应用，请查看以下文档教程进行安装：<a href="https://yunzai-org.github.io/docs/docs/a-next/translate-your-site/">https://yunzai-org.github.io/docs/docs/a-next/translate-your-site/</a>
 
-## 安装插件(npm)
+## 安装插件(npm方式，需要v4的dev分支)
 
 - 下载依赖
 
@@ -68,7 +69,7 @@ export default defineConfig({
 })
 ```
 
-## 安装插件(git)
+## 安装插件(git方式，通用)
 
 - 下载源码
 

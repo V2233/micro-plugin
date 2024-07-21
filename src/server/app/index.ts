@@ -32,7 +32,7 @@ const app = new Koa()
 app.use(koaBody({
     multipart: true,
     formidable: {
-        uploadDir: join(pluginInfo.ROOT_PATH, 'src', 'server', 'upload'),
+        uploadDir: join(pluginInfo.PUBLIC_PATH, 'upload'),
         multiples: true,
         keepExtensions: true,
         maxFieldsSize: 4 * 1024 * 1024 * 1024
@@ -43,7 +43,7 @@ app.use(koaBody({
 app.use(router.routes()).use(router.allowedMethods());
 
 // 静态
-app.use(KoaStatic(join(pluginInfo.ROOT_PATH, 'src', 'server', 'static')))
+app.use(KoaStatic(join(pluginInfo.PUBLIC_PATH, 'static')))
 
 /**
  * 创建server实例

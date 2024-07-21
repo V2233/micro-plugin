@@ -10,15 +10,16 @@ export default [
     input: './src/index.ts',
     output: {
       // 输出
-      file: './src/index.js',
+      dir: 'dist',
       format: 'es',
-      sourcemap: false
+      sourcemap: false,
+      preserveModules: true,
     },
     plugins: [
       typescript({
         compilerOptions: {
           declaration: true,
-          declarationDir: 'types'
+          declarationDir: './dist/types'
         }
       }),
       alias({  

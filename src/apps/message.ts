@@ -9,7 +9,7 @@ import {
 import { copyDirectory } from '../server/controller/fs/tools.js';
 import schedule from 'node-schedule'
 import { join } from 'path'
-import { botInfo, pluginInfo } from '#env';
+import { pluginInfo } from '#env';
 import { Pager } from '#utils';
 import { Segment, Puppeteer, Plugin, Bot, Redis, Logger } from '#bot';
 import type { pluginType } from '../server/controller/plugin/pluginType.js'
@@ -39,10 +39,10 @@ export class RunPlugin extends plugin {
         })
         this.priority = 4000
         this.rule = [
-            {
-                reg: /(.*)/,
-                fnc: "run",
-            },
+            // {
+            //     reg: /(.*)/,
+            //     fnc: "run",
+            // },
             {
                 reg: /小微切换读取模式/,
                 fnc: "checkoutReadMode",
@@ -58,8 +58,8 @@ export class RunPlugin extends plugin {
 
         ]
 
-        this.pluginsPath = join(botInfo.WORK_PATH, 'data', 'micro-plugin', 'plugins')
-        this.indexPath = join(botInfo.WORK_PATH, 'data', 'micro-plugin', 'regs.json')
+        this.pluginsPath = join(pluginInfo.DATA_PATH, 'plugins')
+        this.indexPath = join(pluginInfo.DATA_PATH, 'regs.json')
         // json|redis
         this.pluginReadMode = 'redis'
 
@@ -78,11 +78,11 @@ export class RunPlugin extends plugin {
         }
         if (!existsSync(this.indexPath)) {
             // writeFileSync(this.indexPath, JSON.stringify([]), 'utf-8')
-            let defaultRegsPath = join(pluginInfo.ROOT_PATH, 'src', 'apps', 'help', 'regs.json')
+            let defaultRegsPath = join(pluginInfo.PUBLIC_PATH, 'help', 'regs.json')
             let defaultRegs = JSON.parse(readFileSync(defaultRegsPath, 'utf8'))
             await redis.set(this.pluginsKey, JSON.stringify(defaultRegs))
             copyFileSync(defaultRegsPath, this.indexPath)
-            copyDirectory(join(pluginInfo.ROOT_PATH, 'src', 'apps', 'help', 'micro-help'), join(this.pluginsPath, 'micro-help'))
+            copyDirectory(join(pluginInfo.PUBLIC_PATH, 'help', 'micro-help'), join(this.pluginsPath, 'micro-help'))
         }
 
         // 定时任务
@@ -102,12 +102,16 @@ export class RunPlugin extends plugin {
             }
         });
 
-        // 其它事件
-        // try {
-        //     bot.on?.("notice.group.poke", () => { })
-        // } catch (err) {
+        // 事件
+        try {
+            bot.on?.("message", async(e) => { 
+                // console.log(e)
+                this.e = e
+                await this.run()
+            })
+        } catch (err) {
 
-        // }
+        }
 
     }
 

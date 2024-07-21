@@ -1,6 +1,6 @@
 import PluginHandler from './pluginHandler.js'
 import { readFileSync } from 'fs';
-import { botInfo } from '#env';
+import { pluginInfo } from '#env';
 import { join } from 'path'
 
 class PluginController {
@@ -61,7 +61,7 @@ class PluginController {
     // 获取图片数据
     async getImageJson(ctx) {
         const { id, hash } = ctx.request.query
-        const htmlPath = join(botInfo.WORK_PATH, 'data', 'micro-plugin', 'plugins', id, hash + '.json')
+        const htmlPath = join(pluginInfo.DATA_PATH, 'plugins', id, hash + '.json')
         const imageData = readFileSync(htmlPath, 'utf8')
 
         ctx.body = {
@@ -77,11 +77,11 @@ class PluginController {
 
         for (let i = 0; i < plugin.message.length; i++) {
             if (plugin.message[i].type == 'button') {
-                const btnJsonPath = join(botInfo.WORK_PATH, 'data', 'micro-plugin', 'plugins', plugin.id, 'button.json')
+                const btnJsonPath = join(pluginInfo.DATA_PATH, 'plugins', plugin.id, 'button.json')
                 plugin.message[i].content = JSON.parse(readFileSync(btnJsonPath, 'utf8'))
             }
             if (plugin.message[i].type == 'markdown') {
-                const mdJsonPath = join(botInfo.WORK_PATH, 'data', 'micro-plugin', 'plugins', plugin.id, 'markdown.json')
+                const mdJsonPath = join(pluginInfo.DATA_PATH, 'plugins', plugin.id, 'markdown.json')
                 plugin.message[i].content = JSON.parse(readFileSync(mdJsonPath, 'utf8'))
             }
         }

@@ -8,7 +8,6 @@
     "app": "node --no-warnings=ExperimentalWarning --loader ts-node/esm src/main.ts",
     "dev": "nodemon",
     "image": "node react/index.js",
-    "css": "tailwindcss -i ./react/input.css -o ./react/public/output.css",
     "test": "node --no-warnings=ExperimentalWarning --loader ts-node/esm test/test.ts",
     "build": "rollup --config rollup.config.js",
     "commitlint": "commitlint --config commitlint.config.cjs -e -V"
@@ -47,17 +46,19 @@
     "rollup": "^4.18.1",
     "ts-node": "^10.9.2",
     "typescript": "^5.4.5",
-    "yunzai": "^1.0.0-rc.6"
+    "yunzai": "*"
   },
   "files": [
     "src/**/*",
+    "dist/**/*",
+    "public/**/*",
     "config/**/*",
     "docs/**/*"
   ],
-  "types": "src/types",
+  "types": "dist/types",
   "exports": {
     ".": {
-      "import": "./src/index.js"
+      "import": "./dist/index.js"
     }
   },
   "publishConfig": {

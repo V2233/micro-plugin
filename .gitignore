@@ -3,8 +3,9 @@ node_modules/
 test.*
 .vscode/
 temp/
-dist
 *.css.map
-logs
-data
-resources
+logs/
+data/
+resources/
+renderers/
+plugins/

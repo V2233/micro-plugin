@@ -6,7 +6,7 @@ import {
     writeFileSync,
 } from 'node:fs'
 import { join } from 'path'
-import { botInfo } from '#env';
+import { pluginInfo } from '#env';
 import { Redis } from '#bot'
 import type { messageType, pluginType } from './pluginType.js'
 
@@ -21,8 +21,8 @@ export default class PluginHandler {
     pluginsArr: pluginType[]
 
     constructor(public curPlugin?: pluginType) {
-        this.indexPath = join(botInfo.WORK_PATH, 'data', 'micro-plugin', 'regs.json')
-        this.pluginsPath = join(botInfo.WORK_PATH, 'data', 'micro-plugin', 'plugins')
+        this.indexPath = join(pluginInfo.DATA_PATH, 'regs.json')
+        this.pluginsPath = join(pluginInfo.DATA_PATH, 'plugins')
 
         this.curPlugin = curPlugin
         this.pluginsArr = []

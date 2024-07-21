@@ -1,3 +1,7 @@
+import { join } from 'path';
+import { botInfo } from '#env'
+
+const {WORK_PATH} = botInfo
 
 export async function Plugin() {
     try {
@@ -5,8 +9,8 @@ export async function Plugin() {
         return Plugin
     } catch (err) {
         //@ts-ignore
-        // const plugin = (await import('../../../../lib/plugins/plugin.js')).default
-        // return plugin
+        const plugin = (await import(join(WORK_PATH,'lib/plugins/plugin.js'))).default
+        return plugin
     }
 }
 
@@ -16,8 +20,8 @@ export async function Puppeteer() {
         return puppeteer
     } catch (err) {
         //@ts-ignore
-        // const puppeteer = (await import('../../../../lib/puppeteer/puppeteer.js')).default
-        // return puppeteer
+        const puppeteer = (await import(join(WORK_PATH,'lib/puppeteer/puppeteer.js'))).default
+        return puppeteer
     }
 }
 
@@ -27,8 +31,8 @@ export async function Segment() {
         return Segment
     } catch (err) {
         //@ts-ignore
-        // const Segment = global.segment
-        // return Segment
+        const Segment = global.segment
+        return Segment
     }
 }
 
@@ -38,8 +42,8 @@ export async function Loader() {
         return Loader
     } catch (err) {
         //@ts-ignore
-        // const loader = (await import("../../../../lib/plugins/loader.js")).default
-        // return loader
+        const loader = (await import(join(WORK_PATH,"lib/plugins/loader.js"))).default
+        return loader
     }
 }
 

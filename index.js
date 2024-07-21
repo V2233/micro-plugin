@@ -1,9 +1,11 @@
+/** V3和V4(main分支)版本入口文件，npm版本为dist/index/.ts */
 import chalk from 'chalk'
 import { join } from 'path'
 import { readdirSync } from 'node:fs'
 import { pluginInfo } from '#env'
-import {Cfg} from '#cfg'
-import {Logger} from '#bot'
+import { Cfg } from '#cfg'
+import { Logger } from '#bot'
+import { startServer } from './server/index.js'
 
 const logger = await Logger()
 
@@ -16,11 +18,9 @@ const {
 } = pluginInfo
 
 Cfg.mergeYamlFile()
+const Port = Cfg.getConfig('server').server.port
 
 let useDir = "src"
-// if(existsSync(join(ROOT_PATH,'dist'))) {
-//   useDir = "dist"
-// }
 
 const files = readdirSync(join(ROOT_PATH, useDir,'apps')).filter(file => (/(\.js)$/.test(file)))
 
@@ -33,11 +33,11 @@ logger.info('bug积累中...呜呜出错删掉不要骂我(˵¯͒〰¯͒˵)')
 logger.info(`Created By ${PLUGIN_AUTHOR}`)
 logger.info(chalk.green('-----------------------------------'))
 
-await import('./src/server/index.js')
 files.forEach((file) => {
   ret.push(import(`./src/apps/${file}`))
 })
 ret = await Promise.allSettled(ret)
+await startServer(Port)
 
 let apps = {}
 for (let i in files) {

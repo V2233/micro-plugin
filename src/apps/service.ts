@@ -1,6 +1,6 @@
-import { Plugin } from '#bot'
+import { Plugin,Bot } from '#bot'
 import microWs from '../server/index.js'
-// import type { EventType, RuleType } from '../adapter/types/types.js'
+let bot = await Bot()
 
 let plugin = await Plugin()
 
@@ -12,14 +12,28 @@ export class Service extends plugin {
       event: "message"
     })
     this.priority = 4000
-    this.rule = [
-        {
-            reg: /(.*)/,
-            fnc: "listen",
-        },
-      ]
+    // this.rule = [
+    //     {
+    //         reg: /(.*)/,
+    //         fnc: "listen",
+    //     },
+    //   ]
+    this.init()
+  }
+
+  async init() {
+    // 事件
+    try {
+      bot.on?.("message", async(e) => { 
+        this.e = e
+        await this.listen()
+      })
+    } catch (err) {
+
+    }
 
   }
+
   async listen() {
     // console.log(this.e)
     const { msg, message, group_name, group_id, sender } = this.e

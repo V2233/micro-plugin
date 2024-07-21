@@ -1,0 +1,16 @@
+node_modules
+config
+docker
+lib
+dist
+plugins
+renderers
+logs
+docs
+CHANGELOG.md
+docker-compose.yaml
+
+data
+react
+temp
+resources
