@@ -5,6 +5,7 @@ import { exec } from 'node:child_process';
 const packages = [  
     '@commitlint/config-conventional@^19.1.0',  
     '@rollup/plugin-terser@^0.4.4',  
+    '@rollup/plugin-alias@^5.1.0',
     '@rollup/plugin-typescript@^11.1.6',  
     '@types/koa-router@^7.4.8',  
     'rollup@^4.18.1',  

@@ -21,7 +21,6 @@
   "author": "Smallv",
   "license": "GPL-3.0-only",
   "dependencies": {
-    "@rollup/plugin-alias": "^5.1.0",
     "directory-tree": "^3.5.1",
     "jsonwebtoken": "^9.0.2",
     "koa": "^2.15.3",
