@@ -4,52 +4,52 @@ import { botInfo } from '../env.js';
 const { WORK_PATH } = botInfo;
 async function Plugin() {
     try {
-        const { Plugin } = await import('yunzai');
-        return Plugin;
-    }
-    catch (err) {
         const plugin = (await import(join(WORK_PATH, 'lib/plugins/plugin.js'))).default;
         return plugin;
+    }
+    catch (err) {
+        const { Plugin } = await import('yunzai');
+        return Plugin;
     }
 }
 async function Puppeteer() {
     try {
-        const { puppeteer } = await import('yunzai');
+        const puppeteer = (await import(join(WORK_PATH, 'lib/puppeteer/puppeteer.js'))).default;
         return puppeteer;
     }
     catch (err) {
-        const puppeteer = (await import(join(WORK_PATH, 'lib/puppeteer/puppeteer.js'))).default;
+        const { puppeteer } = await import('yunzai');
         return puppeteer;
     }
 }
 async function Segment() {
     try {
-        const { Segment } = await import('yunzai');
+        const Segment = global.segment;
         return Segment;
     }
     catch (err) {
-        const Segment = global.segment;
+        const { Segment } = await import('yunzai');
         return Segment;
     }
 }
 async function Loader() {
     try {
-        const { Loader } = await import('yunzai');
-        return Loader;
-    }
-    catch (err) {
         const loader = (await import(join(WORK_PATH, "lib/plugins/loader.js"))).default;
         return loader;
+    }
+    catch (err) {
+        const { Loader } = await import('yunzai');
+        return Loader;
     }
 }
 async function Bot() {
     try {
-        const { Bot } = await import('yunzai');
-        return Bot;
-    }
-    catch (err) {
         const bot = global.Bot;
         return bot;
+    }
+    catch (err) {
+        const { Bot } = await import('yunzai');
+        return Bot;
     }
 }
 async function Logger() {
@@ -62,12 +62,12 @@ async function Logger() {
 }
 async function Redis() {
     try {
-        const { Redis } = await import('yunzai');
-        return Redis;
-    }
-    catch (err) {
         const redis = global.redis;
         return redis;
+    }
+    catch (err) {
+        const { Redis } = await import('yunzai');
+        return Redis;
     }
 }
 

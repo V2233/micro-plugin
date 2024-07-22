@@ -1,5 +1,4 @@
 node_modules/
-*_test.js
 test/**/*
 temp/**/*
 logs/**/*

@@ -111,6 +111,33 @@ pnpm run restart
 | [按钮]     |    🔴     |
 | [转发]     |    🔴     |
 
+
+## 关于开发模式
+
+- 进入micro-plugin目录：
+
+```sh
+cd plugins/micro-plugin
+```
+
+- 安装前端源码：
+
+```sh
+git clone --depth=1 https://github.com/V2233/micro-web.git frontend
+```
+
+- 执行以下命令安装开发依赖：
+
+```sh
+pnpm run install:dev
+```
+
+- 登录yunzai：
+
+```sh
+pnpm run app
+```
+
 ## 鸣谢
 
 - [yunzaijs](https://github.com/yunzai-org/yunzaijs) 插件运行环境
