@@ -1,8 +1,6 @@
+/// <reference types="node" />
+import { WebSocket } from 'ws';
+import { IncomingMessage } from 'http';
 export default class MicroWs {
-    clients: Map<string, WebSocket>;
-    private plugins;
-    constructor();
-    use(plugin: any): void;
-    onOpen(ws: any): void;
-    sendMsg(params: any, action: string, type?: string, clientId?: any): void;
+    onOpen(ws: WebSocket, req: IncomingMessage): void;
 }

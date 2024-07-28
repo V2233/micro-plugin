@@ -2,9 +2,9 @@
 import chalk from 'chalk'
 import { join } from 'path'
 import { readdirSync } from 'node:fs'
-import { pluginInfo } from '#env'
-import { Cfg } from '#cfg'
-import { Logger } from '#bot'
+import { pluginInfo } from './dist/env.js'
+import { Cfg } from './dist/config/index.js'
+import { Logger } from './dist/adapter/index.js'
 import { startServer } from './dist/server/index.js'
 
 const logger = await Logger()
@@ -52,5 +52,6 @@ for (let i in files) {
 
 // 不想开机自启动可注释掉
 await startServer(Port)
+await import('./dist/init.js')
 
 export { apps }

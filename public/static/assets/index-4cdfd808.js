@@ -1,0 +1,1 @@
+import{ac as e}from"./index-c140b0fc.js";const s=t=>e.get("/bot/getcfg?name="+t),n=(t,o)=>e.post("/bot/setcfg?name="+t,o),c=()=>e.get("/user/getcfg"),g=t=>e.post("/user/setcfg",t),f=()=>e.get("/protocol/getcfg"),a=t=>e.post("/protocol/setcfg",t);export{n as a,f as b,a as c,c as d,g as e,s as r};

@@ -22,6 +22,9 @@
   "license": "GPL-3.0-only",
   "dependencies": {
     "directory-tree": "^3.5.1",
+    "file-type": "^19.3.0",
+    "get-urls": "^12.1.0",
+    "iconv-lite": "^0.6.3",
     "jsonwebtoken": "^9.0.2",
     "koa": "^2.15.3",
     "koa-body": "^6.0.1",
@@ -29,24 +32,34 @@
     "koa-static": "^5.0.0",
     "mime": "^4.0.4",
     "systeminformation": "^5.22.11",
-    "uuid": "^10.0.0",
-    "ws": "^8.17.1"
+    "ws": "^8.17.1",
+    "zx": "^8.1.4"
   },
   "imports": {
-    "#bot": "./dist/adapter/index.js",
-    "#env": "./dist/env.js",
-    "#utils": "./dist/utils/index.js",
-    "#cfg": "./dist/config/index.js"
+    "#bot": "./src/adapter/index.js",
+    "#env": "./src/env.js",
+    "#utils": "./src/utils/index.js",
+    "#cfg": "./src/config/index.js"
   },
   "devDependencies": {
-
+    "@commitlint/config-conventional": "19.1.0",
+    "@rollup/plugin-alias": "5.1.0",
+    "@rollup/plugin-terser": "0.4.4",
+    "@rollup/plugin-typescript": "11.1.6",
+    "@types/koa-router": "7.4.8",
+    "rollup": "4.18.1",
+    "ts-node": "10.9.2",
+    "typescript": "5.4.5",
+    "yunzai": "1.0.1-rc.1"
+  },
+  "peerDependencies": {
+    "ws": "^8.17.1"
   },
   "files": [
     "src/**/*",
     "dist/**/*",
     "public/**/*",
-    "config/**/*",
-    "docs/**/*"
+    "config/**/*"
   ],
   "types": "dist/types",
   "exports": {

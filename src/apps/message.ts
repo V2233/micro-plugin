@@ -9,10 +9,10 @@ import {
 import { copyDirectory } from '../server/controller/fs/tools.js';
 import schedule from 'node-schedule'
 import { join } from 'path'
-import { pluginInfo } from '#env';
+import { botInfo, pluginInfo } from '#env';
 import { Pager } from '#utils';
 import { Segment, Puppeteer, Plugin, Bot, Redis, Logger } from '#bot';
-import type { pluginType } from '../server/controller/plugin/pluginType.js'
+import type { messageType, pluginType } from '../server/controller/plugin/pluginType.js'
 // import type { RuleType, EventType } from '../adapter/types/types.js'
 
 let plugin = await Plugin()
@@ -299,6 +299,7 @@ export class RunPlugin extends plugin {
 
         // 处理发送
         for (let msg of msgQueue) {
+            // console.log(msg)
             if (msg.delayTime) {
                 if (typeof msg.delayTime != 'number') {
                     msg.delayTime = Number(msg.delayTime)
@@ -348,17 +349,66 @@ export class RunPlugin extends plugin {
      * @returns
      */
     async viewPluginsList() {
+        let pageNo = 1
         if (!(/.*小微指令列表(\d+)/.test(this.e.msg))) {
-            this.e.reply('请发送有效页码！')
+            pageNo = 1
+        } else {
+            pageNo = Number((/.*小微指令列表(\d+)/.exec(this.e.msg))[1])
         }
-        const pageNo = Number((/.*小微指令列表(\d+)/.exec(this.e.msg))[1]) || 1
+        
         const pluginList = await this.pluginsList()
 
         const pagerInstance = new Pager(pluginList, pageNo, 10)
         if (pagerInstance.records.length == 0) {
             this.e.reply('超出页数啦！')
         }
-        this.e.reply(JSON.stringify(pagerInstance.records, null, 2))
+
+        let orderList = []
+        pagerInstance.records.forEach((plugin:pluginType,index) => {
+            let preText = ''
+            const msgType = plugin.message.map((msg:messageType) => {
+                if(msg.type == 'text') {
+                    preText += msg.data
+                }
+                switch(msg.type) {
+                    case 'text':
+                        preText += msg.data
+                        break
+                    case 'image':
+                        preText += `[img:${(msg.hash?msg.hash:msg.url).slice(0,8)}...]`
+                        break
+                    case 'record':
+                        preText += `[record:${(msg.url?msg.url.slice(0,8):'')}...]`
+                        break
+                    case 'record':
+                        preText += `[video:${(msg.url?msg.url.slice(0,8):'')}...]`
+                        break
+                    case 'face':
+                        preText += `[face:id=${(msg.data)}]`
+                        break
+                    default:
+                }
+                return msg.type
+            })
+            
+            const order = {
+                id: index,
+                reg: plugin.reg,
+                msgType: '[' + msgType.join(',') + ']',
+                preText: preText
+            }
+            orderList.push(order)
+        })
+
+        const img = await puppeteer.screenshot('micro-plugin/orders', {
+            saveId: 'order',
+            tplFile: join(pluginInfo.PUBLIC_PATH, 'html', 'orders.html'),
+            pluginInfo,
+            botInfo,
+            orderList: orderList.slice().reverse()
+        })
+
+        this.e.reply(img)
 
     }
 

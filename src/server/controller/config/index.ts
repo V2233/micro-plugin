@@ -14,6 +14,11 @@ import {
     renderer
 } from './botCfgMap.js'
 
+import {
+    stdin,
+    onebotv11
+} from './protocolCfgMap.js'
+
 import { userInfo } from './plugins/microCfgMap.js'
 
 class ConfigController {
@@ -162,6 +167,56 @@ class ConfigController {
             code: 200,
             message: 'success',
             data: 'ok'
+        }
+    }
+
+    // 获取协议配置
+    async getProtocolConfig(ctx) {
+        const protocolCfg = Cfg.getConfig('protocol')
+
+        const defCfg = {
+            stdin,
+            onebotv11
+        }
+
+        for (const groupKey in protocolCfg) {
+            for (const key in protocolCfg[groupKey]) {
+
+                if (defCfg[groupKey].hasOwnProperty(key)) {
+                    defCfg[groupKey][key].value = protocolCfg[groupKey][key];
+                }
+            }
+            
+        }
+
+        ctx.body = {
+            code: 200,
+            message: 'success',
+            data: defCfg
+        }
+    }
+
+    // 修改协议配置
+    async setProtocolConfig(ctx) {
+
+        const data = ctx.request.body
+
+        const protocolCfg = new YamlHandler(join(pluginInfo.ROOT_PATH, 'config', 'config', 'protocol.yaml'))
+
+        for (const groupKey in data) {
+
+            for (const key in data[groupKey]) {
+
+                protocolCfg.document.setIn([groupKey,key],data[groupKey][key].value)
+            }
+            
+        }
+
+        protocolCfg.save()
+        ctx.body = {
+            code: 200,
+            message: 'success',
+            data: protocolCfg
         }
     }
 

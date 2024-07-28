@@ -2,15 +2,15 @@ import { createRequire } from "module"
 import moment from "moment"
 import { formatDuration } from "#utils"
 const require = createRequire(import.meta.url)
-import { Bot, Redis } from "#bot"
+import { Redis } from "#bot"
 
-const robot = await Bot()
+// const robot = await Bot()
 const redis = await Redis()
 
 export default async function getBotInfo(selfId: number) {
   const botList = _getBotList(selfId)
   const dataPromises = botList.map(async (i) => {
-    const bot = robot[i]
+    const bot = Bot[i]
     if (!bot?.uin) return false
 
     const { nickname = "未知", status = 11, apk, version } = bot
@@ -85,10 +85,10 @@ function _getBotList(selfId) {
   /** bot列表 */
   let BotList = [selfId]
 
-  if (Array.isArray((robot)?.uin)) {
-    BotList = robot.uin
-  } else if (robot?.adapter && robot.adapter.includes(selfId)) {
-    BotList = robot.adapter
+  if (Array.isArray((Bot)?.uin)) {
+    BotList = Bot.uin
+  } else if (Bot?.adapter && Bot.adapter.includes(selfId)) {
+    BotList = Bot.adapter
   }
 
   return BotList

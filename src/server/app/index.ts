@@ -1,16 +1,15 @@
 import { join } from 'path'
-import { pluginInfo } from '#env'
-
+import { pluginInfo,botInfo } from '#env'
 import Koa from 'koa'
 import KoaStatic from 'koa-static'
 import { koaBody } from 'koa-body'
-// import cors from 'koa2-cors' 
-import http from 'node:http'
+import { createServer } from 'node:http'
 
 import router from '../router/index.js'
 
 const app = new Koa()
 
+// import cors from 'koa2-cors' 
 //跨域配置
 // app.use(
 //     cors({
@@ -45,10 +44,21 @@ app.use(router.routes()).use(router.allowedMethods());
 // 静态
 app.use(KoaStatic(join(pluginInfo.PUBLIC_PATH, 'static')))
 
+app.use(async (ctx, next) => {
+    if (ctx.path.startsWith('/api/File')) {
+      // 去除 '/static' 前缀并处理静态文件请求
+      ctx.path = ctx.path.replace(/^\/api\/File/, '')
+      await KoaStatic(join(botInfo.WORK_PATH, 'temp', 'FileToUrl'))
+    } else {
+      // 非静态文件请求，继续执行后续中间件
+      await next();
+    }
+});
+
 /**
  * 创建server实例
  * @returns 
  */
-const server = http.createServer(app.callback());
+const server = createServer(app.callback());
 
 export default server

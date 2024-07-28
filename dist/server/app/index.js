@@ -1,9 +1,9 @@
 import { join } from 'path';
-import { pluginInfo } from '../../env.js';
+import { pluginInfo, botInfo } from '../../env.js';
 import Koa from 'koa';
 import KoaStatic from 'koa-static';
 import { koaBody } from 'koa-body';
-import http from 'node:http';
+import { createServer } from 'node:http';
 import router from '../router/index.js';
 
 const app = new Koa();
@@ -18,6 +18,15 @@ app.use(koaBody({
 }));
 app.use(router.routes()).use(router.allowedMethods());
 app.use(KoaStatic(join(pluginInfo.PUBLIC_PATH, 'static')));
-const server = http.createServer(app.callback());
+app.use(async (ctx, next) => {
+    if (ctx.path.startsWith('/api/File')) {
+        ctx.path = ctx.path.replace(/^\/api\/File/, '');
+        await KoaStatic(join(botInfo.WORK_PATH, 'temp', 'FileToUrl'));
+    }
+    else {
+        await next();
+    }
+});
+const server = createServer(app.callback());
 
 export { server as default };

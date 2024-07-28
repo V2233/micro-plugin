@@ -1,16 +1,15 @@
 import { createRequire } from 'module';
 import moment from 'moment';
 import '../../../utils/index.js';
-import { Bot, Redis } from '../../../adapter/index.js';
+import { Redis } from '../../../adapter/index.js';
 import formatDuration from '../../../utils/formatDuration.js';
 
 const require = createRequire(import.meta.url);
-const robot = await Bot();
 const redis = await Redis();
 async function getBotInfo(selfId) {
     const botList = _getBotList(selfId);
     const dataPromises = botList.map(async (i) => {
-        const bot = robot[i];
+        const bot = Bot[i];
         if (!bot?.uin)
             return false;
         const { nickname = "未知", status = 11, apk, version } = bot;
@@ -68,11 +67,11 @@ function getCountContacts(bot) {
 }
 function _getBotList(selfId) {
     let BotList = [selfId];
-    if (Array.isArray((robot)?.uin)) {
-        BotList = robot.uin;
+    if (Array.isArray((Bot)?.uin)) {
+        BotList = Bot.uin;
     }
-    else if (robot?.adapter && robot.adapter.includes(selfId)) {
-        BotList = robot.adapter;
+    else if (Bot?.adapter && Bot.adapter.includes(selfId)) {
+        BotList = Bot.adapter;
     }
     return BotList;
 }

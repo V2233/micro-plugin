@@ -2,7 +2,7 @@ import { existsSync, mkdirSync, readFileSync, copyFileSync, writeFileSync, rmSyn
 import { copyDirectory } from '../server/controller/fs/tools.js';
 import schedule from 'node-schedule';
 import { join } from 'path';
-import { pluginInfo } from '../env.js';
+import { pluginInfo, botInfo } from '../env.js';
 import '../utils/index.js';
 import { Plugin, Segment, Puppeteer, Bot, Redis, Logger } from '../adapter/index.js';
 import Pager from '../utils/pager.js';
@@ -257,16 +257,61 @@ class RunPlugin extends plugin {
         return true;
     }
     async viewPluginsList() {
+        let pageNo = 1;
         if (!(/.*小微指令列表(\d+)/.test(this.e.msg))) {
-            this.e.reply('请发送有效页码！');
+            pageNo = 1;
         }
-        const pageNo = Number((/.*小微指令列表(\d+)/.exec(this.e.msg))[1]) || 1;
+        else {
+            pageNo = Number((/.*小微指令列表(\d+)/.exec(this.e.msg))[1]);
+        }
         const pluginList = await this.pluginsList();
         const pagerInstance = new Pager(pluginList, pageNo, 10);
         if (pagerInstance.records.length == 0) {
             this.e.reply('超出页数啦！');
         }
-        this.e.reply(JSON.stringify(pagerInstance.records, null, 2));
+        let orderList = [];
+        pagerInstance.records.forEach((plugin, index) => {
+            let preText = '';
+            const msgType = plugin.message.map((msg) => {
+                if (msg.type == 'text') {
+                    preText += msg.data;
+                }
+                switch (msg.type) {
+                    case 'text':
+                        preText += msg.data;
+                        break;
+                    case 'image':
+                        preText += `[img:${(msg.hash ? msg.hash : msg.url).slice(0, 8)}...]`;
+                        break;
+                    case 'record':
+                        preText += `[record:${(msg.url ? msg.url.slice(0, 8) : '')}...]`;
+                        break;
+                    case 'record':
+                        preText += `[video:${(msg.url ? msg.url.slice(0, 8) : '')}...]`;
+                        break;
+                    case 'face':
+                        preText += `[face:id=${(msg.data)}]`;
+                        break;
+                    default:
+                }
+                return msg.type;
+            });
+            const order = {
+                id: index,
+                reg: plugin.reg,
+                msgType: '[' + msgType.join(',') + ']',
+                preText: preText
+            };
+            orderList.push(order);
+        });
+        const img = await puppeteer.screenshot('micro-plugin/orders', {
+            saveId: 'order',
+            tplFile: join(pluginInfo.PUBLIC_PATH, 'html', 'orders.html'),
+            pluginInfo,
+            botInfo,
+            orderList: orderList.slice().reverse()
+        });
+        this.e.reply(img);
     }
     async deletePlugin() {
         if (!(/.*小微删除指令(\d+)/.test(this.e.msg))) {

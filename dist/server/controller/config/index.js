@@ -2,6 +2,7 @@ import '../../../config/index.js';
 import { botInfo, pluginInfo } from '../../../env.js';
 import { join } from 'path';
 import { bot, notice, other, puppeteer, qq, redis, renderer, group } from './botCfgMap.js';
+import { stdin, onebotv11 } from './protocolCfgMap.js';
 import { userInfo } from './plugins/microCfgMap.js';
 import Cfg from '../../../config/config.js';
 import YamlHandler from '../../../config/yamlHandler.js';
@@ -118,6 +119,40 @@ class ConfigController {
             code: 200,
             message: 'success',
             data: 'ok'
+        };
+    }
+    async getProtocolConfig(ctx) {
+        const protocolCfg = Cfg.getConfig('protocol');
+        const defCfg = {
+            stdin,
+            onebotv11
+        };
+        for (const groupKey in protocolCfg) {
+            for (const key in protocolCfg[groupKey]) {
+                if (defCfg[groupKey].hasOwnProperty(key)) {
+                    defCfg[groupKey][key].value = protocolCfg[groupKey][key];
+                }
+            }
+        }
+        ctx.body = {
+            code: 200,
+            message: 'success',
+            data: defCfg
+        };
+    }
+    async setProtocolConfig(ctx) {
+        const data = ctx.request.body;
+        const protocolCfg = new YamlHandler(join(pluginInfo.ROOT_PATH, 'config', 'config', 'protocol.yaml'));
+        for (const groupKey in data) {
+            for (const key in data[groupKey]) {
+                protocolCfg.document.setIn([groupKey, key], data[groupKey][key].value);
+            }
+        }
+        protocolCfg.save();
+        ctx.body = {
+            code: 200,
+            message: 'success',
+            data: protocolCfg
         };
     }
 }

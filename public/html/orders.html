@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="content-type" content="text/html;charset=utf-8" />
+    <title>小微指令列表</title>
+</head>
+<body>
+    <div class="notification">
+      <div class="notiglow"></div>
+      <div class="notiborderglow"></div>
+      <div class="notititle">List of instructions</div>
+      <div class="notibody">
+          <div class="table">
+              <table>
+                  <thead>
+                      <tr>
+                      <th scope="col" class="col-index">序号</th>  
+                      <th scope="col" class="col-orders">指令</th>  
+                      <th scope="col" class="col-msgtype">消息类型</th>
+                      <th scope="col" class="col-preText">预览</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                      {{each orderList order index }}
+                      <tr>
+                        <th scope="row">{{index}}</th>
+                        <td>{{ order.reg}}</td>
+                        <td>{{ order.msgType}}</td>
+                        <td>{{ order.preText || ''}}</td>
+                      </tr>
+                      {{/each}}
+                  </tbody>
+              </table>
+          </div>
+          <div class="warn">
+            PS：发送【小微删除指令 + 序号】可删除指令
+          </div>
+      </div>
+    </div>
+    <div class="footer">
+      Created by {{botInfo.BOT_NAME}} 
+      <span class="version">&nbsp;{{botInfo.BOT_VERSION}}&nbsp;</span> & {{pluginInfo.ROOT_NAME}} 
+      <span class="version">&nbsp;{{pluginInfo.PLUGIN_VERSION}}</span>
+    </div>
+</body>
+</html>
+
+<style>
+body {
+  width: 720px;
+  background-color: #18181b;
+  /* border: 2px solid red; */
+  display: block;
+  position: relative;
+  padding-top: 3px;
+  padding-bottom: 3px;
+}
+
+.notibody .col-index {
+    width: 50px;
+}
+
+.notibody .col-orders {
+    width: 200px;
+    text-align: left;
+}
+
+.notibody .col-msgtype {
+    width: 120px;
+    text-align: left;
+}
+
+.notibody .th,.td {
+    text-overflow: ellipsis;
+}
+
+.footer {
+    width: 100%;
+    height: 30px;
+    line-height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    margin: 10px 0;
+    z-index: 50;
+    font-size: 14px;
+    color: #7df4ff;
+}
+
+.warn {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 5px;
+  width: 100%;
+  height: 20px;
+  line-height: 20px;
+  font-size: 14px;
+}
+
+.version {
+    font-size: 12px;
+    line-height: 30px;
+}
+
+.notification {
+  display: flex;
+  flex-direction: column;
+  isolation: isolate;
+  position: relative;
+  margin-top: 20px;
+  margin-left: auto;
+  margin-right: auto;
+  width: 700px;
+  min-height: 100px;
+  background: #29292c;
+  border-radius: 1rem;
+  overflow: hidden;
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  font-size: 16px;
+  --gradient: linear-gradient(to bottom, #2eadff, #3dcbff, #61ff79);
+  --color: #7de1ff;
+}
+
+.notification:before {
+  position: absolute;
+  content: "";
+  inset: 0.0625rem;
+  border-radius: 0.9375rem;
+  background: #0e0e10;
+  z-index: 2
+}
+
+.notification:after {
+  position: absolute;
+  content: "";
+  width: 0.25rem;
+  inset: 0.65rem auto 0.65rem 0.5rem;
+  border-radius: 0.125rem;
+  background: var(--gradient);
+  z-index: 4;
+}
+
+.notification:after {
+  transform: translateX(0.15rem)
+}
+
+.notititle {
+  margin-left: 10px;
+  color: var(--color);
+  padding: 0.65rem 0.25rem 0.4rem 1.25rem;
+  font-weight: 500;
+  font-size: 1.5rem;
+  transition: transform 300ms ease;
+  z-index: 5;
+}
+
+.notification .notititle {
+  transform: translateX(0.15rem)
+}
+
+.notibody {
+  color: #eeeeee;
+  padding: 0 1.25rem;
+  z-index: 5;
+  margin-bottom: 10px;
+}
+
+.notification .notibody {
+  transform: translateX(0.25rem)
+}
+
+/* .notiglow,
+.notiborderglow {
+  position: absolute;
+  width: 1440px;
+  height: 200%;
+  transform: translate(-30%, -50%);
+  background: radial-gradient(circle closest-side at center, white, transparent);
+  opacity: 0;
+} */
+
+.notiglow {
+  z-index: 3;
+}
+
+.notiborderglow {
+  z-index: 1;
+}
+
+.notification .notiglow {
+  opacity: 0.05
+}
+
+.notification .notiborderglow {
+  opacity: 0.05
+}
+
+</style>

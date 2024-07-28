@@ -1,0 +1,18 @@
+# 适配器
+stdin:
+  name: 标准
+  avatar: https://img.shields.io/badge/Term-std-cyan
+  uin: std
+  user_id: 114514
+  disabled: false
+
+onebotv11:
+  # 反向连接路由，协议端可配置此地址
+  url: "/onebot/v11/ws"
+  # 正向连接地址，可配置多个，默认协议端参考地址：
+  # Gensokyo：ws://localhost:15630/ws?access_token=12345
+  # Langrange.Onebot：ws://localhost:8081   --需在appsettings.json中配置ForwardWebSocket
+  # 样例：address: ["ws://localhost:8081"]
+  address: []
+  # 是否禁用,为true则关闭该协议服务
+  disabled: false

@@ -13,6 +13,10 @@ class Settings extends plugin {
         this.priority = 500;
         this.rule = [
             {
+                reg: /小微(开启|关闭)std/,
+                fnc: "switchStdin"
+            },
+            {
                 reg: /小微设置面板端口(.*)/,
                 fnc: "setWebPort"
             },
@@ -29,6 +33,16 @@ class Settings extends plugin {
                 fnc: "reStartWeb"
             },
         ];
+    }
+    async switchStdin() {
+        if (/小微开启std/.test(this.e.msg)) {
+            Cfg.setConfig(false, ['stdin', 'disabled'], 'micro-adapter');
+            this.e.reply('开启成功，重启后生效！');
+        }
+        else if (/小微关闭std/.test(this.e.msg)) {
+            Cfg.setConfig(true, ['stdin', 'disabled'], 'micro-adapter');
+            this.e.reply('关闭成功，重启后生效！');
+        }
     }
     async setWebPort() {
         let port = 23306;

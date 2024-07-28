@@ -1,59 +1,28 @@
-import { v4 } from 'uuid';
 import { Logger } from '../../adapter/index.js';
+import '../../config/index.js';
+import { handleReplyMsg } from './webui/plugins/msgHandler.js';
+import OnebotV11 from './adapter/protocol/OnebotV11/index.js';
+import TerminalWs from './webui/terminal/index.js';
+import Screenchat from './webui/chat/index.js';
+import Cfg from '../../config/config.js';
 
 const logger = await Logger();
 class MicroWs {
-    clients;
-    plugins;
-    constructor() {
-        this.clients = new Map();
-        this.plugins = [];
-    }
-    use(plugin) {
-        this.plugins.push(plugin);
-    }
-    onOpen(ws) {
-        logger.info(logger.blue(`【micro-ws】已连接`));
-        const ClientId = v4();
-        ws.send(JSON.stringify({ params: ClientId, action: 'meta', type: 'message' }));
-        this.clients.set(ClientId, ws);
-        ws.on('message', async (message) => {
-            logger.info(logger.blue(`【micro-ws】收到消息：${message}`));
-            const data = JSON.parse(message);
-            for (let plugin of this.plugins) {
-                await plugin(data, {
-                    sendMsg: this.sendMsg.bind(this)
-                });
-            }
-        });
-        ws.on('close', () => {
-            logger.info(logger.blue(`【micro-ws】已断开连接`));
-            this.clients.delete(ClientId);
-        });
-        ws.on('error', (err) => {
-            logger.error('【micro-ws】连接错误:', err);
-            this.clients.delete(ClientId);
-        });
-    }
-    sendMsg(params, action, type = 'message', clientId = null) {
-        if (clientId) {
-            try {
-                this.clients.get(clientId).send(JSON.stringify({ type, params, action }));
-            }
-            catch (error) {
-                console.error(`Error sending message to client ${clientId}`, error);
-                this.clients.delete(clientId);
-            }
-            return;
-        }
-        for (const [key, ws] of this.clients.entries()) {
-            try {
-                ws.send(JSON.stringify({ params, action, type }));
-            }
-            catch (error) {
-                console.error(`Error sending message to client ${key}`, error);
-                this.clients.delete(key);
-            }
+    onOpen(ws, req) {
+        const { onebotv11 } = Cfg.getConfig('protocol');
+        switch (req.url) {
+            case '/micro/webui/chat':
+                const screenchat = new Screenchat(ws);
+                screenchat.use(handleReplyMsg);
+                break;
+            case '/micro/webui/term':
+                new TerminalWs(ws);
+                break;
+            case onebotv11.url:
+                new OnebotV11(ws);
+                break;
+            default:
+                logger.warn('不支持该连接！请检查ws路径是否正确！');
         }
     }
 }

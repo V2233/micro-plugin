@@ -1,7 +1,6 @@
 import chalk from 'chalk';
 import server from './app/index.js';
 import MicroWs from './app/ws.js';
-import { handleReplyMsg } from './middleware/wsMsgHandler.js';
 import { WebSocketServer } from 'ws';
 import '../utils/index.js';
 import '../config/index.js';
@@ -13,7 +12,6 @@ const logger = await Logger();
 const bot = await Bot();
 let wss;
 let microWs = new MicroWs();
-microWs.use(handleReplyMsg);
 const startServer = async (port) => {
     wss = new WebSocketServer({ server });
     wss.on('connection', microWs.onOpen.bind(microWs));
@@ -37,8 +35,8 @@ const startServer = async (port) => {
                         `公网地址：${remote[0]}\n` +
                         `内网地址：${local[0]}`);
                 }
-                catch (err) {
-                    logger.mark('[Micro]Bot实例不存在或未配置主人QQ，部分功能可能失效' + err);
+                catch (error) {
+                    logger.mark('[Micro]Bot实例不存在或未配置主人QQ，部分功能可能失效' + error);
                 }
                 resolve('ok');
             }

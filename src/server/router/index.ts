@@ -59,6 +59,9 @@ enum CONFIGAPI {
 
     GET_USER_CONFIG_URL = '/user/getcfg',
     SET_USER_CONFIG_URL = '/user/setcfg',
+
+    GET_PROTOCOL_CONFIG_URL = '/protocol/getcfg',
+    SET_PROTOCOL_CONFIG_URL = '/protocol/setcfg',
 }
 
 const router = new Router({ prefix: '/api' })
@@ -81,6 +84,10 @@ router.post(CONFIGAPI.SET_BOT_CONFIG_URL, auth, ConfigController.setBotConfig)
 router.get(CONFIGAPI.GET_USER_CONFIG_URL, auth, ConfigController.getUserConfig)
 
 router.post(CONFIGAPI.SET_USER_CONFIG_URL, auth, ConfigController.setUserConfig)
+
+router.get(CONFIGAPI.GET_PROTOCOL_CONFIG_URL, auth, ConfigController.getProtocolConfig)
+
+router.post(CONFIGAPI.SET_PROTOCOL_CONFIG_URL, auth, ConfigController.setProtocolConfig)
 
 
 // Bot相关

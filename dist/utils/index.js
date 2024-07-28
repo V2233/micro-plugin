@@ -1,9 +1,11 @@
 import child_process from 'child_process';
+import { createHash } from 'node:crypto';
 import { botInfo } from '../env.js';
 export { default as formatDuration } from './formatDuration.js';
 export { default as common } from './common.js';
 export { default as logger } from './logger.js';
 export { default as Pager } from './pager.js';
+export { default as Stdlog } from './stdlog.js';
 export { getAllWebAddress } from './ipAddress.js';
 
 function path2URI(path = botInfo.WORK_PATH) {
@@ -19,5 +21,8 @@ async function execSync(cmd) {
         });
     });
 }
+function makeMd5(data) {
+    return createHash("md5").update(data).digest("hex");
+}
 
-export { execSync, path2URI, sleep };
+export { execSync, makeMd5, path2URI, sleep };
