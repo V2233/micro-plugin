@@ -1,20 +1,18 @@
 import type { pluginType } from '../server/controller/plugin/pluginType.js';
-declare let plugin: any;
+declare const plugin: any;
 export declare class RunPlugin extends plugin {
     pluginsPath: string;
     indexPath: string;
     cronTask: {};
-    pluginReadMode: string;
+    pluginsList: pluginType[];
     constructor();
     init(): Promise<void>;
-    get pluginsKey(): string;
-    pluginsList(): Promise<any>;
+    getPluginsList(): any;
     checkAuth(plugin: pluginType): boolean;
-    checkoutReadMode(): void;
     setPluginsList(value: pluginType[]): Promise<void>;
-    run(e?: {
-        taskId: string;
-    }): Promise<boolean>;
+    run(e?: (typeof this.e | {
+        taskId?: string;
+    })): Promise<boolean>;
     viewPluginsList(): Promise<void>;
     deletePlugin(): Promise<void>;
 }

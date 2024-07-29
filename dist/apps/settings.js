@@ -3,7 +3,7 @@ import '../config/index.js';
 import { startServer, restartServer, stopServer } from '../server/index.js';
 import Cfg from '../config/config.js';
 
-let plugin = await Plugin();
+const plugin = await Plugin();
 class Settings extends plugin {
     constructor() {
         super({

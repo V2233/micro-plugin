@@ -3,11 +3,9 @@ import fs from 'fs';
 import get_urls from 'get-urls';
 import fetch from 'node-fetch';
 import path from 'path';
-import { Puppeteer } from '../../../../adapter/index.js';
 import '../../../../utils/index.js';
 import Stdlog from '../../../../utils/stdlog.js';
 
-const puppeteer = await Puppeteer();
 if (!Bot?.adapter) {
     Bot.adapter = Bot.uin ? [Bot.uin] : [];
 }
@@ -190,7 +188,7 @@ function getUrls(url, exclude = []) {
             })];
     }
     catch {
-        Stdlog.info('Lain-plugin', '没有安装 get-urls 模块，建议执行pnpm install -P 进行安装使用更精准的替换url');
+        Stdlog.info('Micro-plugin', '没有安装 get-urls 模块，建议执行pnpm install');
         const urlRegex = /(https?:\/\/)?(([0-9a-z.-]+\.[a-z]+)|(([0-9]{1,3}\.){3}[0-9]{1,3}))(:[0-9]+)?(\/[0-9a-z%/.\-_#]*)?(\?[0-9a-z=&%_\-.]*)?(\\#[0-9a-z=&%_\\-]*)?/ig;
         urls = url.match(urlRegex);
         if (!urls)
@@ -198,32 +196,6 @@ function getUrls(url, exclude = []) {
         return urls;
     }
     return urls;
-}
-async function rendering(content, error) {
-    const data = {
-        lain: Bot.lain.adapter.lain,
-        error,
-        msg: content,
-        saveId: 'micro-plugin',
-        _plugin: 'micro-plugin',
-        tplFile: './plugins/Lain-plugin/resources/index.html',
-        pageGotoParams: { waitUntil: 'networkidle2' }
-    };
-    const msg = await puppeteer.screenshot('Lain-plugin/Lain-plugin', data);
-    return msg;
-}
-async function Rending(data, _path) {
-    const name = _path.split('/');
-    data = {
-        ...data,
-        saveId: name[1],
-        adapter: Bot.lain.adapter,
-        _plugin: 'Lain-plugin',
-        tplFile: `./plugins/Lain-plugin/resources/${_path}.html`,
-        pageGotoParams: { waitUntil: 'networkidle2' }
-    };
-    const msg = await puppeteer.screenshot(`Lain-plugin/${name[0]}`, data);
-    return msg;
 }
 function message_id() {
     return Buffer.from(Date.now().toString()).toString('base64');
@@ -361,7 +333,6 @@ var common = {
     base64,
     uploadQQ,
     getUrls,
-    rendering,
     init,
     message_id,
     downloadFile,
@@ -369,7 +340,6 @@ var common = {
     getFile,
     recvMsg,
     MsgTotal,
-    Rending,
     limitString
 };
 

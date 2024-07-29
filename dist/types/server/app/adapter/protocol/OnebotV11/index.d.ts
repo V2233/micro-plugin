@@ -1,3 +1,5 @@
+/// <reference types="node" />
+import { IncomingMessage } from 'http';
 declare class OnebotV11 {
     bot: typeof Bot.prototype;
     id: string;
@@ -5,7 +7,7 @@ declare class OnebotV11 {
     path: string;
     echo: any;
     timeout: number;
-    constructor(bot: typeof Bot.prototype);
+    constructor(bot: typeof Bot.prototype, req?: IncomingMessage);
     makeLog(msg: any): any;
     sendApi(data: any, ws: any, action: any, params?: {}): Promise<unknown>;
     makeFile(file: any): Promise<any>;

@@ -9,7 +9,7 @@ export { default as Stdlog } from './stdlog.js';
 export { getAllWebAddress } from './ipAddress.js';
 
 function path2URI(path = botInfo.WORK_PATH) {
-    return `file:///${path}/`;
+    return `file://${path}/`;
 }
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));

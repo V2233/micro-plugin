@@ -3,7 +3,7 @@ import { Cfg } from '#cfg'
 import { startServer, stopServer, restartServer } from '../server/index.js'
 // import type { RuleType, EventType } from '../adapter/types/types.js'
 
-let plugin = await Plugin()
+const plugin = await Plugin()
 
 export class Settings extends plugin {
     constructor() {

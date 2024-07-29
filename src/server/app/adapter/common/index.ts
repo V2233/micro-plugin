@@ -1,14 +1,9 @@
 import crypto from 'crypto'
 import fs from 'fs'
 import get_urls from 'get-urls'
-import fetch
-// , { Blob, FormData } 
-from 'node-fetch'
+import fetch from 'node-fetch'
 import path from 'path'
-import { Puppeteer } from '#bot'
 import { Stdlog } from '#utils'
-
-const puppeteer = await Puppeteer()
 
 /** 注册uin */
 if (!Bot?.adapter) {
@@ -172,35 +167,6 @@ async function base64 (path) {
 }
 
 /**
-* 三方云盘
-* @param file 文件，支持file://,buffer,base64://
-* @return url地址
-*/
-// async function uploadFile (file) {
-//   if (!(file instanceof Uint8Array || Buffer.isBuffer(file))) {
-//     if (file.includes('file://') || (!file.startsWith('base64://') && fs.existsSync(file))) {
-//       file = fs.readFileSync(file.replace('file://', ''))
-//     } else {
-//       file = Buffer.from(file.replace('base64://', ''), 'base64')
-//     }
-//   }
-//   let url = Bot.lain.cfg.FigureBed
-//   const formData = new FormData()
-//   formData.append('imgfile', new Blob([file], { type: 'image/jpeg' }), 'image.jpg')
-//   const res = await fetch(url, {
-//     method: 'POST',
-//     body: formData
-//   })
-//   if (res.ok) {
-//     const { result } = await res.json()
-//     url = url.replace('/uploadimg', '') + result.path
-//     Stdlog.info('Lain-plugin', `<上传文件成功> ${url}`)
-//     return url
-//   }
-//   throw new Error('上传失败')
-// }
-
-/**
 * QQ图床
 * @param file 文件，支持file://,buffer,base64://
 * @param uin botQQ 可选，未传入则调用Bot.uin
@@ -257,43 +223,13 @@ function getUrls (url, exclude = []) {
       removeTrailingSlash: false
     })]
   } catch {
-    Stdlog.info('Lain-plugin', '没有安装 get-urls 模块，建议执行pnpm install -P 进行安装使用更精准的替换url')
+    Stdlog.info('Micro-plugin', '没有安装 get-urls 模块，建议执行pnpm install')
     const urlRegex = /(https?:\/\/)?(([0-9a-z.-]+\.[a-z]+)|(([0-9]{1,3}\.){3}[0-9]{1,3}))(:[0-9]+)?(\/[0-9a-z%/.\-_#]*)?(\?[0-9a-z=&%_\-.]*)?(\\#[0-9a-z=&%_\\-]*)?/ig
     urls = url.match(urlRegex)
     if (!urls) urls = []
     return urls
   }
   return urls
-}
-
-/** 渲染图片 */
-async function rendering (content, error) {
-  const data = {
-    lain: Bot.lain.adapter.lain,
-    error,
-    msg: content,
-    saveId: 'micro-plugin',
-    _plugin: 'micro-plugin',
-    tplFile: './plugins/Lain-plugin/resources/index.html',
-    pageGotoParams: { waitUntil: 'networkidle2' }
-  }
-  const msg = await puppeteer.screenshot('Lain-plugin/Lain-plugin', data)
-  return msg
-}
-
-/** 通用渲染 */
-async function Rending (data, _path) {
-  const name = _path.split('/')
-  data = {
-    ...data,
-    saveId: name[1],
-    adapter: Bot.lain.adapter,
-    _plugin: 'Lain-plugin',
-    tplFile: `./plugins/Lain-plugin/resources/${_path}.html`,
-    pageGotoParams: { waitUntil: 'networkidle2' }
-  }
-  const msg = await puppeteer.screenshot(`Lain-plugin/${name[0]}`, data)
-  return msg
 }
 
 /**
@@ -477,10 +413,8 @@ export default {
   array,
   makeForwardMsg,
   base64,
-//   uploadFile,
   uploadQQ,
   getUrls,
-  rendering,
   init,
   message_id,
   downloadFile,
@@ -488,6 +422,5 @@ export default {
   getFile,
   recvMsg,
   MsgTotal,
-  Rending,
   limitString
 }

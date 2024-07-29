@@ -52,6 +52,5 @@ for (let i in files) {
 
 // 不想开机自启动可注释掉
 await startServer(Port)
-await import('./dist/init.js')
 
 export { apps }

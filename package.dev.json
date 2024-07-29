@@ -32,8 +32,7 @@
       "koa-static": "^5.0.0",
       "mime": "^4.0.4",
       "systeminformation": "^5.22.11",
-      "ws": "^8.17.1",
-      "zx": "^8.1.4"
+      "ws": "^8.17.1"
     },
     "imports": {
       "#bot": "./src/adapter/index.js",

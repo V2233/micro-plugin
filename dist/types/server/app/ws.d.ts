@@ -1,6 +1,13 @@
 /// <reference types="node" />
+/// <reference types="node" />
+/// <reference types="node" />
 import { WebSocket } from 'ws';
+import { Duplex } from 'stream';
 import { IncomingMessage } from 'http';
 export default class MicroWs {
-    onOpen(ws: WebSocket, req: IncomingMessage): void;
+    cfg: any;
+    constructor();
+    onOpen(ws: WebSocket, req: IncomingMessage): any;
+    onUpgrade(ws: WebSocket, req: IncomingMessage, socket: Duplex, head: Buffer): void;
+    openForwardWs(): Promise<void>;
 }

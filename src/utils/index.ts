@@ -17,7 +17,7 @@ import { getAllWebAddress } from './ipAddress.js'
  * @returns URI
  */
 function path2URI(path = botInfo.WORK_PATH): string {
-  return `file:///${path}/`
+  return `file://${path}/`
 }
 
 /**

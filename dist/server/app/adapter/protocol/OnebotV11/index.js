@@ -12,9 +12,11 @@ class OnebotV11 {
     path;
     echo;
     timeout;
-    constructor(bot) {
+    constructor(bot, req) {
         this.bot = bot;
         this.id = "114514";
+        if (req)
+            this.id = req.headers['x-self-id'] ?? '';
         this.name = "OneBotv11";
         this.path = this.name;
         this.echo = {};
@@ -68,6 +70,9 @@ class OnebotV11 {
                 case "face":
                     i.data.id = String(i.data.id);
                     break;
+                case "face":
+                    i.data.id = String(i.data.id);
+                    break;
                 case "reply":
                     i.data.id = String(i.data.id);
                     break;
@@ -109,7 +114,7 @@ class OnebotV11 {
     sendFriendMsg(data, msg) {
         return this.sendMsg(msg, message => {
             Stdlog.info(`${data.self_id} => ${data.user_id}`, `发送好友消息：${this.makeLog(message)}`);
-            data.bot.sendApi("send_private_msg", {
+            data.bot.sendApi("send_msg", {
                 user_id: data.user_id,
                 message,
             });
@@ -118,7 +123,7 @@ class OnebotV11 {
     sendGroupMsg(data, msg) {
         return this.sendMsg(msg, message => {
             Stdlog.info(`${data.self_id} => ${data.group_id}`, `发送群消息：${this.makeLog(message)}`);
-            return data.bot.sendApi("send_group_msg", {
+            return data.bot.sendApi("send_msg", {
                 group_id: data.group_id,
                 message,
             });

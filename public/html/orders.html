@@ -18,16 +18,16 @@
                       <th scope="col" class="col-index">序号</th>  
                       <th scope="col" class="col-orders">指令</th>  
                       <th scope="col" class="col-msgtype">消息类型</th>
-                      <th scope="col" class="col-preText">预览</th>
+                      <th scope="col" class="col-createtime">创建时间</th>
                       </tr>
                   </thead>
                   <tbody>
                       {{each orderList order index }}
                       <tr>
-                        <th scope="row">{{index}}</th>
-                        <td>{{ order.reg}}</td>
-                        <td>{{ order.msgType}}</td>
-                        <td>{{ order.preText || ''}}</td>
+                        <th scope="row">{{ index }}</th>
+                        <td>{{ order.reg }}</td>
+                        <td>{{ order.msgType }}</td>
+                        <td>{{ order.createTime || '' }}</td>
                       </tr>
                       {{/each}}
                   </tbody>
@@ -58,16 +58,20 @@ body {
 }
 
 .notibody .col-index {
-    width: 50px;
+    width: 60px;
 }
 
 .notibody .col-orders {
-    width: 200px;
+    width: 250px;
     text-align: left;
 }
 
 .notibody .col-msgtype {
-    width: 120px;
+    width: 160px;
+    text-align: left;
+}
+
+.notibody .col-createtime {
     text-align: left;
 }
 

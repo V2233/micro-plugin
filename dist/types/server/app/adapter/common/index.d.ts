@@ -9,8 +9,6 @@ declare function makeForwardMsg(data: any, node?: boolean, e?: any): Promise<{
 declare function base64(path: any): Promise<string>;
 declare function uploadQQ(file: any, uin?: any): Promise<string>;
 declare function getUrls(url: any, exclude?: any[]): any[];
-declare function rendering(content: any, error: any): Promise<any>;
-declare function Rending(data: any, _path: any): Promise<any>;
 declare function message_id(): string;
 declare function mkdirs(dirname: any): boolean;
 declare function downloadFile(url: any, destPath: any, headers?: {}, absolute?: boolean): Promise<any>;
@@ -28,7 +26,6 @@ declare const _default: {
     base64: typeof base64;
     uploadQQ: typeof uploadQQ;
     getUrls: typeof getUrls;
-    rendering: typeof rendering;
     init: typeof init;
     message_id: typeof message_id;
     downloadFile: typeof downloadFile;
@@ -36,7 +33,6 @@ declare const _default: {
     getFile: typeof getFile;
     recvMsg: typeof recvMsg;
     MsgTotal: typeof MsgTotal;
-    Rending: typeof Rending;
     limitString: typeof limitString;
 };
 export default _default;

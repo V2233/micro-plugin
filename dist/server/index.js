@@ -14,7 +14,10 @@ let wss;
 let microWs = new MicroWs();
 const startServer = async (port) => {
     wss = new WebSocketServer({ server });
-    wss.on('connection', microWs.onOpen.bind(microWs));
+    wss.on('connection', (ws, req) => {
+        microWs.onOpen(ws, req);
+        req && server.on("upgrade", (...args) => microWs.onUpgrade(ws, ...args));
+    });
     await new Promise((resolve, reject) => {
         server.listen(port, async (err) => {
             if (err) {
@@ -22,11 +25,11 @@ const startServer = async (port) => {
             }
             else {
                 const { local, remote } = await getAllWebAddress();
-                logger.info(chalk.blue('----------Micro---------'));
-                logger.info(chalk.blue(`微代码开发服务器启动成功！您可在以下地址进行开发管理：`));
-                logger.info(chalk.blue(`公网地址：${remote[0]}`));
-                logger.info(chalk.blue(`内网地址：${local[0]}`));
-                logger.info(chalk.blue('------------------------'));
+                logger.info(chalk.cyanBright('----------Micro---------'));
+                logger.info(chalk.cyanBright(`微代码开发服务器启动成功！您可在以下地址进行开发管理：`));
+                logger.info(chalk.cyanBright(`公网地址：${remote[0]}`));
+                logger.info(chalk.cyanBright(`内网地址：${local[0]}`));
+                logger.info(chalk.cyanBright('------------------------'));
                 if (!Cfg.masterQQ || Cfg.masterQQ.length == 0) {
                     logger.mark('[Micro]未找到主人QQ，请确定是否已配置');
                 }

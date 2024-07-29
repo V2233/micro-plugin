@@ -34,7 +34,6 @@ export default () => {
         logger.info('bug积累中...呜呜出错删掉不要骂我(˵¯͒〰¯͒˵)')
         logger.info(`Created By ${PLUGIN_AUTHOR}`)
         logger.info(chalk.green('-----------------------------------'))
-        await import('./init.js')
         await startServer(Port)
     },
     mounted() {
