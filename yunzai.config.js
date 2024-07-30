@@ -1,5 +1,5 @@
 import { defineConfig } from 'yunzai'
-import Micro from './src/index.js'
+import Micro from './dist/index.js'
 
 export default defineConfig({
   applications:[ Micro() ]

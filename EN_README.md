@@ -53,7 +53,7 @@ git clone --depth=1 https://github.com/V2233/micro-plugin.git ./plugins/micro-pl
 - Installation dependencies
 
 ```sh
-pnpm i
+pnpm i --filter ./plugins/micro-plugin
 ```
 
 - Restart Yunzai

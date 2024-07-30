@@ -11,8 +11,6 @@ import OnebotV11 from './adapter/protocol/OnebotV11/index.js';
 import TerminalWs from './webui/terminal/index.js';
 import Screenchat from './webui/chat/index.js';
 
-// import './adapter/bot.js';
-
 const logger = await Logger()
 
 export default class MicroWs {

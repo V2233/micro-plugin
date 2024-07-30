@@ -17,7 +17,6 @@ const {
     PLUGIN_VERSION
 } = pluginInfo
 
-Cfg.mergeYamlFile()
 const Port = Cfg.getConfig('server').server.port
 
 let useDir = "dist"
@@ -26,12 +25,12 @@ const files = readdirSync(join(ROOT_PATH, useDir,'apps')).filter(file => (/(\.js
 
 let ret = []
 
-logger.info(chalk.green('-------Welcome​~(∠・ω< )⌒☆​-------'))
+logger.info(chalk.cyanBright('-------Welcome​~(∠・ω< )⌒☆​-------'))
 logger.info(`${PLUGIN_NAME} & v${PLUGIN_VERSION} 初始化...`)
 logger.info(`${PLUGIN_DESC}`)
 logger.info('bug积累中...呜呜出错删掉不要骂我(˵¯͒〰¯͒˵)')
 logger.info(`Created By ${PLUGIN_AUTHOR}`)
-logger.info(chalk.green('-----------------------------------'))
+logger.info(chalk.cyanBright('-----------------------------------'))
 
 files.forEach((file) => {
   ret.push(import(`./dist/apps/${file}`))

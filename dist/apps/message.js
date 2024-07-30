@@ -1,4 +1,4 @@
-import { existsSync, mkdirSync, copyFileSync, readFileSync, writeFileSync, rmSync } from 'node:fs';
+import { writeFileSync, existsSync, rmSync, readFileSync, mkdirSync, copyFileSync } from 'node:fs';
 import chokidar from 'chokidar';
 import schedule from 'node-schedule';
 import { join } from 'path';
@@ -13,11 +13,12 @@ const segment = await Segment();
 const puppeteer = await Puppeteer();
 const bot = await Bot();
 const logger = await Logger();
+const indexPath = join(pluginInfo.DATA_PATH, 'regs.json');
+const pluginsPath = join(pluginInfo.DATA_PATH, 'plugins');
+let pluginsList = [];
+let cronTask = {};
+init();
 class RunPlugin extends plugin {
-    pluginsPath;
-    indexPath;
-    cronTask;
-    pluginsList;
     constructor() {
         super({
             name: "消息处理",
@@ -34,226 +35,9 @@ class RunPlugin extends plugin {
                 fnc: "deletePlugin",
             },
         ];
-        this.pluginsList = [];
-        this.cronTask = {};
-        this.pluginsPath = join(pluginInfo.DATA_PATH, 'plugins');
-        this.indexPath = join(pluginInfo.DATA_PATH, 'regs.json');
-        this.init();
-    }
-    async init() {
-        if (!existsSync(this.pluginsPath)) {
-            mkdirSync(this.pluginsPath, { recursive: true });
-        }
-        if (!existsSync(this.indexPath)) {
-            let defaultRegsPath = join(pluginInfo.PUBLIC_PATH, 'help', 'regs.json');
-            copyFileSync(defaultRegsPath, this.indexPath);
-            copyDirectory(join(pluginInfo.PUBLIC_PATH, 'help', 'micro-help'), join(this.pluginsPath, 'micro-help'));
-        }
-        this.pluginsList = this.getPluginsList() || [];
-        this.pluginsList.forEach((plugin) => {
-            if (plugin && plugin?.cron) {
-                this.cronTask[plugin.id].job = schedule.scheduleJob(plugin.cron, async () => {
-                    try {
-                        logger.mark(`执行定时任务：${plugin.id}`);
-                        await this.run({ taskId: plugin.id });
-                    }
-                    catch (error) {
-                        logger.error(`定时任务报错：${plugin.id}`);
-                        logger.error(error);
-                    }
-                });
-            }
-        });
-        try {
-            bot.on?.("message", async (e) => {
-                await this.run(e);
-            });
-        }
-        catch (err) {
-        }
-        const watcher = chokidar.watch(this.indexPath);
-        watcher.on('change', () => {
-            this.pluginsList = this.getPluginsList();
-            logger.mark(`[Micro][更改指令列表][当前${this.pluginsList.length}条指令]`);
-            Object.keys(this.cronTask).forEach((key) => {
-                this.cronTask[key].cancel();
-                delete this.cronTask[key];
-            });
-            this.pluginsList.forEach((plugin) => {
-                if (plugin && plugin?.cron) {
-                    this.cronTask[plugin.id] = schedule.scheduleJob(plugin.cron, async () => {
-                        try {
-                            logger.mark(`执行定时任务：${plugin.id}`);
-                            await this.run({ taskId: plugin.id });
-                        }
-                        catch (error) {
-                            logger.error(`定时任务报错：${plugin.id}`);
-                            logger.error(error);
-                        }
-                    });
-                }
-            });
-        });
-    }
-    getPluginsList() {
-        return JSON.parse(readFileSync(this.indexPath, 'utf8'));
-    }
-    checkAuth(plugin) {
-        if (plugin.reg == '' && plugin.cron == '')
-            return false;
-        if (plugin.isGlobal) {
-            if (plugin.groups.includes(String(this.e.group_id)))
-                return false;
-            if (plugin.friends.includes(String(this.e.user_id)))
-                return false;
-        }
-        else {
-            if (!plugin.groups.includes(String(this.e.group_id)))
-                return false;
-            if (!plugin.friends.includes(String(this.e.user_id)))
-                return false;
-        }
-        return true;
     }
     async setPluginsList(value) {
-        writeFileSync(this.indexPath, JSON.stringify(value, null, 2), 'utf-8');
-    }
-    async run(e = { taskId: '' }) {
-        if (!e.message && !e.taskId)
-            return false;
-        if (e.taskId) {
-            e = {};
-        }
-        let msgQueue = [];
-        const pluginList = JSON.parse(JSON.stringify(this.pluginsList));
-        for (let plugin of pluginList) {
-            if (!this.checkAuth)
-                continue;
-            const regexp = new RegExp(plugin.reg, plugin.flag);
-            const pluginPath = join(this.pluginsPath, plugin.id);
-            if (e.taskId == plugin.id || regexp.test(e.msg)) {
-                const { message } = plugin;
-                let msgSegList = [];
-                for (let item of message) {
-                    switch (item.type) {
-                        case 'text':
-                            try {
-                                let compileText = new Function('e', 'Bot', 'return ' + '`' + item.data + '`');
-                                msgSegList.push(compileText(e, Bot));
-                            }
-                            catch (err) {
-                                logger.error(err);
-                            }
-                            break;
-                        case 'image':
-                            if (item.url) {
-                                msgSegList.push(segment.image(item.url));
-                            }
-                            else {
-                                const img = await puppeteer.screenshot('micro-plugin/plugins', {
-                                    saveId: item.hash,
-                                    tplFile: join(pluginPath, item.hash + '.html'),
-                                    e: e,
-                                    Bot: Bot
-                                });
-                                msgSegList.push(img);
-                            }
-                            break;
-                        case 'record':
-                            if (item.url) {
-                                msgSegList.push(segment.record(item.url));
-                            }
-                            break;
-                        case 'video':
-                            if (item.url) {
-                                msgSegList.push(segment.video(item.url));
-                            }
-                            break;
-                        case 'face':
-                            msgSegList.push(segment.face(Number(item.data)));
-                            break;
-                        case 'dice':
-                            msgSegList.push(segment.poke(Number(item.data)));
-                            break;
-                        case 'poke':
-                            msgSegList.push(segment.poke(Number(item.data)));
-                            break;
-                        case 'markdown':
-                            const mdPath = join(pluginPath, 'markdown.json');
-                            if (existsSync(mdPath)) {
-                                let mdContent = JSON.parse(readFileSync(mdPath, 'utf8'));
-                                if (mdContent.content == '') {
-                                    delete mdContent.params;
-                                    msgSegList.push({ type: 'markdown', content: mdContent });
-                                }
-                                else {
-                                    delete mdContent.content;
-                                    mdContent = mdContent.map((item) => {
-                                        delete item.tempString;
-                                        return item;
-                                    });
-                                    msgSegList.push({ type: 'markdown', content: mdContent });
-                                }
-                            }
-                            break;
-                        case 'button':
-                            if (existsSync(join(pluginPath, 'button.json'))) {
-                                let btnContent = JSON.parse(readFileSync(join(pluginPath, 'button.json'), 'utf8'));
-                                msgSegList.push(segment.button(btnContent));
-                            }
-                            break;
-                        default:
-                            logger.warn('暂不支持该消息类型！');
-                    }
-                }
-                msgQueue.push(Object.assign(plugin, { message: msgSegList }));
-            }
-        }
-        ;
-        if (msgQueue.length == 0)
-            return false;
-        for (let msg of msgQueue) {
-            if (msg.delayTime) {
-                if (typeof msg.delayTime != 'number') {
-                    msg.delayTime = Number(msg.delayTime);
-                }
-                setTimeout(async () => {
-                    if (e.reply) {
-                        await e.reply(msg.message, msg.isQuote, { at: msg.isAt });
-                    }
-                    else {
-                        if (e.taskId) {
-                            if (msg.isGlobal === false) {
-                                msg.groups.forEach(async (group_id) => {
-                                    await bot.sendGroupMsg(group_id, msg.message);
-                                });
-                                msg.friends.forEach(async (user_id) => {
-                                    await bot.sendPrivateMsg(user_id, msg.message);
-                                });
-                            }
-                        }
-                    }
-                }, msg.delayTime);
-            }
-            else {
-                if (e.reply) {
-                    await e.reply(msg.message, msg.isQuote, { at: msg.isAt });
-                }
-                else {
-                    if (e.taskId) {
-                        if (msg.isGlobal === false) {
-                            msg.groups.forEach(async (group_id) => {
-                                await bot.sendGroupMsg(group_id, msg.message);
-                            });
-                            msg.friends.forEach(async (user_id) => {
-                                await bot.sendPrivateMsg(user_id, msg.message);
-                            });
-                        }
-                    }
-                }
-            }
-        }
-        return true;
+        writeFileSync(indexPath, JSON.stringify(value, null, 2), 'utf-8');
     }
     async viewPluginsList() {
         let pageNo = 1;
@@ -263,7 +47,7 @@ class RunPlugin extends plugin {
         else {
             pageNo = Number((/.*小微指令列表(\d+)/.exec(this.e.msg))[1]);
         }
-        const pluginList = JSON.parse(JSON.stringify(this.pluginsList));
+        const pluginList = JSON.parse(JSON.stringify(pluginsList));
         const pagerInstance = new Pager(pluginList, pageNo, 40);
         if (pagerInstance.records.length == 0) {
             this.e.reply('超出页数啦！');
@@ -294,16 +78,16 @@ class RunPlugin extends plugin {
             return;
         }
         const pluginId = Number((/.*小微删除指令(\d+)/.exec(this.e.msg))[1]) || 0;
-        if (pluginId >= this.pluginsList.length) {
-            this.e.reply('不存在该序号，当前共' + this.pluginsList.length + '条指令！');
+        if (pluginId >= pluginsList.length) {
+            this.e.reply('不存在该序号，当前共' + pluginsList.length + '条指令！');
             return;
         }
-        const pluginPath = join(this.pluginsPath, this.pluginsList[pluginId].id);
+        const pluginPath = join(pluginsPath, pluginsList[pluginId].id);
         if (existsSync(pluginPath)) {
             rmSync(pluginPath, { recursive: true, force: true });
         }
-        this.pluginsList.splice(pluginId, 1);
-        this.setPluginsList(this.pluginsList);
+        pluginsList.splice(pluginId, 1);
+        this.setPluginsList(pluginsList);
         this.e.reply('删除成功！');
     }
 }
@@ -318,6 +102,218 @@ function formatTime(timeStr) {
     else {
         return timeStr;
     }
+}
+function getPluginsList() {
+    return JSON.parse(readFileSync(indexPath, 'utf8'));
+}
+async function sendMessage(e = { taskId: '' }) {
+    if (!e.message && !e.taskId)
+        return false;
+    if (e.taskId) {
+        e = {};
+    }
+    let msgQueue = [];
+    const pluginList = JSON.parse(JSON.stringify(pluginsList));
+    for (let plugin of pluginList) {
+        if (!checkAuth(plugin, e))
+            continue;
+        const regexp = new RegExp(plugin.reg, plugin.flag);
+        const pluginPath = join(pluginsPath, plugin.id);
+        if (e.taskId == plugin.id || regexp.test(e.msg)) {
+            const { message } = plugin;
+            let msgSegList = [];
+            for (let item of message) {
+                switch (item.type) {
+                    case 'text':
+                        try {
+                            let compileText = new Function('e', 'Bot', 'return ' + '`' + item.data + '`');
+                            msgSegList.push(compileText(e, Bot));
+                        }
+                        catch (err) {
+                            logger.error(err);
+                        }
+                        break;
+                    case 'image':
+                        if (item.url) {
+                            msgSegList.push(segment.image(item.url));
+                        }
+                        else {
+                            const img = await puppeteer.screenshot('micro-plugin/plugins', {
+                                saveId: item.hash,
+                                tplFile: join(pluginPath, item.hash + '.html'),
+                                e: e,
+                                Bot: Bot
+                            });
+                            msgSegList.push(img);
+                        }
+                        break;
+                    case 'record':
+                        if (item.url) {
+                            msgSegList.push(segment.record(item.url));
+                        }
+                        break;
+                    case 'video':
+                        if (item.url) {
+                            msgSegList.push(segment.video(item.url));
+                        }
+                        break;
+                    case 'face':
+                        msgSegList.push(segment.face(Number(item.data)));
+                        break;
+                    case 'dice':
+                        msgSegList.push(segment.poke(Number(item.data)));
+                        break;
+                    case 'poke':
+                        msgSegList.push(segment.poke(Number(item.data)));
+                        break;
+                    case 'markdown':
+                        const mdPath = join(pluginPath, 'markdown.json');
+                        if (existsSync(mdPath)) {
+                            let mdContent = JSON.parse(readFileSync(mdPath, 'utf8'));
+                            if (mdContent.content == '') {
+                                delete mdContent.params;
+                                msgSegList.push({ type: 'markdown', content: mdContent });
+                            }
+                            else {
+                                delete mdContent.content;
+                                mdContent = mdContent.map((item) => {
+                                    delete item.tempString;
+                                    return item;
+                                });
+                                msgSegList.push({ type: 'markdown', content: mdContent });
+                            }
+                        }
+                        break;
+                    case 'button':
+                        if (existsSync(join(pluginPath, 'button.json'))) {
+                            let btnContent = JSON.parse(readFileSync(join(pluginPath, 'button.json'), 'utf8'));
+                            msgSegList.push(segment.button(btnContent));
+                        }
+                        break;
+                    default:
+                        logger.warn('暂不支持该消息类型！');
+                }
+            }
+            msgQueue.push(Object.assign(plugin, { message: msgSegList }));
+        }
+    }
+    ;
+    if (msgQueue.length == 0)
+        return false;
+    for (let msg of msgQueue) {
+        if (msg.delayTime) {
+            if (typeof msg.delayTime != 'number') {
+                msg.delayTime = Number(msg.delayTime);
+            }
+            setTimeout(async () => {
+                if (e.reply) {
+                    await e.reply(msg.message, msg.isQuote, { at: msg.isAt });
+                }
+                else {
+                    if (e.taskId) {
+                        if (msg.isGlobal === false) {
+                            msg.groups.forEach(async (group_id) => {
+                                await bot.sendGroupMsg(group_id, msg.message);
+                            });
+                            msg.friends.forEach(async (user_id) => {
+                                await bot.sendPrivateMsg(user_id, msg.message);
+                            });
+                        }
+                    }
+                }
+            }, msg.delayTime);
+        }
+        else {
+            if (e.reply) {
+                await e.reply(msg.message, msg.isQuote, { at: msg.isAt });
+            }
+            else {
+                if (e.taskId) {
+                    if (msg.isGlobal === false) {
+                        msg.groups.forEach(async (group_id) => {
+                            await bot.sendGroupMsg(group_id, msg.message);
+                        });
+                        msg.friends.forEach(async (user_id) => {
+                            await bot.sendPrivateMsg(user_id, msg.message);
+                        });
+                    }
+                }
+            }
+        }
+    }
+    return true;
+}
+function checkAuth(plugin, e) {
+    if (plugin.reg == '' && plugin.cron == '')
+        return false;
+    if (plugin.isGlobal) {
+        if (e.group_id) {
+            if (plugin.groups.includes(String(e.group_id)))
+                return false;
+        }
+        if (plugin.friends.includes(String(e.user_id)))
+            return false;
+    }
+    else {
+        if (e.group_id) {
+            if (!plugin.groups.includes(String(e.group_id)))
+                return false;
+        }
+        if (!plugin.friends.includes(String(e.user_id)))
+            return false;
+    }
+    return true;
+}
+async function init() {
+    if (!existsSync(pluginsPath)) {
+        mkdirSync(pluginsPath, { recursive: true });
+    }
+    if (!existsSync(indexPath)) {
+        let defaultRegsPath = join(pluginInfo.PUBLIC_PATH, 'help', 'regs.json');
+        copyFileSync(defaultRegsPath, indexPath);
+        copyDirectory(join(pluginInfo.PUBLIC_PATH, 'help', 'micro-help'), join(pluginsPath, 'micro-help'));
+    }
+    pluginsList = getPluginsList() || [];
+    bot.on?.("message", async (e) => {
+        await sendMessage(e);
+    });
+    pluginsList.forEach((plugin) => {
+        if (plugin && plugin?.cron) {
+            cronTask[plugin.id].job = schedule.scheduleJob(plugin.cron, async () => {
+                try {
+                    logger.mark(`执行定时任务：${plugin.id}`);
+                    await this.run({ taskId: plugin.id });
+                }
+                catch (error) {
+                    logger.error(`定时任务报错：${plugin.id}`);
+                    logger.error(error);
+                }
+            });
+        }
+    });
+    const watcher = chokidar.watch(indexPath);
+    watcher.on('change', () => {
+        pluginsList = getPluginsList();
+        logger.mark(`[Micro][更改指令列表][当前${pluginsList.length}条指令]`);
+        Object.keys(cronTask).forEach((key) => {
+            cronTask[key].cancel();
+            delete cronTask[key];
+        });
+        pluginsList.forEach((plugin) => {
+            if (plugin && plugin?.cron) {
+                cronTask[plugin.id] = schedule.scheduleJob(plugin.cron, async () => {
+                    try {
+                        logger.mark(`执行定时任务：${plugin.id}`);
+                        await this.run({ taskId: plugin.id });
+                    }
+                    catch (error) {
+                        logger.error(`定时任务报错：${plugin.id}`);
+                        logger.error(error);
+                    }
+                });
+            }
+        });
+    });
 }
 
 export { RunPlugin };

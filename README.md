@@ -81,10 +81,10 @@ git clone --depth=1 https://github.com/V2233/micro-plugin.git ./plugins/micro-pl
 git clone --depth=1 https://gitee.com/V2233/micro-plugin.git ./plugins/micro-plugin
 ```
 
-- 安装依赖
+- 安装依赖(注意v4请不要简化为pnpm i,部分依赖会装不上)
 
 ```sh
-pnpm i
+pnpm i --filter ./plugins/micro-plugin
 ```
 
 - 重启Yunzai

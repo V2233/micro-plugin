@@ -24,7 +24,6 @@ const startServer = async (port: number): Promise<'ok' | void> => {
   wss = new WebSocketServer({ server });
   wss.on('connection', (ws:WebSocket,req:IncomingMessage) => {
     microWs.onOpen(ws,req)
-    req && server.on("upgrade", (...args) => microWs.onUpgrade(ws,...args))
   });
 
   await new Promise((resolve, reject) => {

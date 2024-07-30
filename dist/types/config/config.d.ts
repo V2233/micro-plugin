@@ -4,6 +4,7 @@ declare class Cfg {
         config: {};
         defSet: {};
     };
+    constructor();
     get qq(): number;
     get pwd(): any;
     get bot(): any;
