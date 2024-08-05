@@ -82,6 +82,7 @@ class FsController {
 
     // 读取媒体文件
     async readMediaFile(ctx: any) {
+        // 文件路径
         const { path } = ctx.request.query
 
         // 读取文件内容  

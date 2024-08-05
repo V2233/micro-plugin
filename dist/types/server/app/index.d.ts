@@ -1,3 +1,3 @@
-import http from 'node:http';
-declare const server: http.Server<typeof http.IncomingMessage, typeof http.ServerResponse>;
+/// <reference types="node" />
+declare const server: import("http").Server<typeof import("http").IncomingMessage, typeof import("http").ServerResponse>;
 export default server;

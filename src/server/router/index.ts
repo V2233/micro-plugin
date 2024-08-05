@@ -54,11 +54,15 @@ enum CONFIGAPI {
     GET_BOT_CONFIG_URL = '/bot/getcfg',
     SET_BOT_CONFIG_URL = '/bot/setcfg',
 
+    GET_PLUGIN_INFO_URL = '/plugins/getinfo',
     GET_PLUGIN_CONFIG_URL = '/plugins/getcfg',
     SET_PLUGIN_CONFIG_URL = '/plugins/setcfg',
 
     GET_USER_CONFIG_URL = '/user/getcfg',
     SET_USER_CONFIG_URL = '/user/setcfg',
+
+    GET_PROTOCOL_CONFIG_URL = '/protocol/getcfg',
+    SET_PROTOCOL_CONFIG_URL = '/protocol/setcfg',
 }
 
 const router = new Router({ prefix: '/api' })
@@ -81,6 +85,16 @@ router.post(CONFIGAPI.SET_BOT_CONFIG_URL, auth, ConfigController.setBotConfig)
 router.get(CONFIGAPI.GET_USER_CONFIG_URL, auth, ConfigController.getUserConfig)
 
 router.post(CONFIGAPI.SET_USER_CONFIG_URL, auth, ConfigController.setUserConfig)
+
+router.get(CONFIGAPI.GET_PROTOCOL_CONFIG_URL, auth, ConfigController.getProtocolConfig)
+
+router.post(CONFIGAPI.SET_PROTOCOL_CONFIG_URL, auth, ConfigController.setProtocolConfig)
+
+router.get(CONFIGAPI.GET_PLUGIN_INFO_URL, auth, ConfigController.getPluginsInfoList)
+
+router.get(CONFIGAPI.GET_PLUGIN_CONFIG_URL, auth, ConfigController.getPluginConfig)
+
+router.post(CONFIGAPI.SET_PLUGIN_CONFIG_URL, auth, ConfigController.setPluginConfig)
 
 
 // Bot相关

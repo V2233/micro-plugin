@@ -1,69 +1,78 @@
-import { v4 as uuidv4 } from 'uuid';
 import { Logger } from '#bot';
+import { Cfg } from '#cfg';
+import { Stdlog } from '#utils';
+import { WebSocket } from 'ws';  
+import { Duplex } from 'stream'; 
+import { IncomingMessage } from 'http'; 
+import { handleReplyMsg } from './webui/plugins/msgHandler.js';
+import BotAPI from './adapter/protocol/tools.js'
+import Stdin from './adapter/protocol/Stdin/index.js';
+import OnebotV11 from './adapter/protocol/OnebotV11/index.js';
+import TerminalWs from './webui/terminal/index.js';
+import Screenchat from './webui/chat/index.js';
 
 const logger = await Logger()
 
 export default class MicroWs {
-    clients: Map<string, WebSocket>
-    private plugins: any[]
+    cfg: any
     constructor() {
-        this.clients = new Map()
-        this.plugins = []
+        this.cfg = Cfg.getConfig('protocol')
+        // 标准输入输出
+        if(this.cfg.stdin.disabled == false) Stdin()
+        this.openForwardWs()
     }
 
-    use(plugin: any) {
-        this.plugins.push(plugin)
+    onOpen(ws:WebSocket, req: IncomingMessage) {
+        switch(req.url) {
+            case '/micro/webui/chat':
+                const screenchat = new Screenchat(ws)
+                screenchat.use(handleReplyMsg)
+                break;
+            case '/micro/webui/term':
+                new TerminalWs(ws)
+                break;
+            case this.cfg.onebotv11.url:
+                if(this.cfg.onebotv11.disabled == true) return logger.warn('该协议已禁用，请在配置中打开！')
+                new OnebotV11(ws)
+                break;
+            default:
+                // Promise.reject(new Error('不支持该连接'))
+                logger.warn('不支持该连接反向连接！请协议端检查ws路径是否正确！')
+                ws.close()
+        }
+
     }
 
-    onOpen(ws: any) {
-        logger.info(logger.blue(`【micro-ws】已连接`))
+    onUpgrade(ws:WebSocket, req: IncomingMessage, socket:Duplex, head:Buffer) {
+        ws.handleUpgrade(req, socket, head, (conn) => {
+            conn.rid = `${req.socket.remoteAddress}:${req.socket.remotePort}-${req.headers["sec-websocket-key"]}`
+            conn.sid = `ws://${req.headers["x-forwarded-host"] || req.headers.host || `${req.socket.localAddress}:${req.socket.localPort}`}${req.url}`
+            Stdlog.mark(`${conn.sid} <=> ${conn.rid}`, "建立连接", req.headers)
+            conn.on("error", (...args) => Stdlog.error(`${conn.sid} <=> ${conn.rid}`, args))
+            conn.on("close", () => Stdlog.mark(`${conn.sid} <≠> ${conn.rid}`, "断开连接", ))
+            // conn.on("message", msg => Stdlog.debug(`${conn.sid} <= ${conn.rid}`, "消息", BotAPI.String(msg)))
+            conn.sendMsg = msg => {
+                if (!Buffer.isBuffer(msg)) msg = BotAPI.String(msg)
+                    Stdlog.debug(`${conn.sid} => ${conn.rid}`, "消息", msg)
+                return conn.send(msg)
+            }
+        })
+    }
 
-        const ClientId = uuidv4();
-        ws.send(JSON.stringify({ params: ClientId, action: 'meta', type: 'message' }))
-
-        this.clients.set(ClientId, ws)
-        ws.on('message', async (message) => {
-            logger.info(logger.blue(`【micro-ws】收到消息：${message}`))
-            const data = JSON.parse(message);
-            for (let plugin of this.plugins) {
-                await plugin(data, {
-                    sendMsg: this.sendMsg.bind(this)
+    async openForwardWs() {
+        // 正向连接
+        // const forwardWs = new Map()
+        if(this.cfg.onebotv11.disabled == false && this.cfg.onebotv11.address.length > 0) {
+            this.cfg.onebotv11.address.forEach((path: string) => {
+                const v11Ws = new WebSocket(path)
+                v11Ws.on('open',() => {
+                    new OnebotV11(v11Ws)
                 })
-            }
-        });
-        ws.on('close', () => {
-            logger.info(logger.blue(`【micro-ws】已断开连接`))
-            this.clients.delete(ClientId)
-        });
-        ws.on('error', (err) => {
-            logger.error('【micro-ws】连接错误:', err);
-            this.clients.delete(ClientId)
-        });
-
-    }
-
-    sendMsg(params: any, action: string, type = 'message', clientId = null) {
-        if (clientId) {
-            try {
-                this.clients.get(clientId).send(JSON.stringify({ type, params, action }));
-            } catch (error) {
-                console.error(`Error sending message to client ${clientId}`, error);
-                this.clients.delete(clientId);
-            }
-            return
-        }
-        for (const [key, ws] of this.clients.entries()) {
-            // 确保WebSocket已经打开（readyState === 1）  
-            // if (ws.readyState === WebSocket.OPEN) {  
-            try {
-                ws.send(JSON.stringify({ params, action, type }));
-            } catch (error) {
-                console.error(`Error sending message to client ${key}`, error);
-                this.clients.delete(key);
-            }
-            // }  
+                // forwardWs.set(`onebotv11-${index}`, v11Ws)
+            });
         }
     }
+
 }
 
 

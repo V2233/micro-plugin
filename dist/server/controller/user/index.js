@@ -1,14 +1,8 @@
-import Cfg from '../../../config/config.js';
-import 'fs';
-import 'yaml';
-import 'lodash';
-import 'chokidar';
+import '../../../config/index.js';
 import jwt from 'jsonwebtoken';
 import crypto from 'node:crypto';
-import 'child_process';
-import '../../../env.js';
-import '../../../utils/common.js';
-import '../../../utils/logger.js';
+import '../../../utils/index.js';
+import Cfg from '../../../config/config.js';
 import { getAllWebAddress } from '../../../utils/ipAddress.js';
 
 class UserController {

@@ -1,4 +1,4 @@
-export default function getBotInfo(selfId: number): Promise<(false | {
+export default function getBotInfo(selfId: number): Promise<{
     avatarUrl: any;
     nickname: any;
     botRunTime: any;
@@ -15,4 +15,4 @@ export default function getBotInfo(selfId: number): Promise<(false | {
         group: any;
         groupMember: unknown;
     };
-})[]>;
+}[]>;

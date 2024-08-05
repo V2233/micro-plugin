@@ -2,10 +2,10 @@
 import chalk from 'chalk'
 import { join } from 'path'
 import { readdirSync } from 'node:fs'
-import { pluginInfo } from '#env'
-import { Cfg } from '#cfg'
-import { Logger } from '#bot'
-import { startServer } from './server/index.js'
+import { pluginInfo } from './dist/env.js'
+import { Cfg } from './dist/config/index.js'
+import { Logger } from './dist/adapter/index.js'
+import { startServer } from './dist/server/index.js'
 
 const logger = await Logger()
 
@@ -17,27 +17,25 @@ const {
     PLUGIN_VERSION
 } = pluginInfo
 
-Cfg.mergeYamlFile()
 const Port = Cfg.getConfig('server').server.port
 
-let useDir = "src"
+let useDir = "dist"
 
 const files = readdirSync(join(ROOT_PATH, useDir,'apps')).filter(file => (/(\.js)$/.test(file)))
 
 let ret = []
 
-logger.info(chalk.green('-------Welcome​~(∠・ω< )⌒☆​-------'))
+logger.info(chalk.cyanBright('-------Welcome​~(∠・ω< )⌒☆​-------'))
 logger.info(`${PLUGIN_NAME} & v${PLUGIN_VERSION} 初始化...`)
 logger.info(`${PLUGIN_DESC}`)
 logger.info('bug积累中...呜呜出错删掉不要骂我(˵¯͒〰¯͒˵)')
 logger.info(`Created By ${PLUGIN_AUTHOR}`)
-logger.info(chalk.green('-----------------------------------'))
+logger.info(chalk.cyanBright('-----------------------------------'))
 
 files.forEach((file) => {
-  ret.push(import(`./src/apps/${file}`))
+  ret.push(import(`./dist/apps/${file}`))
 })
 ret = await Promise.allSettled(ret)
-await startServer(Port)
 
 let apps = {}
 for (let i in files) {
@@ -50,5 +48,8 @@ for (let i in files) {
   }
   apps[name] = ret[i].value[Object.keys(ret[i].value)[0]]
 }
+
+// 不想开机自启动可注释掉
+await startServer(Port)
 
 export { apps }

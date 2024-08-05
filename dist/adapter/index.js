@@ -1,3 +1,4 @@
+import { pathToFileURL } from 'url';
 import { join } from 'path';
 import { botInfo } from '../env.js';
 
@@ -8,8 +9,14 @@ async function Plugin() {
         return Plugin;
     }
     catch (err) {
-        const plugin = (await import(join(WORK_PATH, 'lib/plugins/plugin.js'))).default;
-        return plugin;
+        try {
+            const plugin = (await import(join(WORK_PATH, 'lib/plugins/plugin.js'))).default;
+            return plugin;
+        }
+        catch (error) {
+            const plugin = (await import(pathToFileURL(join(WORK_PATH, 'lib/plugins/plugin.js')).toString())).default;
+            return plugin;
+        }
     }
 }
 async function Puppeteer() {
@@ -18,17 +25,23 @@ async function Puppeteer() {
         return puppeteer;
     }
     catch (err) {
-        const puppeteer = (await import(join(WORK_PATH, 'lib/puppeteer/puppeteer.js'))).default;
-        return puppeteer;
+        try {
+            const puppeteer = (await import(join(WORK_PATH, 'lib/puppeteer/puppeteer.js'))).default;
+            return puppeteer;
+        }
+        catch (error) {
+            const puppeteer = (await import(pathToFileURL(join(WORK_PATH, 'lib/puppeteer/puppeteer.js')).toString())).default;
+            return puppeteer;
+        }
     }
 }
 async function Segment() {
     try {
-        const { Segment } = await import('yunzai');
+        const Segment = global.segment;
         return Segment;
     }
     catch (err) {
-        const Segment = global.segment;
+        const { Segment } = await import('yunzai');
         return Segment;
     }
 }
@@ -38,18 +51,24 @@ async function Loader() {
         return Loader;
     }
     catch (err) {
-        const loader = (await import(join(WORK_PATH, "lib/plugins/loader.js"))).default;
-        return loader;
+        try {
+            const loader = (await import(join(WORK_PATH, "lib/plugins/loader.js"))).default;
+            return loader;
+        }
+        catch (error) {
+            const loader = (await import(pathToFileURL(join(WORK_PATH, "lib/plugins/loader.js")).toString())).default;
+            return loader;
+        }
     }
 }
 async function Bot() {
     try {
-        const { Bot } = await import('yunzai');
-        return Bot;
-    }
-    catch (err) {
         const bot = global.Bot;
         return bot;
+    }
+    catch (err) {
+        const { Bot } = await import('yunzai');
+        return Bot;
     }
 }
 async function Logger() {
@@ -62,12 +81,12 @@ async function Logger() {
 }
 async function Redis() {
     try {
-        const { Redis } = await import('yunzai');
-        return Redis;
-    }
-    catch (err) {
         const redis = global.redis;
         return redis;
+    }
+    catch (err) {
+        const { Redis } = await import('yunzai');
+        return Redis;
     }
 }
 

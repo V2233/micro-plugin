@@ -5,7 +5,6 @@ export default class PluginHandler {
     indexPath: string;
     pluginsArr: pluginType[];
     constructor(curPlugin?: pluginType);
-    get pluginsKey(): string;
     get pluginsList(): any;
     set pluginsList(value: any);
     get plugins(): string;

@@ -7,10 +7,7 @@ import {
 } from 'node:fs'
 import { join } from 'path'
 import { pluginInfo } from '#env';
-import { Redis } from '#bot'
 import type { messageType, pluginType } from './pluginType.js'
-
-const redis = await Redis()
 
 /**
  * 匹配插件指令
@@ -26,13 +23,6 @@ export default class PluginHandler {
 
         this.curPlugin = curPlugin
         this.pluginsArr = []
-    }
-
-    /**
-     *
-     */
-    get pluginsKey() {
-        return `Micro:Plugins`
     }
 
     /**
@@ -72,7 +62,6 @@ export default class PluginHandler {
      */
     async setPluginsList(value: pluginType[]) {
         writeFileSync(this.indexPath, JSON.stringify(value, null, 2), 'utf-8')
-        await redis.set(this.pluginsKey, JSON.stringify(value))
     }
 
     /**
@@ -120,6 +109,10 @@ export default class PluginHandler {
                 case 'face':
                     break
                 case 'poke':
+                    break
+                case 'dice':
+                    break
+                case 'rps':
                     break
                 case 'markdown':
                     if (!existsSync(pluginPath)) {
@@ -178,7 +171,6 @@ export default class PluginHandler {
      * @returns
      */
     async editorPlugin(id: string, value: pluginType) {
-
         this.addPlugin(value, id)
         return true
     }

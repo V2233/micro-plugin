@@ -34,6 +34,10 @@ class Cfg {
    */
   watcher = { config: {}, defSet: {} }
 
+  constructor() {
+    this.mergeYamlFile()
+  }
+
   /**
    * 机器人qq号
    */
@@ -260,13 +264,15 @@ class Cfg {
   mergeYamlFile() {
     const path = join(ROOT_PATH, 'config', 'config')
     const pathDef = join(ROOT_PATH, 'config', 'default_config')
-    // 得到文件
-    const files = readdirSync(pathDef).filter(file => file.endsWith('.yaml'))
+
     if (!existsSync(path)) {
       mkdirSync(path, {
         recursive: true
       })
     }
+
+    // 得到文件
+    const files = readdirSync(pathDef).filter(file => file.endsWith('.yaml'))
 
     for (const file of files) {
       const cfgFile = join(path, file)
@@ -324,7 +330,7 @@ class Cfg {
       delete this.config[key]
 
       if (typeof bot == 'undefined') return
-      logger.mark(`[Micro][修改配置文件][${type}][${name}]`)
+      logger.mark(`[Micro][读取|修改配置文件][${type}][${name}]`)
       if (this[`change_${name}`]) {
         this[`change_${name}`]()
       }

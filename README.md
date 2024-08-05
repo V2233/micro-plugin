@@ -23,7 +23,7 @@ Yunzai-Bot低代码开发管理平台，以下简称小微插件
 
 - 插件特别对文本消息段和图片消息段进行了友好处理，即使没有写过代码，你也能快捷制作简易的插件
 
-- 插件面板提供了可视化的图片编辑器，仅通过拖拉拽即可生成美观的图片，您可导出原生HTML或者直接添加到指令列表，后者将自动分配消息段的资源到Yunzai的data/micro-plugin/plugins目录，每个文件夹被视为一个插件包，包括HTML文件、图片、音频、视频、HTML工程文件等，当然面板提供的操作可以让你无视这个资源目录
+- 插件面板提供了可视化的图片编辑器，仅通过拖拉拽即可生成美观的图片，您可导出模板HTML或者直接添加到指令列表，后者将自动分配消息段的资源到Yunzai的data/micro-plugin/plugins目录，每个文件夹被视为一个插件包，包括HTML文件、图片、音频、视频、HTML工程文件等，当然面板提供的操作可以让你无视这个资源目录
 
 - 您仍然可以使用模板字符串来插入符合JavaScript语法的变量或表达式，插件提供了消息事件的模板变量，只需要在文本处输入键盘符```/```即可唤出变量列表，这使得您可以制作动态的文本和图片
 
@@ -35,20 +35,20 @@ Yunzai-Bot低代码开发管理平台，以下简称小微插件
 
 - 状态面板提供了酷酷的系统状态数据大屏，并友好支持移动端页面布局，您还可以在这里查看实时文本和图片消息，点击大屏的群号或好友让机器人快捷回复
 
-- 未来将着重图片编辑器的组件扩展，以满足复杂的图片样式需求
+- 内置标准输入输出和onebotv11适配器，可在面板配置启用
 
 ## 环境准备
 
 - 本仓库已适配Miao-Yunzai(v3)、Yunzai(v4)、Yunzai(npm插件)、Trss-Yunzai(未知，应该没问题),并支持独立启动开发模式而无需git clone yunzai。推荐V4环境安装使用
-- Yunzai V4
+- Yunzai V4(next)
 - 如果您还没有安装此应用，请查看以下文档教程进行安装：<a href="https://yunzai-org.github.io/docs/docs/a-next/translate-your-site/">https://yunzai-org.github.io/docs/docs/a-next/translate-your-site/</a>
 
-## 安装插件(npm方式，需要v4的dev分支)
+## 安装插件(npm方式，v4支持)
 
 - 下载依赖
 
 ```sh
-pnpm i yunzai-micro-plugin -w
+yarn add yunzai-micro-plugin -w
 ```
 
 - 如下示例写入配置文件
@@ -81,10 +81,10 @@ git clone --depth=1 https://github.com/V2233/micro-plugin.git ./plugins/micro-pl
 git clone --depth=1 https://gitee.com/V2233/micro-plugin.git ./plugins/micro-plugin
 ```
 
-- 安装依赖
+- 安装依赖(注意v4请不要简化为pnpm i,部分依赖会装不上)
 
 ```sh
-pnpm i
+pnpm i --filter ./plugins/micro-plugin
 ```
 
 - 重启Yunzai
@@ -110,6 +110,43 @@ pnpm run restart
 | [markdown] |    🔴     |
 | [按钮]     |    🔴     |
 | [转发]     |    🔴     |
+
+- markdown和按钮模板已添加至web面板的开发板块，由于作者没有测试环境，如有报错请提issue或入群反馈。
+  
+## 指令
+
+- ```小微帮助```
+- ```小微设置面板端口12345```
+- ```小微（开启|重启|关闭）面板服务```注意关闭面板也会关闭反向ws连接
+- ```小微指令列表```
+- ```小微删除指令 + 序号```
+
+
+## 关于开发模式
+
+- 进入micro-plugin目录：
+
+```sh
+cd plugins/micro-plugin
+```
+
+- 安装前端源码：
+
+```sh
+git clone --depth=1 https://github.com/V2233/micro-web.git frontend
+```
+
+- 执行以下命令安装开发依赖：
+
+```sh
+pnpm run install:dev
+```
+
+- 登录yunzai：
+
+```sh
+pnpm run app
+```
 
 ## 鸣谢
 

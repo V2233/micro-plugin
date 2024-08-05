@@ -3,7 +3,7 @@ import { initDependence, si } from './utils.js';
 import { Redis } from '../../../../adapter/index.js';
 
 const redis = await Redis();
-new class Monitor {
+var Monitor = new class Monitor {
     _network;
     _fsStats;
     chartData;
@@ -101,3 +101,5 @@ new class Monitor {
         arr.push(data);
     }
 }();
+
+export { Monitor as default };

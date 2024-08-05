@@ -4,7 +4,7 @@ import { join } from 'node:path';
 import { pluginInfo, botInfo } from '../env.js';
 import { Bot, Logger } from '../adapter/index.js';
 import YamlHandler from './yamlHandler.js';
-import { readFileSync, readdirSync, existsSync, mkdirSync, copyFileSync } from 'node:fs';
+import { readFileSync, existsSync, mkdirSync, readdirSync, copyFileSync } from 'node:fs';
 
 const bot = await Bot();
 const logger = await Logger();
@@ -13,6 +13,9 @@ const { WORK_PATH } = botInfo;
 class Cfg {
     config = {};
     watcher = { config: {}, defSet: {} };
+    constructor() {
+        this.mergeYamlFile();
+    }
     get qq() {
         return Number(this.getBotConfig('qq').qq);
     }
@@ -127,12 +130,12 @@ class Cfg {
     mergeYamlFile() {
         const path = join(ROOT_PATH, 'config', 'config');
         const pathDef = join(ROOT_PATH, 'config', 'default_config');
-        const files = readdirSync(pathDef).filter(file => file.endsWith('.yaml'));
         if (!existsSync(path)) {
             mkdirSync(path, {
                 recursive: true
             });
         }
+        const files = readdirSync(pathDef).filter(file => file.endsWith('.yaml'));
         for (const file of files) {
             const cfgFile = join(path, file);
             const cfgFileDef = join(pathDef, file);
@@ -173,7 +176,7 @@ class Cfg {
             delete this.config[key];
             if (typeof bot == 'undefined')
                 return;
-            logger.mark(`[Micro][修改配置文件][${type}][${name}]`);
+            logger.mark(`[Micro][读取|修改配置文件][${type}][${name}]`);
             if (this[`change_${name}`]) {
                 this[`change_${name}`]();
             }

@@ -1,9 +1,7 @@
 import { readFileSync, writeFileSync, existsSync, mkdirSync, rmSync } from 'node:fs';
 import { join } from 'path';
 import { pluginInfo } from '../../../env.js';
-import { Redis } from '../../../adapter/index.js';
 
-const redis = await Redis();
 class PluginHandler {
     curPlugin;
     pluginsPath;
@@ -15,9 +13,6 @@ class PluginHandler {
         this.pluginsPath = join(pluginInfo.DATA_PATH, 'plugins');
         this.curPlugin = curPlugin;
         this.pluginsArr = [];
-    }
-    get pluginsKey() {
-        return `Micro:Plugins`;
     }
     get pluginsList() {
         return JSON.parse(readFileSync(this.indexPath, 'utf-8'));
@@ -33,7 +28,6 @@ class PluginHandler {
     }
     async setPluginsList(value) {
         writeFileSync(this.indexPath, JSON.stringify(value, null, 2), 'utf-8');
-        await redis.set(this.pluginsKey, JSON.stringify(value));
     }
     async addPlugin(value = null, id = "") {
         if (id !== "") {
@@ -73,6 +67,10 @@ class PluginHandler {
                 case 'face':
                     break;
                 case 'poke':
+                    break;
+                case 'dice':
+                    break;
+                case 'rps':
                     break;
                 case 'markdown':
                     if (!existsSync(pluginPath)) {

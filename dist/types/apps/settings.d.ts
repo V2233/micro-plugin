@@ -1,6 +1,7 @@
-declare let plugin: any;
+declare const plugin: any;
 export declare class Settings extends plugin {
     constructor();
+    switchStdin(): Promise<void>;
     setWebPort(): Promise<void>;
     startWeb(): Promise<void>;
     reStartWeb(): Promise<void>;

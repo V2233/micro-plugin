@@ -1,11 +1,8 @@
 import os from 'os';
 import fetch from 'node-fetch';
-import Cfg from '../config/config.js';
-import 'fs';
-import 'yaml';
-import 'lodash';
-import 'chokidar';
+import '../config/index.js';
 import { Redis, Logger } from '../adapter/index.js';
+import Cfg from '../config/config.js';
 
 const redis = await Redis();
 const logger = await Logger();
@@ -16,7 +13,7 @@ async function getAllWebAddress() {
     port = Number.parseInt(port);
     port = port === 80 ? null : port;
     let custom = [];
-    let local = getAutoIps(port);
+    let local = getAutoIps(port, true);
     let remote = await getRemoteIps();
     if (remote && remote.length > 0) {
         remote = remote.map((i) => joinHttpPort(i, port));
@@ -44,13 +41,47 @@ function joinHttpPort(ip, port) {
     ip = /^http/.test(ip) ? ip : 'http://' + ip;
     return `${ip}${port ? ':' + port : ''}`;
 }
+function getWebAddress(allIp = false) {
+    const { server } = Cfg.getConfig('server');
+    let host = server.host;
+    let port = server.port;
+    port = Number.parseInt(port);
+    port = port === 80 ? null : port;
+    let hosts = [];
+    if (host === 'auto') {
+        hosts.push(...getAutoIps(port, allIp));
+    }
+    else {
+        if (!Array.isArray(host)) {
+            host = [host];
+        }
+        for (let item of host) {
+            if (item === 'auto') {
+                hosts.push(...getAutoIps(port, allIp));
+            }
+            else {
+                item = /^http/.test(item) ? item : 'http://' + item;
+                hosts.push(`${item}${port ? ':' + port : ''}`);
+            }
+        }
+    }
+    let mountRoot = '/';
+    mountRoot = mountRoot === '/' ? '' : mountRoot;
+    if (mountRoot) {
+        hosts = hosts.map((i) => i + mountRoot);
+    }
+    return hosts;
+}
 function getAutoIps(port, allIp) {
     let ips = getLocalIps(port);
     if (ips.length === 0) {
         ips.push(`localhost${port ? ':' + port : ''}`);
     }
-    {
+    if (allIp) {
         return ips.map(ip => `http://${ip}`);
+    }
+    else {
+        return [`http://${ips[0]}`];
     }
 }
 function getLocalIps(port) {
@@ -126,4 +157,4 @@ async function getRemoteIps() {
     return ips;
 }
 
-export { getAllWebAddress, getLocalIps, getRemoteIps };
+export { getAllWebAddress, getLocalIps, getRemoteIps, getWebAddress };
