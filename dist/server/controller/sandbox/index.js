@@ -5,11 +5,10 @@ import { botInfo, pluginInfo } from '../../../env.js';
 import { readFile, rename, writeFile } from 'fs/promises';
 import { existsSync, mkdirSync, unlinkSync } from 'node:fs';
 import '../../../config/index.js';
-import Cfg from '../../../config/config.js';
 import { getLoader } from '../../../utils/getLoader.js';
+import Cfg from '../../../config/config.js';
 import { getAllWebAddress } from '../../../utils/ipAddress.js';
 
-const { port, host } = Cfg.getConfig('server').server;
 class SandboxController {
     async getPluginsLoader(ctx) {
         const pkgs = await getLoader();
@@ -33,6 +32,7 @@ class SandboxController {
         console.log(ctx.request.body);
         await rename(filepath, newPath);
         let address = '';
+        const { port, host } = Cfg.getConfig('server').server;
         if (host === 'auto') {
             const { remote } = await getAllWebAddress();
             address = `http://${remote[0]}:${port}/api/File/${newFilename}`;

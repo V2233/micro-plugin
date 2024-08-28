@@ -11,7 +11,6 @@ import {
 } from 'fs/promises'
 import { existsSync, mkdirSync, unlinkSync } from 'node:fs';
 import { Cfg } from '#cfg';
-const { port,host } = Cfg.getConfig('server').server
 
 class SandboxController {
 
@@ -57,6 +56,7 @@ class SandboxController {
         await rename(filepath, newPath)
 
         let address = ''
+        const { port,host } = Cfg.getConfig('server').server
         if(host === 'auto') {
             const { remote } = await getAllWebAddress()
             address = `http://${remote[0]}:${port}/api/File/${newFilename}`
