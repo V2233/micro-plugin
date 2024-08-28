@@ -25,7 +25,7 @@ class OnebotV11 {
         bot.on('message', async (data) => {
             await this.message(data, bot);
         });
-        bot.on('error', async (error) => logger.error(error));
+        bot.on('error', async (error) => Stdlog.error('', error));
         bot.on('close', () => Stdlog.info('Onebotv11', `${this.id} 连接已断开!`));
         Stdlog.info('Onebotv11', '载入成功！');
     }
@@ -90,7 +90,7 @@ class OnebotV11 {
             return source;
         }
         catch (error) {
-            logger.error(error);
+            Stdlog.error('', error);
             return false;
         }
     }
@@ -120,7 +120,7 @@ class OnebotV11 {
                     i.data.id = String(i.data.id);
                     break;
                 case "poke":
-                    i.data.id = String(i.data.id);
+                    i.data.id = String(i.data.id ? i.data.id : i.data.qq);
                     break;
                 case "dice":
                     i.data.id = String(i.data.id);
@@ -135,7 +135,8 @@ class OnebotV11 {
                     i.data.id = String(i.data.id);
                     break;
                 case "button":
-                    continue;
+                    console.log(i);
+                    break;
                 case "node":
                     forward.push(...i.data);
                     continue;
@@ -375,6 +376,24 @@ class OnebotV11 {
                     log_message_arr.push(`<礼物:${i.data.id}>`);
                     ToString_arr.push(`{gift:${i.data.id}}`);
                     break;
+                case 'markdown':
+                    message.push({ type: 'markdown', ...i.data });
+                    raw_message_arr.push('[markdown]');
+                    log_message_arr.push(`<markdown:${i.data}>`);
+                    ToString_arr.push(`{markdown:${i.data}}`);
+                    break;
+                case 'button':
+                    message.push({ type: 'button', ...i.data });
+                    raw_message_arr.push('[button]');
+                    log_message_arr.push(`<button:${i.data}>`);
+                    ToString_arr.push(`{button:${i.data}}`);
+                    break;
+                case 'keyboard':
+                    message.push({ type: 'keyboard', ...i.data });
+                    raw_message_arr.push('[keyboard]');
+                    log_message_arr.push(`<keyboard:${i.data}>`);
+                    ToString_arr.push(`{keyboard:${i.data}}`);
+                    break;
                 default:
                     message.push({ type: i.type, ...i.data });
                     i = JSON.stringify(i);
@@ -420,6 +439,7 @@ class OnebotV11 {
     async getForwardMsg(data, message_id) {
         const msgs = (await data.bot.sendApi("get_forward_msg", {
             message_id,
+            id: message_id
         })).data?.messages;
         for (const i of Array.isArray(msgs) ? msgs : [msgs])
             if (i?.message)
@@ -433,12 +453,14 @@ class OnebotV11 {
             if (forward.length)
                 msgs.push(...await this.makeForwardMsg(forward));
             if (content.length)
-                msgs.push({ type: "node", data: {
+                msgs.push({
+                    type: "node", data: {
                         name: i.nickname || "匿名消息",
                         uin: String(Number(i.user_id) || 80000000),
                         content,
                         time: i.time,
-                    } });
+                    }
+                });
         }
         return msgs;
     }
@@ -830,7 +852,7 @@ class OnebotV11 {
             ...i,
             getInfo: () => this.getMemberInfo(i),
             getAvatarUrl: () => i.avatar || `https://q.qlogo.cn/g?b=qq&s=0&nk=${user_id}`,
-            poke: () => this.sendGroupMsg(i, { type: "poke", qq: user_id }),
+            poke: () => this.sendGroupMsg(i, { type: "poke", qq: user_id, id: String(user_id) }),
             mute: duration => this.setGroupBan(i, i.user_id, duration),
             kick: reject_add_request => this.setGroupKick(i, i.user_id, reject_add_request),
             get is_friend() { return data.bot.fl.has(user_id); },
@@ -972,7 +994,48 @@ class OnebotV11 {
         data.bot.getGroupMemberMap();
         Stdlog.mark(data.self_id, `${this.name}(${this.id}) ${data.bot.version.version} 连接成功，协议通过，执行消息处理...`);
         BotAPI.$emit(`connect.${data.self_id}`, data);
-        BotAPI.$emit("online", data.bot);
+        BotAPI.$emit("system.online", data.bot);
+        Bot = new Proxy(Bot, {
+            get: (target, prop) => {
+                if (prop in target) {
+                    if (typeof target[prop] === 'function') {
+                        return (...args) => {
+                            target[prop].apply(target, args);
+                        };
+                    }
+                    else {
+                        return target[prop];
+                    }
+                }
+                else {
+                    if (prop in BotAPI) {
+                        if (typeof BotAPI[prop] === 'function') {
+                            return (...args) => BotAPI[prop].apply(BotAPI, args);
+                        }
+                        else {
+                            return BotAPI[prop];
+                        }
+                    }
+                    else {
+                        return undefined;
+                    }
+                }
+            }
+        });
+    }
+    async sendReplyMsg(data, msg, quote, option) {
+        if (typeof msg == 'string') {
+            msg = [{ type: 'text', data: { text: msg } }];
+        }
+        if (option?.at) {
+            msg.unshift({ type: 'at', data: { qq: String(data.user_id) } });
+        }
+        if (quote) {
+            msg.unshift({ type: 'reply', data: { id: String(data.message_id) } });
+        }
+        if (data.group_id)
+            return await data.bot.sendGroupMsg(data.group_id, msg);
+        return await data.bot.sendPrivateMsg(data.user_id, msg);
     }
     async makeMessage(data) {
         const { message, ToString, log_message, source, file } = await this.parseMsg(data.message, data);
@@ -980,6 +1043,12 @@ class OnebotV11 {
         data.uin = this.id;
         data.log_message = log_message;
         data.toString = () => ToString;
+        if (!data.reply)
+            data.reply = async (msg, quote, option) => await this.sendReplyMsg(data, msg, quote, option);
+        if (!data.getAvatarUrl)
+            data.getAvatarUrl = (size = 0) => data.avatar || `https://q1.qlogo.cn/g?b=qq&s=${size}&nk=${data.user_id}`;
+        if (!data.recall)
+            data.recall = async () => await this.recallMsg(data, data.message_id);
         if (file)
             data.file = file;
         if (source)
@@ -1010,7 +1079,7 @@ class OnebotV11 {
                 Object.defineProperty(data, "friend", { get() { return this.member || {}; } });
                 break;
             default:
-                Stdlog.info(data.self_id, `未知消息：${logger.warn(data.raw)}`);
+                Stdlog.warn(data.self_id, `未知消息：${data.raw}`);
         }
         BotAPI.$emit(`${data.post_type}.${data.message_type}.${data.sub_type}`, data);
     }
@@ -1070,7 +1139,7 @@ class OnebotV11 {
                         Stdlog.info(`${data.self_id} <= ${data.group_id}, ${data.user_id}`, `群头衔：${data.title}`);
                         break;
                     default:
-                        Stdlog.info(data.self_id, `未知通知：${logger.warn(data.raw)}`);
+                        Stdlog.warn(data.self_id, `未知通知：${data.raw}`);
                 }
                 break;
             case "group_card":
@@ -1110,7 +1179,7 @@ class OnebotV11 {
                 data.bot.getGroupMap();
                 break;
             default:
-                Stdlog.warn(data.self_id, `未知通知：${logger.warn(data.raw)}`);
+                Stdlog.warn(data.self_id, `未知通知：${data.raw}`);
         }
         let notice = data.notice_type.split("_");
         data.notice_type = notice.shift();
@@ -1135,12 +1204,13 @@ class OnebotV11 {
                 data.approve = approve => data.bot.setGroupAddRequest(data.flag, data.sub_type, approve);
                 break;
             default:
-                Stdlog.info(data.self_id, `未知请求：${logger.warn(data.raw)}`);
+                Stdlog.warn(data.self_id, `未知请求：${data.raw}`);
         }
         data.bot.request_list.push(data);
         BotAPI.$emit(`${data.post_type}.${data.request_type}.${data.sub_type}`, data);
     }
     heartbeat(data) {
+        Stdlog.debug(data.self_id, `收到心跳：${data.status}`);
         if (data.status)
             Object.assign(data.bot.stat, data.status);
     }
@@ -1154,7 +1224,7 @@ class OnebotV11 {
                 this.connect(data, ws);
                 break;
             default:
-                Stdlog.warn(data.self_id, `未知消息：${logger.warn(data.raw)}`);
+                Stdlog.warn(data.self_id, `未知消息：${data.raw}`);
         }
     }
     async message(data, ws) {
@@ -1169,7 +1239,7 @@ class OnebotV11 {
         }
         if (data.post_type) {
             if (data.meta_event_type !== "lifecycle" && !Bot[data.self_id]) {
-                Stdlog.warn(data.self_id, `找不到对应Bot，忽略消息：${logger.warn(data.raw)}`);
+                Stdlog.warn(data.self_id, `找不到对应Bot，忽略消息：${data.raw}`);
                 return false;
             }
             data.bot = Bot[data.self_id];
@@ -1191,7 +1261,7 @@ class OnebotV11 {
                     await this.makeMessage(data);
                     break;
                 default:
-                    Stdlog.warn(data.self_id, `未知消息：${logger.warn(data.raw)}`);
+                    Stdlog.warn(data.self_id, `未知消息：${data.raw}`);
             }
         }
         else if (data.echo && this.echo[data.echo]) {
@@ -1205,7 +1275,7 @@ class OnebotV11 {
             delete this.echo[data.echo];
         }
         else {
-            Stdlog.info(data.self_id, `未知消息：${logger.warn(data.raw)}`);
+            Stdlog.info(data.self_id, `未知消息：${data.raw}`);
         }
     }
 }

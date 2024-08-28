@@ -9,10 +9,17 @@ const logger = await Logger()
 /**
  * 获取所有web地址，包括内网、外网
  */
-export async function getAllWebAddress() {
+export async function getAllWebAddress(auto = true) {
   const { server } = Cfg.getConfig('server')
   let host = server.host
   let port = server.port
+  if(host !== 'auto' && auto == false) {
+    return { 
+      custom: [joinHttpPort(host, port)], 
+      local: [''], 
+      remote: [''] 
+    }
+  }
   port = Number.parseInt(port)
   port = port === 80 ? null : port
   let custom = []

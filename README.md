@@ -7,7 +7,7 @@
 ![Static Badge](https://img.shields.io/badge/QQGroup-397798018-blue?link=http%3A%2F%2Fqm.qq.com%2Fcgi-bin%2Fqm%2Fqr%3F_wv%3D1027%26k%3D6qeMfgydE5k8e_nTorXz0ywmahixBTFw%26authKey%3D9iCyC5qsuluUfxwz4evh5xPmJb3YwlixjoMTxN9He%252BrGu7WiDf2dY8OGk7t%252BGaIu%26noverify%3D0%26group_code%3D397798018)
 [![License](https://img.shields.io/static/v1?label=LICENSE&message=GPL-3.0&color=lightrey)](/LICENSE)
 <br>
-Yunzai-Bot低代码开发管理平台，以下简称小微插件
+Yunzai-Bot低代码开发管理系统，以下简称小微插件
 <br>
 [English](EN_README.md) | 简体中文
 
@@ -31,11 +31,13 @@ Yunzai-Bot低代码开发管理平台，以下简称小微插件
 
 - 您可以使用文件系统的代码编辑器来编辑您的项目文件，它附带了多个主题，并支持常见语言的高亮显示、语法检查、代码补全功能，支持的语言有```javascript```、```html```、```css```、```typescript```、```jsx```、```tsx```、```vue```、```json```、```yaml```、```java```、```golang```、```c/cpp```、```python```、```sh```、```markdown```
 
-- 您可在日志面板查看某天机器人的日志
+- 您可在日志面板分页查看机器人的日志
 
 - 状态面板提供了酷酷的系统状态数据大屏，并友好支持移动端页面布局，您还可以在这里查看实时文本和图片消息，点击大屏的群号或好友让机器人快捷回复
 
 - 内置标准输入输出和onebotv11适配器，可在面板配置启用
+
+- 内置基于onebot协议的仿真QQ沙盒，涵盖onebot协议大部分的动作、事件和接口，你可以在免登录环境高效测试你的插件！
 
 ## 环境准备
 
@@ -48,7 +50,7 @@ Yunzai-Bot低代码开发管理平台，以下简称小微插件
 - 下载依赖
 
 ```sh
-yarn add yunzai-micro-plugin -w
+yarn add yunzai-micro-plugin -W
 ```
 
 - 如下示例写入配置文件
@@ -58,12 +60,11 @@ yarn add yunzai-micro-plugin -w
 import { defineConfig } from 'yunzai'
 import runtime from 'yz-mw-runtime'
 import starRail from 'yz-mw-star-rail'
-import system from 'yz-system'
-import Micro from 'yunzai-micro-plugin'
+import micro from 'yunzai-micro-plugin'
 
 export default defineConfig({
   // 应用
-  applications: [system(), Micro()],
+  applications: [micro()],
   // 中间件
   middlewares: [runtime(), starRail()]
 })
@@ -81,7 +82,7 @@ git clone --depth=1 https://github.com/V2233/micro-plugin.git ./plugins/micro-pl
 git clone --depth=1 https://gitee.com/V2233/micro-plugin.git ./plugins/micro-plugin
 ```
 
-- 安装依赖(注意v4请不要简化为pnpm i,部分依赖会装不上)
+- 安装依赖
 
 ```sh
 pnpm i --filter ./plugins/micro-plugin
@@ -107,6 +108,8 @@ pnpm run restart
 | [@某人]    |    🟢     |
 | [引用]     |    🟢     |
 | [戳一戳]   |    🟢     |
+| [骰子]     |    🟢     |
+| [猜拳]     |    🟢     |
 | [markdown] |    🔴     |
 | [按钮]     |    🔴     |
 | [转发]     |    🔴     |

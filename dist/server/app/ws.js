@@ -55,7 +55,7 @@ class MicroWs {
         });
     }
     async openForwardWs() {
-        if (this.cfg.onebotv11.disabled == false && this.cfg.onebotv11.address.length > 0) {
+        if (this.cfg.onebotv11.disabled == false && this.cfg.onebotv11.address?.length > 0) {
             this.cfg.onebotv11.address.forEach((path) => {
                 const v11Ws = new WebSocket(path);
                 v11Ws.on('open', () => {

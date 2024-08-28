@@ -91,6 +91,7 @@ declare class OnebotV11 {
     pickMember(data: any, group_id: any, user_id: any): any;
     pickGroup(data: any, group_id: any): any;
     connect(data: any, ws: any): Promise<void>;
+    sendReplyMsg(data: any, msg: any, quote: any, option: any): Promise<any>;
     makeMessage(data: any): Promise<void>;
     makeNotice(data: any): Promise<void>;
     makeRequest(data: any): void;

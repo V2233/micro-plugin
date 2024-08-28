@@ -14,22 +14,22 @@ class OnebotV11 {
   path: string
   echo: any
   timeout: number
-  
-  constructor(public bot:Websocket, req?:IncomingMessage) {
+
+  constructor(public bot: Websocket, req?: IncomingMessage) {
     this.id = "114514"
-    if(req) this.id = (req.headers['x-self-id'] as string)??''
+    if (req) this.id = (req.headers['x-self-id'] as string) ?? ''
     this.name = "OneBotv11"
     this.path = this.name
     this.echo = {}
     this.timeout = 60000
-    
+
 
     /** 监听事件 */
-    bot.on('message', async(data) => {
+    bot.on('message', async (data) => {
       await this.message(data, bot)
     })
     // 监听错误
-    bot.on('error', async (error:Error) => logger.error(error))
+    bot.on('error', async (error: Error) => Stdlog.error('',error))
     /** 监听连接关闭事件 */
     bot.on('close', () => Stdlog.info('Onebotv11', `${this.id} 连接已断开!`))
 
@@ -90,7 +90,7 @@ class OnebotV11 {
   async getMsg(data, message_id) {
     const msg = (await data.bot.sendApi("get_msg", { message_id })).data
     if (msg?.message)
-      msg.message = (await this.parseMsg(msg.message,data)).message
+      msg.message = (await this.parseMsg(msg.message, data)).message
     return msg
   }
 
@@ -101,10 +101,10 @@ class OnebotV11 {
    * @param data 
    * @returns 
    */
-  async source (i, data) {
+  async source(i, data) {
     /** 引用消息的id */
     const msg_id = i.data.id
- 
+
     if (!msg_id) return false
     let source
     try {
@@ -139,7 +139,7 @@ class OnebotV11 {
 
       return source
     } catch (error) {
-      logger.error(error)
+      Stdlog.error('',error)
       return false
     }
   }
@@ -162,18 +162,18 @@ class OnebotV11 {
    * @returns 
    */
   async makeMsg(msg) {
-
+    
     if (!Array.isArray(msg))
       msg = [msg]
     const msgs = []
     const forward = []
     for (let i of msg) {
       if (typeof i !== "object") {
-        i = { type: "text", data: { text: i }}
+        i = { type: "text", data: { text: i } }
       } else if (!i.data) {
-        i = { type: i.type, data: { ...i, type: undefined }}
+        i = { type: i.type, data: { ...i, type: undefined } }
       }
-      
+
       switch (i.type) {
         case "at":
           i.data.qq = String(i.data.qq)
@@ -182,7 +182,7 @@ class OnebotV11 {
           i.data.id = String(i.data.id)
           break
         case "poke":
-          i.data.id = String(i.data.id)
+          i.data.id = String(i.data.id ? i.data.id : i.data.qq)
           break
         case "dice":
           i.data.id = String(i.data.id)
@@ -197,7 +197,8 @@ class OnebotV11 {
           i.data.id = String(i.data.id)
           break
         case "button":
-          continue
+          console.log(i)
+          break
         case "node":
           forward.push(...i.data)
           continue
@@ -208,12 +209,11 @@ class OnebotV11 {
 
       if (i.data.file)
         i.data.file = await this.makeFile(i.data.file)
-
       msgs.push(i)
     }
     return [msgs, forward]
   }
-    
+
 
   /**
    * 通用消息发送
@@ -253,7 +253,7 @@ class OnebotV11 {
    */
   sendFriendMsg(data, msg) {
     return this.sendMsg(msg, message => {
-      Stdlog.info(`${data.self_id} => ${data.user_id}`,`发送好友消息：${this.makeLog(message)}`)
+      Stdlog.info(`${data.self_id} => ${data.user_id}`, `发送好友消息：${this.makeLog(message)}`)
       data.bot.sendApi("send_msg", {
         user_id: data.user_id,
         message,
@@ -292,7 +292,7 @@ class OnebotV11 {
         message,
       })
       //@ts-ignore
-    }, msg => Bot.sendForwardMsg?Bot.sendForwardMsg(msg => this.sendGuildMsg(data, msg), msg):BotAPI.sendForwardMsg(msg => this.sendGuildMsg(data, msg), msg))
+    }, msg => Bot.sendForwardMsg ? Bot.sendForwardMsg(msg => this.sendGuildMsg(data, msg), msg) : BotAPI.sendForwardMsg(msg => this.sendGuildMsg(data, msg), msg))
   }
 
   /**
@@ -340,7 +340,7 @@ class OnebotV11 {
           try {
             let qq = i.data.qq
             ToString_arr.push(`{at:${qq}}`)
-            let groupMemberList = data.group_id?(Bot[this.id].gml.get(data.group_id)?.get(qq)):(Bot[this.id].gl.get(data.user_id)?.get(qq))
+            let groupMemberList = data.group_id ? (Bot[this.id].gml.get(data.group_id)?.get(qq)) : (Bot[this.id].gl.get(data.user_id)?.get(qq))
             let at = groupMemberList?.nickname || groupMemberList?.card || qq
             raw_message_arr.push(`@${at}`)
             log_message_arr.push(at == qq ? `@${qq}` : `<@${at}:${qq}>`)
@@ -364,7 +364,7 @@ class OnebotV11 {
           break
         /** 回复 */
         case 'reply':
-          if(parseReply) source = await this.source(i, data)
+          if (parseReply) source = await this.source(i, data)
           if (source && data.group_id) {
             let qq = Number(source.sender.user_id)
             let text = source.sender.nickname
@@ -516,6 +516,27 @@ class OnebotV11 {
           log_message_arr.push(`<礼物:${i.data.id}>`)
           ToString_arr.push(`{gift:${i.data.id}}`)
           break
+        /** markdown */
+        case 'markdown':
+          message.push({ type: 'markdown', ...i.data })
+          raw_message_arr.push('[markdown]')
+          log_message_arr.push(`<markdown:${i.data}>`)
+          ToString_arr.push(`{markdown:${i.data}}`)
+          break
+        /** 按钮 */
+        case 'button':
+          message.push({ type: 'button', ...i.data })
+          raw_message_arr.push('[button]')
+          log_message_arr.push(`<button:${i.data}>`)
+          ToString_arr.push(`{button:${i.data}}`)
+          break
+        /** 兼容官方按钮 */
+        case 'keyboard':
+          message.push({ type: 'keyboard', ...i.data })
+          raw_message_arr.push('[keyboard]')
+          log_message_arr.push(`<keyboard:${i.data}>`)
+          ToString_arr.push(`{keyboard:${i.data}}`)
+          break
         default:
           message.push({ type: i.type, ...i.data })
           i = JSON.stringify(i)
@@ -549,32 +570,32 @@ class OnebotV11 {
     })).data?.messages
 
     for (const i of Array.isArray(msgs) ? msgs : [msgs]) {
-      if (i?.message) i.message = (await this.parseMsg(i.message,data,false)).message
+      if (i?.message) i.message = (await this.parseMsg(i.message, data, false)).message
       if (!i?.group_name) i.group_name = data?.group_name || data?.group_id
     }
     return msgs
   }
 
-    /**
-   * 获取好友历史消息
-   * @param data 
-   * @param message_seq 
-   * @param count 
-   * @returns 
-   */
-    async getFriendMsgHistory(data, message_seq, count) {
-      const msgs = (await data.bot.sendApi("get_group_msg_history", {
-        user_id: data.user_id,
-        message_seq,
-        message_id: message_seq,
-        count,
-      })).data?.messages
-  
-      for (const i of Array.isArray(msgs) ? msgs : [msgs]) {
-        if (i?.message) i.message = (await this.parseMsg(i.message,data,false)).message
-      }
-      return msgs
+  /**
+ * 获取好友历史消息
+ * @param data 
+ * @param message_seq 
+ * @param count 
+ * @returns 
+ */
+  async getFriendMsgHistory(data, message_seq, count) {
+    const msgs = (await data.bot.sendApi("get_group_msg_history", {
+      user_id: data.user_id,
+      message_seq,
+      message_id: message_seq,
+      count,
+    })).data?.messages
+
+    for (const i of Array.isArray(msgs) ? msgs : [msgs]) {
+      if (i?.message) i.message = (await this.parseMsg(i.message, data, false)).message
     }
+    return msgs
+  }
 
   /**
    * 获取转发
@@ -585,6 +606,7 @@ class OnebotV11 {
   async getForwardMsg(data, message_id) {
     const msgs = (await data.bot.sendApi("get_forward_msg", {
       message_id,
+      id: message_id
     })).data?.messages
 
     for (const i of Array.isArray(msgs) ? msgs : [msgs])
@@ -605,12 +627,14 @@ class OnebotV11 {
       if (forward.length)
         msgs.push(...await this.makeForwardMsg(forward))
       if (content.length)
-        msgs.push({ type: "node", data: {
-          name: i.nickname || "匿名消息",
-          uin: String(Number(i.user_id) || 80000000),
-          content,
-          time: i.time,
-        }})
+        msgs.push({
+          type: "node", data: {
+            name: i.nickname || "匿名消息",
+            uin: String(Number(i.user_id) || 80000000),
+            content,
+            time: i.time,
+          }
+        })
     }
     return msgs
   }
@@ -695,17 +719,18 @@ class OnebotV11 {
    */
   async getGroupArray(data) {
     const array = (await data.bot.sendApi("get_group_list")).data
-    try { for (const guild of await this.getGuildArray(data))
-      for (const channel of await this.getGuildChannelArray({
-        ...data,
-        guild_id: guild.guild_id,
-      }))
-        array.push({
-          guild,
-          channel,
-          group_id: `${guild.guild_id}-${channel.channel_id}`,
-          group_name: `${guild.guild_name}-${channel.channel_name}`,
-        })
+    try {
+      for (const guild of await this.getGuildArray(data))
+        for (const channel of await this.getGuildChannelArray({
+          ...data,
+          guild_id: guild.guild_id,
+        }))
+          array.push({
+            guild,
+            channel,
+            group_id: `${guild.guild_id}-${channel.channel_id}`,
+            group_name: `${guild.guild_name}-${channel.channel_name}`,
+          })
     } catch (err) {
       // Stdlog.error("", "获取频道列表错误", err)
     }
@@ -1125,7 +1150,7 @@ class OnebotV11 {
    * @param name 
    * @returns 
    */
-  async sendFriendFile(data, file, name = path.basename(file.slice(0,16))) {
+  async sendFriendFile(data, file, name = path.basename(file.slice(0, 16))) {
     Stdlog.info(`${data.self_id} => ${data.user_id}`, `发送好友文件：${name}(${file})`)
     return data.bot.sendApi("upload_private_file", {
       user_id: data.user_id,
@@ -1142,8 +1167,8 @@ class OnebotV11 {
    * @param name 
    * @returns 
    */
-  async sendGroupFile(data, file, folder, name = path.basename(file.slice(0,16))) {
-    Stdlog.info(`${data.self_id} => ${data.group_id}`, `发送群文件：${folder||""}/${name}(${file})`)
+  async sendGroupFile(data, file, folder, name = path.basename(file.slice(0, 16))) {
+    Stdlog.info(`${data.self_id} => ${data.group_id}`, `发送群文件：${folder || ""}/${name}(${file})`)
     return data.bot.sendApi("upload_group_file", {
       group_id: data.group_id,
       folder,
@@ -1338,7 +1363,7 @@ class OnebotV11 {
       ...i,
       getInfo: () => this.getMemberInfo(i),
       getAvatarUrl: () => i.avatar || `https://q.qlogo.cn/g?b=qq&s=0&nk=${user_id}`,
-      poke: () => this.sendGroupMsg(i, { type: "poke", qq: user_id }),
+      poke: () => this.sendGroupMsg(i, { type: "poke", qq: user_id, id: String(user_id) }),
       mute: duration => this.setGroupBan(i, i.user_id, duration),
       kick: reject_add_request => this.setGroupKick(i, i.user_id, reject_add_request),
       get is_friend() { return data.bot.fl.has(user_id) },
@@ -1422,7 +1447,7 @@ class OnebotV11 {
    * @param ws 
    */
   async connect(data, ws) {
-    if(!data.self_id) Stdlog.warn('Onebotv11','未找到self_id!')
+    if (!data.self_id) Stdlog.warn('Onebotv11', '未找到self_id!')
     Bot[data.self_id] = {
       adapter: this.name,
       ws: ws,
@@ -1446,7 +1471,7 @@ class OnebotV11 {
 
       self_id: data.self_id,
       uin: data.self_id,
-      get nickname() { return this.info.nickname??data.self_id },
+      get nickname() { return this.info.nickname ?? data.self_id },
       get avatar() { return `https://q.qlogo.cn/g?b=qq&s=0&nk=${this.uin}` },
 
       setProfile: profile => this.setProfile(data, profile),
@@ -1454,7 +1479,7 @@ class OnebotV11 {
       setAvatar: file => this.setAvatar(data, file),
 
       pickFriend: user_id => this.pickFriend(data, user_id),
-      sendPrivateMsg: (user_id,msg) => this.pickFriend(data, user_id).sendMsg(msg),
+      sendPrivateMsg: (user_id, msg) => this.pickFriend(data, user_id).sendMsg(msg),
       get pickUser() { return this.pickFriend },
       getFriendArray: () => this.getFriendArray(data),
       getFriendList: () => this.getFriendList(data),
@@ -1463,7 +1488,7 @@ class OnebotV11 {
 
       pickMember: (group_id, user_id) => this.pickMember(data, group_id, user_id),
       pickGroup: group_id => this.pickGroup(data, group_id),
-      sendGroupMsg: (group_id,msg) => this.pickGroup(data, group_id).sendMsg(msg),
+      sendGroupMsg: (group_id, msg) => this.pickGroup(data, group_id).sendMsg(msg),
       getGroupArray: () => this.getGroupArray(data),
       getGroupList: () => this.getGroupList(data),
       getGroupMap: () => this.getGroupMap(data),
@@ -1475,7 +1500,7 @@ class OnebotV11 {
       getSystemMsg: () => data.bot.request_list,
       makeForwardMsg: msg => this.makeForwardMsg(msg),
       setFriendAddRequest: (flag, approve, remark) => this.setFriendAddRequest(data, flag, approve, remark),
-      setGroupAddRequest: (flag, sub_type, approve, reason) => this.setGroupAddRequest(data, flag, sub_type, approve, reason), 
+      setGroupAddRequest: (flag, sub_type, approve, reason) => this.setGroupAddRequest(data, flag, sub_type, approve, reason),
 
     }
 
@@ -1487,7 +1512,7 @@ class OnebotV11 {
     data.bot.sendApi("_set_model_show", {
       model: data.bot.model,
       model_show: data.bot.model,
-    }).catch(() => {})
+    }).catch(() => { })
 
     data.bot.info = (await data.bot.sendApi("get_login_info").catch(i => i.error)).data
     data.bot.guild_info = (await data.bot.sendApi("get_guild_service_profile").catch(i => i.error)).data
@@ -1506,8 +1531,71 @@ class OnebotV11 {
 
     Stdlog.mark(data.self_id, `${this.name}(${this.id}) ${data.bot.version.version} 连接成功，协议通过，执行消息处理...`)
     BotAPI.$emit(`connect.${data.self_id}`, data)
-    BotAPI.$emit("online", data.bot)
+    BotAPI.$emit("system.online", data.bot)
 
+    /** 重写Bot公共方法，比较危险 */
+    Bot = new Proxy(Bot, {
+      get: (target, prop) => {
+        if (prop in target) {
+          if (typeof target[prop] === 'function') {
+            // if (Bot.adapter && Bot.adapter.length > 0) {
+            //   return (...args) => {
+            //     target[prop].apply(target, args)
+            //     Bot.adapter.forEach((botId) => {
+            //       if (prop in target[botId]) {
+            //         target[botId][prop].apply(target, args)
+            //       }
+            //     })
+            //   }
+            // }
+            return (...args) => {
+              target[prop].apply(target, args)
+            }
+          } else {
+            return target[prop]
+          }
+        } else {
+          if (prop in BotAPI) {
+            if (typeof BotAPI[prop] === 'function') {
+              return (...args) => BotAPI[prop].apply(BotAPI, args)
+            } else {
+              return BotAPI[prop]
+            }
+          } else {
+            return undefined
+          }
+        }
+      }
+    })
+  }
+
+  /**
+   * 制作快速恢复
+   * @param data 收到的消息对象
+   * @param msg 传入的msg
+   * @param quote 是否引用回复
+   * @param option 其它选项
+   * @returns 
+   */
+  async sendReplyMsg(data, msg, quote, option) {
+    
+    if (typeof msg == 'string') {
+      msg = [{ type: 'text', data: { text: msg } }]
+    }
+
+    if (option?.at) {
+      msg.unshift({ type: 'at', data: { qq: String(data.user_id) } })
+    }
+
+    if (quote) {
+      msg.unshift({ type: 'reply', data: { id: String(data.message_id) } })
+    }
+
+    // console.log('打印msg：')
+    // console.log(msg)
+
+    if (data.group_id) return await data.bot.sendGroupMsg(data.group_id, msg)
+    return await data.bot.sendPrivateMsg(data.user_id, msg)
   }
 
   /**
@@ -1515,12 +1603,17 @@ class OnebotV11 {
    * @param data 
    */
   async makeMessage(data) {
-    const { message, ToString, log_message, source, file } = await this.parseMsg(data.message,data)
+    const { message, ToString, log_message, source, file } = await this.parseMsg(data.message, data)
     data.message = message
-    data.uin = this.id 
- 
+    data.uin = this.id
+
     data.log_message = log_message
     data.toString = () => ToString
+
+    if (!data.reply) data.reply = async (msg, quote, option) => await this.sendReplyMsg(data, msg, quote, option)
+    if (!data.getAvatarUrl) data.getAvatarUrl = (size = 0) => data.avatar || `https://q1.qlogo.cn/g?b=qq&s=${size}&nk=${data.user_id}`
+    if (!data.recall) data.recall = async () => await this.recallMsg(data, data.message_id)
+
     if (file) data.file = file
     if (source) data.source = source
 
@@ -1530,24 +1623,24 @@ class OnebotV11 {
         Stdlog.info(`${data.self_id} <= ${data.user_id}`, `好友消息：${name ? `[${name}] ` : ""}${log_message}`)
         break
       } case "group": {
-        if(!data.group_name) data.group_name = data.bot.gl.get(data.group_id)?.group_name
-        const group_name = data.group_name 
-        
+        if (!data.group_name) data.group_name = data.bot.gl.get(data.group_id)?.group_name
+        const group_name = data.group_name
+
         let user_name = data.sender.card || data.sender.nickname
         if (!user_name) {
           const user = data.bot.gml.get(data.group_id)?.get(data.user_id) || data.bot.fl.get(data.user_id)
           if (user) user_name = user?.card || user?.nickname
         }
-        Stdlog.info(`${data.self_id} <= ${data.group_id}, ${data.user_id}`, `群消息：${user_name?(group_name?'[群：' + group_name + '][成员：' + user_name + ']':''):''}${log_message}`)
+        Stdlog.info(`${data.self_id} <= ${data.group_id}, ${data.user_id}`, `群消息：${user_name ? (group_name ? '[群：' + group_name + '][成员：' + user_name + ']' : '') : ''}${log_message}`)
         break
       } case "guild":
         data.message_type = "group"
         data.group_id = `${data.guild_id}-${data.channel_id}`
         Stdlog.info(`${data.self_id} <= ${data.group_id}, ${data.user_id}`, `频道消息：[${data.sender.nickname}] ${log_message}`)
-        Object.defineProperty(data, "friend", { get() { return this.member || {}}})
+        Object.defineProperty(data, "friend", { get() { return this.member || {} } })
         break
       default:
-        Stdlog.info(data.self_id, `未知消息：${logger.warn(data.raw)}`)
+        Stdlog.warn(data.self_id, `未知消息：${data.raw}`)
     }
     BotAPI.$emit(`${data.post_type}.${data.message_type}.${data.sub_type}`, data)
   }
@@ -1606,13 +1699,13 @@ class OnebotV11 {
               Stdlog.info(data.self_id, `好友戳一戳：${data.operator_id} => ${data.target_id}`)
             break
           case "honor":
-            Stdlog.info(`${data.self_id} <= ${data.group_id}, ${data.user_id}`, `群荣誉：${data.honor_type}`, )
+            Stdlog.info(`${data.self_id} <= ${data.group_id}, ${data.user_id}`, `群荣誉：${data.honor_type}`,)
             break
           case "title":
-            Stdlog.info(`${data.self_id} <= ${data.group_id}, ${data.user_id}`, `群头衔：${data.title}`, )
+            Stdlog.info(`${data.self_id} <= ${data.group_id}, ${data.user_id}`, `群头衔：${data.title}`,)
             break
           default:
-            Stdlog.info(data.self_id, `未知通知：${logger.warn(data.raw)}`)
+            Stdlog.warn(data.self_id, `未知通知：${data.raw}`)
         }
         break
       case "group_card":
@@ -1652,7 +1745,7 @@ class OnebotV11 {
         data.bot.getGroupMap()
         break
       default:
-        Stdlog.warn(data.self_id, `未知通知：${logger.warn(data.raw)}`)
+        Stdlog.warn(data.self_id, `未知通知：${data.raw}`)
     }
 
     let notice = data.notice_type.split("_")
@@ -1663,7 +1756,7 @@ class OnebotV11 {
 
     if (data.guild_id && data.channel_id) {
       data.group_id = `${data.guild_id}-${data.channel_id}`
-      Object.defineProperty(data, "friend", { get() { return this.member || {}}})
+      Object.defineProperty(data, "friend", { get() { return this.member || {} } })
     }
 
     BotAPI.$emit(`${data.post_type}.${data.notice_type}.${data.sub_type}`, data)
@@ -1685,7 +1778,7 @@ class OnebotV11 {
         data.approve = approve => data.bot.setGroupAddRequest(data.flag, data.sub_type, approve)
         break
       default:
-        Stdlog.info(data.self_id, `未知请求：${logger.warn(data.raw)}`)
+        Stdlog.warn(data.self_id, `未知请求：${data.raw}`)
     }
 
     data.bot.request_list.push(data)
@@ -1697,6 +1790,7 @@ class OnebotV11 {
    * @param data 
    */
   heartbeat(data) {
+    Stdlog.debug(data.self_id, `收到心跳：${data.status}`)
     if (data.status)
       Object.assign(data.bot.stat, data.status)
   }
@@ -1716,7 +1810,7 @@ class OnebotV11 {
         this.connect(data, ws)
         break
       default:
-        Stdlog.warn(data.self_id, `未知消息：${logger.warn(data.raw)}`)
+        Stdlog.warn(data.self_id, `未知消息：${data.raw}`)
     }
   }
 
@@ -1739,7 +1833,7 @@ class OnebotV11 {
 
     if (data.post_type) {
       if (data.meta_event_type !== "lifecycle" && !Bot[data.self_id]) {
-        Stdlog.warn(data.self_id, `找不到对应Bot，忽略消息：${logger.warn(data.raw)}`)
+        Stdlog.warn(data.self_id, `找不到对应Bot，忽略消息：${data.raw}`)
         return false
       }
       data.bot = Bot[data.self_id]
@@ -1762,7 +1856,7 @@ class OnebotV11 {
           await this.makeMessage(data)
           break
         default:
-          Stdlog.warn(data.self_id, `未知消息：${logger.warn(data.raw)}`)
+          Stdlog.warn(data.self_id, `未知消息：${data.raw}`)
       }
     } else if (data.echo && this.echo[data.echo]) {
       if (![0, 1].includes(data.retcode))
@@ -1776,9 +1870,9 @@ class OnebotV11 {
       clearTimeout(this.echo[data.echo].timeout)
       delete this.echo[data.echo]
     } else {
-      Stdlog.info(data.self_id, `未知消息：${logger.warn(data.raw)}`)
+      Stdlog.info(data.self_id, `未知消息：${data.raw}`)
     }
-    
+
   }
 
 }

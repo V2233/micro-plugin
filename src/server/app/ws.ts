@@ -62,7 +62,7 @@ export default class MicroWs {
     async openForwardWs() {
         // 正向连接
         // const forwardWs = new Map()
-        if(this.cfg.onebotv11.disabled == false && this.cfg.onebotv11.address.length > 0) {
+        if(this.cfg.onebotv11.disabled == false && this.cfg.onebotv11.address?.length > 0) {
             this.cfg.onebotv11.address.forEach((path: string) => {
                 const v11Ws = new WebSocket(path)
                 v11Ws.on('open',() => {

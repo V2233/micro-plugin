@@ -84,6 +84,10 @@ class PluginController {
                 const mdJsonPath = join(pluginInfo.DATA_PATH, 'plugins', plugin.id, 'markdown.json')
                 plugin.message[i].content = JSON.parse(readFileSync(mdJsonPath, 'utf8'))
             }
+            if(plugin.message[i].type == 'code') {
+                const jsPath = join(pluginInfo.DATA_PATH, 'plugins', plugin.id, `${plugin.message[i].hash}.code.js`)
+                plugin.message[i].data = readFileSync(jsPath, 'utf8')
+            }
         }
 
         ctx.body = {

@@ -10,6 +10,7 @@ import Stdlog from './stdlog.js'
 
 import { autowired } from './injection.js'
 import { getAllWebAddress } from './ipAddress.js'
+import { getLoader } from "./getLoader.js"
 
 
 /**
@@ -47,7 +48,7 @@ async function execSync(cmd: string) {
  * @param data 
  * @returns 
  */
-function makeMd5(data:string | Buffer) {
+function makeMd5(data: string | Buffer) {
   return createHash("md5").update(data).digest("hex")
 }
 
@@ -56,26 +57,26 @@ function makeMd5(data:string | Buffer) {
  * @param ip 
  * @returns 
  */
-function isPrivateIP(ip) {  
+function isPrivateIP(ip) {
 
-  const parts = ip.split('.').map(Number);  
+  const parts = ip.split('.').map(Number);
 
   // 检查IP地址是否属于私有地址范围  
-  if (parts[0] === 10) {  
-      // 10.0.0.0 - 10.255.255.255  
-      return true;  
-  } else if (parts[0] === 172 && parts[1] >= 16 && parts[1] <= 31) {  
-      // 172.16.0.0 - 172.31.255.255  
-      return true;  
-  } else if (parts[0] === 192 && parts[1] === 168) {  
-      // 192.168.0.0 - 192.168.255.255  
-      return true;  
-  } else if (parts[0] === 169 && parts[1] === 254) {  
-      // 169.254.0.0 - 169.254.255.255 (APIPA/自动私有IP寻址)  
-      return true;  
-  }  
-  return false;  
-}  
+  if (parts[0] === 10) {
+    // 10.0.0.0 - 10.255.255.255  
+    return true;
+  } else if (parts[0] === 172 && parts[1] >= 16 && parts[1] <= 31) {
+    // 172.16.0.0 - 172.31.255.255  
+    return true;
+  } else if (parts[0] === 192 && parts[1] === 168) {
+    // 192.168.0.0 - 192.168.255.255  
+    return true;
+  } else if (parts[0] === 169 && parts[1] === 254) {
+    // 169.254.0.0 - 169.254.255.255 (APIPA/自动私有IP寻址)  
+    return true;
+  }
+  return false;
+}
 
 
 export {
@@ -88,6 +89,7 @@ export {
   formatDuration,
   sleep,
   makeMd5,
+  getLoader,
   execSync,
   autowired,
   getAllWebAddress

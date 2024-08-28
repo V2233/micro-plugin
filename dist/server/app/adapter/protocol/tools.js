@@ -9,8 +9,6 @@ import Stdlog from '../../../../utils/stdlog.js';
 import Cfg from '../../../../config/config.js';
 
 class BotAPI {
-    constructor() {
-    }
     fs = Object.create(null);
     stat = { start_time: Date.now() / 1000 };
     get uin() {

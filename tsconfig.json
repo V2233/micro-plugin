@@ -60,6 +60,9 @@
     // 未读取函数参数时引发错误
     "noUnusedParameters": true,
 
+    // 必须检查是否为空
+    // "strictNullChecks":true,
+
     //为 switch 语句中的失败情况启用错误报告
     "noFallthroughCasesInSwitch": true,
 

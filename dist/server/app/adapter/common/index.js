@@ -2,8 +2,9 @@ import crypto from 'crypto';
 import fs from 'fs';
 import get_urls from 'get-urls';
 import fetch from 'node-fetch';
-import path from 'path';
+import { join, dirname } from 'path';
 import '../../../../utils/index.js';
+import { pluginInfo } from '../../../../env.js';
 import Stdlog from '../../../../utils/stdlog.js';
 
 if (!Bot?.adapter) {
@@ -17,7 +18,7 @@ else {
 function sleep(ms) {
     return new Promise((resolve) => setTimeout(resolve, ms));
 }
-async function init(key = 'Lain:restart') {
+async function init(key = 'micro:restart') {
     let restart = await redis.get(key);
     if (!restart)
         return;
@@ -205,7 +206,7 @@ function mkdirs(dirname) {
         return true;
     }
     else {
-        if (mkdirs(path.dirname(dirname))) {
+        if (mkdirs(dirname(dirname))) {
             fs.mkdirSync(dirname);
             return true;
         }
@@ -218,9 +219,8 @@ async function downloadFile(url, destPath, headers = {}, absolute = false) {
     }
     let dest = destPath;
     if (!absolute) {
-        const _path = process.cwd();
-        dest = path.join(_path, 'data', 'lain', dest);
-        const lastLevelDirPath = path.dirname(dest);
+        dest = join(pluginInfo.DATA_PATH, dest);
+        const lastLevelDirPath = dirname(dest);
         mkdirs(lastLevelDirPath);
     }
     const fileStream = fs.createWriteStream(dest);
@@ -298,7 +298,7 @@ function getFile(i) {
     return { type, file };
 }
 async function recvMsg(id, adapter, read = false) {
-    const key = `lain:recvMsg:${adapter}:${id}`;
+    const key = `micro:recvMsg:${adapter}:${id}`;
     if (read) {
         const msg = await redis.get(key);
         return msg || 0;
@@ -306,7 +306,7 @@ async function recvMsg(id, adapter, read = false) {
     await redis.incr(key);
 }
 async function MsgTotal(id, adapter, type = 'text', read = false) {
-    const key = `lain:sendMsg:${adapter}:${id}:${type === 'text' ? 'text' : 'image'}`;
+    const key = `micro:sendMsg:${adapter}:${id}:${type === 'text' ? 'text' : 'image'}`;
     if (read) {
         const msg = await redis.get(key);
         return msg || 0;

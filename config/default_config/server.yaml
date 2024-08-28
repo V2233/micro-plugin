@@ -1,6 +1,6 @@
 # Web端口号
 server:
-  host: auto
+  host: localhost
   port: 23306
 
 # 用户登录信息

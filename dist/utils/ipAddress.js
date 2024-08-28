@@ -6,10 +6,17 @@ import Cfg from '../config/config.js';
 
 const redis = await Redis();
 const logger = await Logger();
-async function getAllWebAddress() {
+async function getAllWebAddress(auto = true) {
     const { server } = Cfg.getConfig('server');
     let host = server.host;
     let port = server.port;
+    if (host !== 'auto' && auto == false) {
+        return {
+            custom: [joinHttpPort(host, port)],
+            local: [''],
+            remote: ['']
+        };
+    }
     port = Number.parseInt(port);
     port = port === 80 ? null : port;
     let custom = [];

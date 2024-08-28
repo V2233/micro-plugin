@@ -1,6 +1,7 @@
 import { join } from 'path'
-import { mkdirSync, existsSync } from 'fs'
+import { mkdirSync, existsSync, createReadStream } from 'fs'
 import { pluginInfo,botInfo } from '#env'
+import mime from 'mime'
 import Koa from 'koa'
 import KoaStatic from 'koa-static'
 import { koaBody } from 'koa-body'
@@ -50,15 +51,31 @@ const fileHostPath = join(botInfo.WORK_PATH, 'temp', 'fileHost')
 if(!existsSync(fileHostPath)) {
   mkdirSync(fileHostPath,{ recursive: true })
 }
-app.use(async (ctx, next) => {
-    if (ctx.path.startsWith('/api/File')) {
-      ctx.path = ctx.path.replace(/^\/api\/File/, '')
-      await KoaStatic(fileHostPath)
-    } else {
-      // 非静态文件请求，继续执行后续中间件
-      await next();
-    }
-});
+
+app.use(async (ctx, next) => {  
+  if (ctx.path.startsWith('/api/File')) {  
+    // 移除 /api/File 前缀，以便 KoaStatic 能正确处理剩余路径  
+    ctx.path = ctx.path.replace(/^\/api\/File/, '');  
+    const filePath = join(fileHostPath, ctx.path);  
+    try {  
+      if (existsSync(filePath)) {  
+        // 设置响应类型（这里可能需要更复杂的逻辑来根据文件扩展名设置）  
+        const contentType = mime.getType(filePath) || 'application/octet-stream';
+        ctx.type = contentType; 
+        ctx.body = createReadStream(filePath);  
+      } else {  
+        ctx.status = 404;  
+        ctx.body = 'File not found';  
+      }  
+    } catch (err) {  
+      ctx.status = 500;  
+      ctx.body = 'Internal Server Error';  
+    }  
+  } else {  
+    // 非静态文件请求，继续执行后续中间件  
+    await next()
+  }
+})
 
 /**
  * 创建server实例

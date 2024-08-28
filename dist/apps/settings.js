@@ -17,6 +17,10 @@ class Settings extends plugin {
                 fnc: "switchStdin"
             },
             {
+                reg: /小微设置面板Ip(.*)/,
+                fnc: "setWebIp"
+            },
+            {
                 reg: /小微设置面板端口(.*)/,
                 fnc: "setWebPort"
             },
@@ -42,6 +46,21 @@ class Settings extends plugin {
         else if (/小微关闭std/.test(this.e.msg)) {
             Cfg.setConfig(true, ['stdin', 'disabled'], 'micro-adapter');
             this.e.reply('关闭成功，重启后生效！');
+        }
+    }
+    async setWebIp() {
+        let ip = '';
+        ip = this.e.msg.replace(/.*小微设置面板Ip/, '');
+        if (ip == '') {
+            this.e.reply('请加上IP地址');
+            return;
+        }
+        try {
+            Cfg.setConfig(ip, ['server', 'host'], 'server');
+            this.e.reply('设置成功，更新为' + ip);
+        }
+        catch (err) {
+            this.e.reply(JSON.stringify(err));
         }
     }
     async setWebPort() {

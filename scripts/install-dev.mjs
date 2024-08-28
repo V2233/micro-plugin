@@ -15,7 +15,7 @@ const packages = [
 ];  
   
 // 将包列表转换为npm install命令的字符串  
-const installCommand = `pnpm install --save-dev -w ${packages.join(' ')}`;  
+const installCommand = `yarn add --save-dev -W ${packages.join(' ')}`;  
   
 // 执行npm install命令  
 console.error(`[Micro]开始安装开发依赖，请稍等...`);  

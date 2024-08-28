@@ -4,7 +4,7 @@ import schedule from 'node-schedule';
 import { join } from 'path';
 import { pluginInfo, botInfo } from '../env.js';
 import '../utils/index.js';
-import { Plugin, Segment, Puppeteer, Bot, Logger } from '../adapter/index.js';
+import { Plugin, Segment, Puppeteer, Bot, Logger, Loader } from '../adapter/index.js';
 import { copyDirectory } from '../server/controller/fs/tools.js';
 import Pager from '../utils/pager.js';
 
@@ -13,6 +13,7 @@ const segment = await Segment();
 const puppeteer = await Puppeteer();
 const bot = await Bot();
 const logger = await Logger();
+const loader = await Loader();
 const indexPath = join(pluginInfo.DATA_PATH, 'regs.json');
 const pluginsPath = join(pluginInfo.DATA_PATH, 'plugins');
 let pluginsList = [];
@@ -124,6 +125,29 @@ async function sendMessage(e = { taskId: '' }) {
             let msgSegList = [];
             for (let item of message) {
                 switch (item.type) {
+                    case 'code':
+                        const codeString = readFileSync(join(pluginPath, item.hash + '.code.js'), 'utf-8');
+                        const asyncCodeString = `
+                            return (async () => { 
+                                try {    
+                                    ${codeString}       
+                                } catch (error) {    
+                                    throw error;    
+                                }    
+                            })()
+                        `;
+                        const dynamicAsyncFunction = new Function('e', 'Bot', 'segment', 'puppeteer', 'logger', 'loader', asyncCodeString);
+                        try {
+                            const startTime = Date.now();
+                            await dynamicAsyncFunction(e, Bot, segment, puppeteer, logger, loader);
+                            const endTime = Date.now();
+                            logger.info(`[micro]执行[${plugin.id}]代码成功，耗时${endTime - startTime}ms!`);
+                        }
+                        catch (err) {
+                            logger.error(`[micro]执行[${plugin.id}]代码出错：`);
+                            logger.error(err);
+                        }
+                        return;
                     case 'text':
                         try {
                             let compileText = new Function('e', 'Bot', 'return ' + '`' + item.data + '`');
@@ -173,7 +197,7 @@ async function sendMessage(e = { taskId: '' }) {
                         const mdPath = join(pluginPath, 'markdown.json');
                         if (existsSync(mdPath)) {
                             let mdContent = JSON.parse(readFileSync(mdPath, 'utf8'));
-                            if (mdContent.content == '') {
+                            if (mdContent.content != '') {
                                 delete mdContent.params;
                                 msgSegList.push({ type: 'markdown', content: mdContent });
                             }
@@ -190,7 +214,7 @@ async function sendMessage(e = { taskId: '' }) {
                     case 'button':
                         if (existsSync(join(pluginPath, 'button.json'))) {
                             let btnContent = JSON.parse(readFileSync(join(pluginPath, 'button.json'), 'utf8'));
-                            msgSegList.push(segment.button(btnContent));
+                            msgSegList.push({ type: 'button', content: btnContent });
                         }
                         break;
                     default:
@@ -210,7 +234,15 @@ async function sendMessage(e = { taskId: '' }) {
             }
             setTimeout(async () => {
                 if (e.reply) {
-                    await e.reply(msg.message, msg.isQuote, { at: msg.isAt });
+                    const res = await e.reply(msg.message, msg.isQuote, { at: msg.isAt });
+                    if (!res) {
+                        if (e.group_id) {
+                            await bot[e.self_id].pickGroup(e.group_id).sendMsg(msg.message);
+                        }
+                        else {
+                            await bot[e.self_id].pickFriend(e.user_id).sendMsg(msg.message);
+                        }
+                    }
                 }
                 else {
                     if (e.taskId) {
@@ -228,7 +260,15 @@ async function sendMessage(e = { taskId: '' }) {
         }
         else {
             if (e.reply) {
-                await e.reply(msg.message, msg.isQuote, { at: msg.isAt });
+                const res = await e.reply(msg.message, msg.isQuote, { at: msg.isAt });
+                if (!res) {
+                    if (e.group_id) {
+                        await bot[e.self_id].pickGroup(e.group_id).sendMsg(msg.message);
+                    }
+                    else {
+                        await bot[e.self_id].pickFriend(e.user_id).sendMsg(msg.message);
+                    }
+                }
             }
             else {
                 if (e.taskId) {

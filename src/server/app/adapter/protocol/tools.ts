@@ -17,7 +17,7 @@ interface fileInfoType {
 
 class BotAPI {
 
-    constructor() {
+    // constructor() {
         // const CopyBot = Bot
         //@ts-ignore
         // Bot = new Proxy({}, {
@@ -33,7 +33,8 @@ class BotAPI {
         //         return Reflect.get(CopyBot, prop, receiver)
         //     }
         // })
-    }
+        
+    // }
 
     fs = Object.create(null)
 
@@ -161,7 +162,7 @@ class BotAPI {
             Object.defineProperty(data, "member", {
                 value: data.group.pickMember(data.user_id),
             })
-
+        
         if (data.bot.adapter?.id)
             data.adapter_id = data.bot.adapter.id
         if (data.bot.adapter?.name)

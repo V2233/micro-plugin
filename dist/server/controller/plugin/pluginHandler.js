@@ -38,6 +38,13 @@ class PluginHandler {
         const { message } = this.curPlugin;
         let newMessage = message.map((item) => {
             switch (item.type) {
+                case 'code':
+                    if (!existsSync(pluginPath)) {
+                        mkdirSync(pluginPath, { recursive: true });
+                    }
+                    writeFileSync(join(pluginPath, item.hash + '.code.js'), item.data, 'utf-8');
+                    item.data = '';
+                    break;
                 case 'text':
                     break;
                 case 'image':

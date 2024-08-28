@@ -9,7 +9,6 @@ interface fileInfoType {
     md5: string;
 }
 declare class BotAPI {
-    constructor();
     fs: any;
     stat: {
         start_time: number;

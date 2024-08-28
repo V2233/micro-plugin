@@ -8,6 +8,7 @@ export { default as Pager } from './pager.js';
 export { default as Stdlog } from './stdlog.js';
 export { autowired } from './injection.js';
 export { getAllWebAddress } from './ipAddress.js';
+export { getLoader } from './getLoader.js';
 
 function path2URI(path = botInfo.WORK_PATH) {
     return `file://${path}/`;

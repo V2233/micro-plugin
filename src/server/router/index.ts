@@ -9,6 +9,7 @@ import FsController from '../controller/fs/index.js'
 import PluginController from '../controller/plugin/index.js'
 import InfoController from '../controller/info/index.js'
 import ConfigController from '../controller/config/index.js'
+import SandboxController from '../controller/sandbox/index.js'
 
 enum FSAPI {
     LSIT_DIR_URL = '/fs/listdir',
@@ -65,6 +66,15 @@ enum CONFIGAPI {
     SET_PROTOCOL_CONFIG_URL = '/protocol/setcfg',
 }
 
+enum SANDBOXAPI {
+    GET_PLUGINS_LOADER = '/sandbox/getloader',
+    UPLOAD_FILE_URL = '/sandbox/upload',
+
+    GET_ONEBOT11_DATA_URL = '/sandbox/onebot11/getdata',
+    SET_ONEBOT11_DATA_URL = '/sandbox/onebot11/setdata',
+    RESET_ONEBOT11_DATA_URL = '/sandbox/onebot11/resetdata'
+}
+
 const router = new Router({ prefix: '/api' })
 
 // 账户相关
@@ -75,6 +85,8 @@ router.post('/logOut', UserController.logOut)
 router.get('/user/info', auth, UserController.userInfo)
 
 router.get('/user/port', auth, UserController.getPort)
+
+router.post('/server/address', UserController.getWebAddress)
 
 
 // 配置相关
@@ -105,6 +117,18 @@ router.get(BOTAPI.STATUS_URL, StateController.sysInfo)
 router.get(BOTAPI.INFO_URL, InfoController.botInfo)
 
 router.get(BOTAPI.URI_URL, InfoController.botURI)
+
+
+// 沙盒
+router.get(SANDBOXAPI.GET_PLUGINS_LOADER, SandboxController.getPluginsLoader)
+
+router.post(SANDBOXAPI.UPLOAD_FILE_URL, SandboxController.uploadFile)
+
+router.get(SANDBOXAPI.GET_ONEBOT11_DATA_URL, SandboxController.getOnebot11Data)
+
+router.post(SANDBOXAPI.SET_ONEBOT11_DATA_URL, SandboxController.setOnebot11Data)
+
+router.delete(SANDBOXAPI.RESET_ONEBOT11_DATA_URL, SandboxController.reSetOnebot11Data)
 
 
 // 插件列表

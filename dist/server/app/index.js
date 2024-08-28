@@ -1,6 +1,7 @@
 import { join } from 'path';
-import { existsSync, mkdirSync } from 'fs';
+import { existsSync, mkdirSync, createReadStream } from 'fs';
 import { pluginInfo, botInfo } from '../../env.js';
+import mime from 'mime';
 import Koa from 'koa';
 import KoaStatic from 'koa-static';
 import { koaBody } from 'koa-body';
@@ -26,7 +27,22 @@ if (!existsSync(fileHostPath)) {
 app.use(async (ctx, next) => {
     if (ctx.path.startsWith('/api/File')) {
         ctx.path = ctx.path.replace(/^\/api\/File/, '');
-        await KoaStatic(fileHostPath);
+        const filePath = join(fileHostPath, ctx.path);
+        try {
+            if (existsSync(filePath)) {
+                const contentType = mime.getType(filePath) || 'application/octet-stream';
+                ctx.type = contentType;
+                ctx.body = createReadStream(filePath);
+            }
+            else {
+                ctx.status = 404;
+                ctx.body = 'File not found';
+            }
+        }
+        catch (err) {
+            ctx.status = 500;
+            ctx.body = 'Internal Server Error';
+        }
     }
     else {
         await next();

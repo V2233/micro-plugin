@@ -2,8 +2,9 @@ import crypto from 'crypto'
 import fs from 'fs'
 import get_urls from 'get-urls'
 import fetch from 'node-fetch'
-import path from 'path'
+import { join, dirname } from 'path'
 import { Stdlog } from '#utils'
+import { pluginInfo } from '#env'
 
 /** 注册uin */
 if (!Bot?.adapter) {
@@ -23,7 +24,7 @@ function sleep (ms) {
 }
 
 /** 适配器重启发送消息 */
-async function init (key = 'Lain:restart') {
+async function init (key = 'micro:restart') {
   let restart = await redis.get(key) as any
   if (!restart) return
   redis.del(key)
@@ -247,7 +248,7 @@ function mkdirs (dirname) {
   if (fs.existsSync(dirname)) {
     return true
   } else {
-    if (mkdirs(path.dirname(dirname))) {
+    if (mkdirs(dirname(dirname))) {
       fs.mkdirSync(dirname)
       return true
     }
@@ -258,7 +259,7 @@ function mkdirs (dirname) {
 * @param url 要下载的文件链接
 * @param destPath 目标路径，如received/abc.pdf. 目前如果文件名重复会覆盖。
 * @param headers
-* @param absolute 是否是绝对路径，默认为false，此时拼接在data/lain下
+* @param absolute 是否是绝对路径，默认为false，此时拼接在data/micro下
 * @returns {Promise<string>} 最终下载文件的存储位置
 */
 async function downloadFile (url, destPath, headers = {}, absolute = false) {
@@ -268,9 +269,8 @@ async function downloadFile (url, destPath, headers = {}, absolute = false) {
   }
   let dest = destPath
   if (!absolute) {
-    const _path = process.cwd()
-    dest = path.join(_path, 'data', 'lain', dest)
-    const lastLevelDirPath = path.dirname(dest)
+    dest = join(pluginInfo.DATA_PATH, dest)
+    const lastLevelDirPath = dirname(dest)
     mkdirs(lastLevelDirPath)
   }
   const fileStream = fs.createWriteStream(dest)
@@ -364,7 +364,7 @@ function getFile (i) {
  * @return {number} 次数
  */
 async function recvMsg (id, adapter, read = false) {
-  const key = `lain:recvMsg:${adapter}:${id}`
+  const key = `micro:recvMsg:${adapter}:${id}`
   if (read) {
     const msg = await redis.get(key)
     return msg || 0
@@ -381,7 +381,7 @@ async function recvMsg (id, adapter, read = false) {
  * @return {number} 次数
  */
 async function MsgTotal (id, adapter, type = 'text', read = false) {
-  const key = `lain:sendMsg:${adapter}:${id}:${type === 'text' ? 'text' : 'image'}`
+  const key = `micro:sendMsg:${adapter}:${id}:${type === 'text' ? 'text' : 'image'}`
   if (read) {
     const msg = await redis.get(key)
     return msg || 0

@@ -77,6 +77,30 @@ class UserController {
         }
     }
 
+    // 获取本机web地址
+    async getWebAddress(ctx) {
+        const {hostname} = ctx.request.body;
+        if(hostname) {
+            Cfg.setConfig(hostname, ['server', 'host'], 'server')
+            const { port } = (await Cfg.getConfig('server')).server
+            ctx.body = {
+                code: 200,
+                message: 'success',
+                data: {
+                    hostname: hostname,
+                    port: port
+                }
+            }
+        } else {
+            ctx.body = {
+                code: 500,
+                message: 'error',
+                data: '保存服务端地址失败'
+            }
+        }
+        
+    }
+
 }
 
 export default new UserController()
