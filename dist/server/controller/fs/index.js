@@ -1,5 +1,6 @@
 import { botInfo } from '../../../env.js';
 import { join, basename } from 'path';
+import { TermCfg } from '../../app/webui/terminal/config.js';
 import mime from 'mime';
 import { getDir, unlinkedPath, copyDirectory, fuzzyMatchInDirectoryTree, filterDirectoryTree, calculateFileSize, calculateTotalSize, formatFileSize } from './tools.js';
 import { writeFileSync, mkdirSync, readFileSync, unlinkSync, rmSync, renameSync, copyFileSync, existsSync, createReadStream } from 'fs';
@@ -193,6 +194,27 @@ class FsController {
             code: 200,
             message: 'success',
             data: formatFileSize(res)
+        };
+    }
+    async connectSSH(ctx) {
+        let { host, port, username, password } = ctx.request.query;
+        TermCfg.ssh.isOpen = true;
+        TermCfg.ssh.host = host;
+        TermCfg.ssh.port = port;
+        TermCfg.ssh.username = username;
+        TermCfg.ssh.password = password;
+        ctx.body = {
+            code: 200,
+            message: 'success',
+            data: 'ok'
+        };
+    }
+    async closeSSH(ctx) {
+        TermCfg.ssh.isOpen = false;
+        ctx.body = {
+            code: 200,
+            message: 'success',
+            data: 'ok'
         };
     }
 }

@@ -1,5 +1,6 @@
 import { botInfo } from "#env";
 import { join, basename } from "path"
+import { TermCfg } from '../../app/webui/terminal/config.js'
 import mime from 'mime'
 
 import {
@@ -299,6 +300,35 @@ class FsController {
             code: 200,
             message: 'success',
             data: formatFileSize(res)
+        }
+    }
+
+    // 连接ssh
+    async connectSSH(ctx) {
+        let { host,port,username,password } = ctx.request.query
+
+        TermCfg.ssh.isOpen = true
+        TermCfg.ssh.host = host
+        TermCfg.ssh.port = port
+        TermCfg.ssh.username = username
+        TermCfg.ssh.password = password
+
+        ctx.body = {
+            code: 200,
+            message: 'success',
+            data: 'ok'
+        }
+    }
+
+    // 关闭ssh
+    async closeSSH(ctx) {
+
+        TermCfg.ssh.isOpen = false
+
+        ctx.body = {
+            code: 200,
+            message: 'success',
+            data: 'ok'
         }
     }
 }

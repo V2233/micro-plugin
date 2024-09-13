@@ -1,4 +1,3 @@
-/// <reference types="node" />
 import { type FileTypeResult } from "file-type";
 interface fileInfoType {
     name: string;

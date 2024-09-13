@@ -1,4 +1,3 @@
-/// <reference types="node" />
 import { IncomingMessage } from 'http';
 import { Websocket } from 'ws';
 declare class OnebotV11 {

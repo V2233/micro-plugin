@@ -1,4 +1,3 @@
-/// <reference types="node" />
 import formatDuration from './formatDuration.js';
 import common from './common.js';
 import logger from './logger.js';

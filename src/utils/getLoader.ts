@@ -1,10 +1,14 @@
-import { pathToFileURL } from 'url';
-import { join } from 'path';
-import { botInfo } from '#env';
+// import { pathToFileURL } from 'url';
+// import { join } from 'path';
+// import { botInfo } from '#env';
 import { Loader } from '#bot'
-import { readFile } from 'fs'
+// import { readFile } from 'fs'
 import lodash from 'lodash'
 
+/**
+ * 获取指令集
+ * @returns
+ */
 export async function getLoader() {
     const loader = await Loader()
     let packages = []
@@ -41,89 +45,91 @@ export async function getLoader() {
     }
 
     // 匹配的模块名
-    try {  
-        const modules = await getReflectNpm('./yunzai.config.js');  
-        const configPath = join(botInfo.WORK_PATH, 'yunzai.config.js');  
-        const configModule = await import(pathToFileURL(configPath).toString());  
-        const defineConfig = configModule.default;  
-        const npmPlugins = defineConfig.applications;  
+    // 获取不到了
+    // try {  
+    //     const modules = await getReflectNpm('./yunzai.config.js');  
+    //     const configPath = join(botInfo.WORK_PATH, 'yunzai.config.js');  
+    //     const configModule = await import(pathToFileURL(configPath).toString());  
+    //     const defineConfig = configModule.default;  
+    //     const npmPlugins = defineConfig.applications;  
   
-        for (const [index, npmPlugin] of npmPlugins.entries()) {  
-            const npmObj = {  
-                packName: (modules[index] ? modules[index] : '暂无法匹配包名'),  
-                packPlugins: [],  
-                isNpm: true  
-            };  
+    //     for (const [index, npmPlugin] of npmPlugins.entries()) {  
+    //         const npmObj = {  
+    //             packName: (modules[index] ? modules[index] : '暂无法匹配包名'),  
+    //             packPlugins: [],  
+    //             isNpm: true  
+    //         };  
   
-            let npmPluginFuncs: any[] = [];  
-            if (typeof npmPlugin === 'string') {  
-                npmPluginFuncs = await (await import(npmPlugin)).default().mounted();  
-            } else {  
-                npmPluginFuncs = await npmPlugin.mounted();  
-            }  
+    //         let npmPluginFuncs: any[] = [];  
+    //         if (typeof npmPlugin === 'string') {  
+    //             npmPluginFuncs = await (await import(npmPlugin)).default().mounted();  
+    //         } else {  
+    //             npmPluginFuncs = await npmPlugin.mounted();  
+    //         }  
   
-            for (const pluginInstance of npmPluginFuncs) {  
-                let msg = {  
-                    pluginTitle: `插件名：${pluginInstance.name}`,  
-                    pluginFuns: []  
-                };  
+    //         for (const pluginInstance of npmPluginFuncs) {  
+    //             let msg = {  
+    //                 pluginTitle: `插件名：${pluginInstance.name}`,  
+    //                 pluginFuns: []  
+    //             };  
   
-                if (lodash.isEmpty(pluginInstance.rule)) {  
-                    msg.pluginFuns.push(`无命令正则`);  
-                    npmObj.packPlugins.push(msg);  
-                    continue;  
-                }  
+    //             if (lodash.isEmpty(pluginInstance.rule)) {  
+    //                 msg.pluginFuns.push(`无命令正则`);  
+    //                 npmObj.packPlugins.push(msg);  
+    //                 continue;  
+    //             }  
   
-                for (let v in pluginInstance.rule) {  
-                    msg.pluginFuns.push(`【${Number(v) + 1}】：${pluginInstance.rule[v].reg}`);  
-                }  
+    //             for (let v in pluginInstance.rule) {  
+    //                 msg.pluginFuns.push(`【${Number(v) + 1}】：${pluginInstance.rule[v].reg}`);  
+    //             }  
   
-                npmObj.packPlugins.push(msg);  
-            }  
+    //             npmObj.packPlugins.push(msg);  
+    //         }  
   
-            packages.push(npmObj);  
-        }  
+    //         packages.push(npmObj);  
+    //     }  
   
-    } catch (err) {  
-        console.log(err);  
-    }  
+    // } catch (err) {  
+    //     console.log(err);  
+    // }  
 
     return packages
 }
 
 /**
  * 匹配模块名
+ * @deprecated 获取不到了
  * @param filePath 
  * @returns 
  */
-async function getReflectNpm(filePath:string) {  
-    try {  
-        const data = await new Promise((resolve, reject) => {
-            readFile(filePath, 'utf8', (err, data) => {
-                if (err) {
-                    reject(err);
-                } else {
-                    resolve(data);
-                }
-            });
-        }) as string
+// async function getReflectNpm(filePath:string) {  
+//     try {  
+//         const data = await new Promise((resolve, reject) => {
+//             readFile(filePath, 'utf8', (err, data) => {
+//                 if (err) {
+//                     reject(err);
+//                 } else {
+//                     resolve(data);
+//                 }
+//             });
+//         }) as string
 
-        const applicationsMatch = data.match(/applications:\s*\[([^\]]+)\]/);  
-        if (applicationsMatch && applicationsMatch[1]) {  
+//         const applicationsMatch = data.match(/applications:\s*\[([^\]]+)\]/);  
+//         if (applicationsMatch && applicationsMatch[1]) {  
 
-            const applicationsRaw = applicationsMatch[1].replace(/\s*,\s*/g, ',').split(',');  
+//             const applicationsRaw = applicationsMatch[1].replace(/\s*,\s*/g, ',').split(',');  
   
-            // 去除每个元素前后的空格（如果有的话）  
-            const applications = applicationsRaw.map(dep => dep.trim());  
+//             // 去除每个元素前后的空格（如果有的话）  
+//             const applications = applicationsRaw.map(dep => dep.trim());  
   
-            return applications;  
-        } else {  
-            return []; 
-        }  
-    } catch (error) {  
-        throw new Error(`Error processing file: ${error.message}`);  
-    }  
-} 
+//             return applications;  
+//         } else {  
+//             return []; 
+//         }  
+//     } catch (error) {  
+//         throw new Error(`Error processing file: ${error.message}`);  
+//     }  
+// } 
 
 /**
  * @deprecated 不映射了，不稳定

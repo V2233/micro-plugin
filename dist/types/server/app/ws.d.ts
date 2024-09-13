@@ -1,6 +1,3 @@
-/// <reference types="node" />
-/// <reference types="node" />
-/// <reference types="node" />
 import { WebSocket } from 'ws';
 import { Duplex } from 'stream';
 import { IncomingMessage } from 'http';

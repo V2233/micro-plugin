@@ -10,6 +10,7 @@ import PluginController from '../controller/plugin/index.js'
 import InfoController from '../controller/info/index.js'
 import ConfigController from '../controller/config/index.js'
 import SandboxController from '../controller/sandbox/index.js'
+import DatabaseController from '../controller/database/index.js'
 
 enum FSAPI {
     LSIT_DIR_URL = '/fs/listdir',
@@ -31,7 +32,10 @@ enum FSAPI {
     UPLOAD_URL = '/fs/upload',
     DOWNLOAD_URL = '/fs/download',
     FITTER_TREE_URL = '/fs/filtertree',
-    FILES_SIZE_URL = '/fs/filesize'
+    FILES_SIZE_URL = '/fs/filesize',
+
+    CONNECT_SSH_URL = '/fs/openssh',
+    CLOSE_SSH_URL = '/fs/closessh'
 }
 
 enum PLUGINSAPI {
@@ -73,6 +77,15 @@ enum SANDBOXAPI {
     GET_ONEBOT11_DATA_URL = '/sandbox/onebot11/getdata',
     SET_ONEBOT11_DATA_URL = '/sandbox/onebot11/setdata',
     RESET_ONEBOT11_DATA_URL = '/sandbox/onebot11/resetdata'
+}
+
+enum REDISAPI {
+    GET_ALLKEYS_URL = '/database/redis/allkeys',
+    GET_KEY_URL = '/database/redis/getkey',
+    SET_KEY_URL = '/database/redis/setkey',
+    DEL_KEY_URL = '/database/redis/delkey',
+    DEL_KEYS_URL = '/database/redis/delkeys',
+
 }
 
 const router = new Router({ prefix: '/api' })
@@ -131,6 +144,18 @@ router.post(SANDBOXAPI.SET_ONEBOT11_DATA_URL, SandboxController.setOnebot11Data)
 router.delete(SANDBOXAPI.RESET_ONEBOT11_DATA_URL, SandboxController.reSetOnebot11Data)
 
 
+// 数据库
+router.get(REDISAPI.GET_ALLKEYS_URL, DatabaseController.getKeys)
+
+router.get(REDISAPI.GET_KEY_URL, DatabaseController.getKey)
+
+router.post(REDISAPI.SET_KEY_URL, DatabaseController.setKey)
+
+router.delete(REDISAPI.DEL_KEY_URL, DatabaseController.delKey)
+
+router.delete(REDISAPI.DEL_KEYS_URL, DatabaseController.delKeys)
+
+
 // 插件列表
 router.post(PLUGINSAPI.ADD_PLUGIN_URL, PluginController.setPlugin)
 
@@ -183,5 +208,9 @@ router.get(FSAPI.DOWNLOAD_URL, FsController.download)
 router.get(FSAPI.FITTER_TREE_URL, FsController.getFilesTree)
 
 router.get(FSAPI.FILES_SIZE_URL, FsController.getFilesSize)
+
+router.get(FSAPI.CONNECT_SSH_URL, FsController.connectSSH)
+
+router.get(FSAPI.CLOSE_SSH_URL, FsController.closeSSH)
 
 export default router

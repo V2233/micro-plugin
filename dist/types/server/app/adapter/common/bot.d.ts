@@ -1,6 +1,4 @@
-declare const CopyBot: {
-    adapter: number[];
-} & import("icqq").Client;
+declare const CopyBot: import("icqq").Client;
 declare const botMethods: {
     pickGroup: typeof pickGroup;
     pickFriend: typeof pickFriend;

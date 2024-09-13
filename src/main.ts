@@ -5,6 +5,6 @@ setTimeout(async () => {
   // 运行客户端
   await Client.run().then(async () => {
     // 读取yunzai.config.js
-    await Processor.install()
+    await Processor.install('yunzai.config.js')
   })
 }, 0)

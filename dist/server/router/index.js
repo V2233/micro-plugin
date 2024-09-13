@@ -8,6 +8,7 @@ import PluginController from '../controller/plugin/index.js';
 import InfoController from '../controller/info/index.js';
 import ConfigController from '../controller/config/index.js';
 import SandboxController from '../controller/sandbox/index.js';
+import DatabaseController from '../controller/database/index.js';
 
 var FSAPI;
 (function (FSAPI) {
@@ -30,6 +31,8 @@ var FSAPI;
     FSAPI["DOWNLOAD_URL"] = "/fs/download";
     FSAPI["FITTER_TREE_URL"] = "/fs/filtertree";
     FSAPI["FILES_SIZE_URL"] = "/fs/filesize";
+    FSAPI["CONNECT_SSH_URL"] = "/fs/openssh";
+    FSAPI["CLOSE_SSH_URL"] = "/fs/closessh";
 })(FSAPI || (FSAPI = {}));
 var PLUGINSAPI;
 (function (PLUGINSAPI) {
@@ -68,6 +71,14 @@ var SANDBOXAPI;
     SANDBOXAPI["SET_ONEBOT11_DATA_URL"] = "/sandbox/onebot11/setdata";
     SANDBOXAPI["RESET_ONEBOT11_DATA_URL"] = "/sandbox/onebot11/resetdata";
 })(SANDBOXAPI || (SANDBOXAPI = {}));
+var REDISAPI;
+(function (REDISAPI) {
+    REDISAPI["GET_ALLKEYS_URL"] = "/database/redis/allkeys";
+    REDISAPI["GET_KEY_URL"] = "/database/redis/getkey";
+    REDISAPI["SET_KEY_URL"] = "/database/redis/setkey";
+    REDISAPI["DEL_KEY_URL"] = "/database/redis/delkey";
+    REDISAPI["DEL_KEYS_URL"] = "/database/redis/delkeys";
+})(REDISAPI || (REDISAPI = {}));
 const router = new Router({ prefix: '/api' });
 router.post('/login', UserController.login);
 router.post('/logOut', UserController.logOut);
@@ -92,6 +103,11 @@ router.post(SANDBOXAPI.UPLOAD_FILE_URL, SandboxController.uploadFile);
 router.get(SANDBOXAPI.GET_ONEBOT11_DATA_URL, SandboxController.getOnebot11Data);
 router.post(SANDBOXAPI.SET_ONEBOT11_DATA_URL, SandboxController.setOnebot11Data);
 router.delete(SANDBOXAPI.RESET_ONEBOT11_DATA_URL, SandboxController.reSetOnebot11Data);
+router.get(REDISAPI.GET_ALLKEYS_URL, DatabaseController.getKeys);
+router.get(REDISAPI.GET_KEY_URL, DatabaseController.getKey);
+router.post(REDISAPI.SET_KEY_URL, DatabaseController.setKey);
+router.delete(REDISAPI.DEL_KEY_URL, DatabaseController.delKey);
+router.delete(REDISAPI.DEL_KEYS_URL, DatabaseController.delKeys);
 router.post(PLUGINSAPI.ADD_PLUGIN_URL, PluginController.setPlugin);
 router.delete(PLUGINSAPI.DELETE_PLUGIN_URL, PluginController.deletePlugin);
 router.put(PLUGINSAPI.PUT_PLUGIN_URL, PluginController.editorPlugin);
@@ -117,5 +133,7 @@ router.post(FSAPI.UPLOAD_URL, FsController.upload);
 router.get(FSAPI.DOWNLOAD_URL, FsController.download);
 router.get(FSAPI.FITTER_TREE_URL, FsController.getFilesTree);
 router.get(FSAPI.FILES_SIZE_URL, FsController.getFilesSize);
+router.get(FSAPI.CONNECT_SSH_URL, FsController.connectSSH);
+router.get(FSAPI.CLOSE_SSH_URL, FsController.closeSSH);
 
 export { router as default };

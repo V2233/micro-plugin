@@ -84,6 +84,6 @@ export async function Redis():Promise<import("redis").RedisClientType> {
         return redis
     } catch (err) {
         const { Redis } = await import('yunzai')
-        return Redis
+        return Redis as import("redis").RedisClientType
     }
 }

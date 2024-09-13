@@ -1,16 +1,18 @@
-
+import iconvLite from 'iconv-lite'
 import { randomUUID } from "crypto"
 import { WebSocket } from 'ws'
 import { exec } from "child_process"
 import { resolve as resolvePath } from 'path'
-import iconvLite from 'iconv-lite'
 import { Logger } from '#bot'
+import { Client } from 'ssh2'
+import { TermCfg } from './config'
 
 const logger = await Logger()
 
 class TerminalWs {
     clients: Map<string, WebSocket>
     execPath: string
+    stream: any
     constructor(ws: WebSocket) {
         this.clients = new Map()
         this.init(ws)
@@ -19,14 +21,27 @@ class TerminalWs {
 
     init(ws: WebSocket) {
         const ClientId = randomUUID();
-        ws.send(JSON.stringify({ params: ClientId, action: 'meta', type: 'exec' }))
-
+        // 连接ssh
+        if(TermCfg.ssh.isOpen) {
+            ws.send(JSON.stringify({ params: ClientId, action: 'meta', type: 'ssh' }))
+            this.ssh(ws,TermCfg.ssh)
+        } else {
+            ws.send(JSON.stringify({ params: ClientId, action: 'meta', type: 'exec' }))
+        }
+        
         this.clients.set(ClientId, ws)
         ws.on('message', async (message) => {
             logger.info(logger.blue(`[micro-terminal]收到消息：${message}`))
             const data = JSON.parse(message);
-         
-            await this.exec(data.params.cmd,ws,data.params.path?data.params.path:null)
+            if(TermCfg.ssh.isOpen || data.params.type == 'ssh') {
+                this.stream?.write(data.params.cmd + '\n');  
+                if(data.params.cmd == 'logout') {
+                    TermCfg.ssh.isOpen = false
+                }
+            } else {
+                await this.exec(data.params.cmd,ws,data.params.path?data.params.path:null)
+            }
+            
         });
         ws.on('close', () => {
             logger.info(logger.blue(`[micro-terminal]已断开连接`))
@@ -49,13 +64,14 @@ class TerminalWs {
             exec(cmd, { 
                 encoding: 'buffer',
                 cwd: this.execPath
-                }, (error, stdout, stderr) => {  
+            }, (error, stdout, stderr) => {  
                 if (error) {  
                     // logger.error(`exec error: ${iconvLite.decode(Buffer.from(error.message), 'cp936')}`);  
                     logger.error(error.message);  
                     sendStdout(error.message);
                     return;  
                 }  
+
                 if (stderr) {  
                     logger.info(`stderr: ${iconvLite.decode(stderr, 'cp936')}`);  
                     sendStdout(iconvLite.decode(stderr, 'cp936'));
@@ -63,6 +79,7 @@ class TerminalWs {
 
                 logger.info(`stdout: ${iconvLite.decode(stdout, 'cp936')}`);  
                 sendStdout(iconvLite.decode(stdout, 'cp936'));
+
                 if(cmd.startsWith('cd')) {
                     if(path) {
                         this.execPath = path
@@ -113,6 +130,49 @@ class TerminalWs {
         } else {
             ws.close();
         }
+    }
+
+    async ssh(ws:WebSocket,account:{
+        host: string,
+        port?:string,
+        username: string,
+        password: string
+    }) {
+
+        const sendStdout = (data:string) => {
+            ws.send(JSON.stringify({ type: 'ssh', action: 'stdout', params: data }))
+        }
+
+        const conn = new Client();  
+        conn.on('ready', () => {  
+            console.log('Client :: ready');  
+            conn.shell((err, stream) => {  
+                this.stream = stream
+                if (err) logger.error(err);  
+                stream.on('close', function() {  
+                    console.log('Stream :: close');  
+                    conn.end();  
+                }).on('data', function(data) {  
+                    console.log('STDOUT: ' + data);  
+                    sendStdout(data.toString()); // 发送SSH输出到WebSocket  
+                }).stderr.on('data', function(data) {  
+                    console.error('STDERR: ' + data);  
+                    sendStdout(data.toString()); // 也可以发送错误输出  
+                });  
+        
+            });  
+        }).connect({  
+            host: account.host,  
+            port: account.port || 22,  
+            username: account.username,  
+            password: account.password // 或者使用privateKey  
+        });  
+
+        conn.on('error', (err) => {  
+            TermCfg.ssh.isOpen = false
+            console.error('SSH Connection :: error:', err.message);  
+            ws.send(JSON.stringify({ type: 'exec', action: 'stdout', params: '连接失败，请重连或检查主机密码是否正确：' + err.message }))
+        }); 
     }
 
 }

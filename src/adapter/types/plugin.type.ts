@@ -231,7 +231,4 @@ export class Plugin extends BasePlugin {
  */
 export const plugin = Plugin
 
-/**
- * global.plugin
- */
-global.plugin = plugin
+

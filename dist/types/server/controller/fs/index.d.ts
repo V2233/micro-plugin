@@ -18,6 +18,8 @@ declare class FsController {
     download(ctx: any): Promise<void>;
     getFilesTree(ctx: any): Promise<void>;
     getFilesSize(ctx: any): Promise<void>;
+    connectSSH(ctx: any): Promise<void>;
+    closeSSH(ctx: any): Promise<void>;
 }
 declare const _default: FsController;
 export default _default;
