@@ -112,6 +112,16 @@ async function sendMessage(e = { taskId: '' }) {
     if (e.taskId) {
         e = {};
     }
+    let msg = '1145145141314521';
+    if (e.message) {
+        if (!e.msg) {
+            msg = e.message.reduce((prev, next) => {
+                if (next.type === 'text') {
+                    return prev + next.text;
+                }
+            }, '');
+        }
+    }
     let msgQueue = [];
     const pluginList = JSON.parse(JSON.stringify(pluginsList));
     for (let plugin of pluginList) {
@@ -119,7 +129,7 @@ async function sendMessage(e = { taskId: '' }) {
             continue;
         const regexp = new RegExp(plugin.reg, plugin.flag);
         const pluginPath = join(pluginsPath, plugin.id);
-        if (e.taskId == plugin.id || regexp.test(e.msg)) {
+        if (e.taskId == plugin.id || regexp.test(e.msg ? e.msg : msg)) {
             const { message } = plugin;
             let msgSegList = [];
             for (let item of message) {
@@ -233,15 +243,7 @@ async function sendMessage(e = { taskId: '' }) {
             }
             setTimeout(async () => {
                 if (e.reply) {
-                    const res = await e.reply(msg.message, msg.isQuote, { at: msg.isAt });
-                    if (!res) {
-                        if (e.group_id) {
-                            await bot[e.self_id].pickGroup(e.group_id).sendMsg(msg.message);
-                        }
-                        else {
-                            await bot[e.self_id].pickFriend(e.user_id).sendMsg(msg.message);
-                        }
-                    }
+                    await e.reply(msg.message, msg.isQuote, { at: msg.isAt });
                 }
                 else {
                     if (e.taskId) {
@@ -259,15 +261,7 @@ async function sendMessage(e = { taskId: '' }) {
         }
         else {
             if (e.reply) {
-                const res = await e.reply(msg.message, msg.isQuote, { at: msg.isAt });
-                if (!res) {
-                    if (e.group_id) {
-                        await bot[e.self_id].pickGroup(e.group_id).sendMsg(msg.message);
-                    }
-                    else {
-                        await bot[e.self_id].pickFriend(e.user_id).sendMsg(msg.message);
-                    }
-                }
+                await e.reply(msg.message, msg.isQuote, { at: msg.isAt });
             }
             else {
                 if (e.taskId) {

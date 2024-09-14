@@ -172,6 +172,17 @@ async function sendMessage(e:any = { taskId: '' }) {
         e = {}
     }
 
+    let msg = '1145145141314521'
+    if(e.message) {
+        if (!e.msg) {
+          msg = e.message.reduce((prev:string,next:any)=>{
+            if(next.type === 'text') {
+              return prev + next.text
+            }
+          },'')
+        }
+    }
+
     // 待发送消息队列
     let msgQueue = []
     const pluginList = JSON.parse(JSON.stringify(pluginsList))
@@ -187,7 +198,7 @@ async function sendMessage(e:any = { taskId: '' }) {
         const pluginPath = join(pluginsPath, plugin.id)
 
         // 制作消息段
-        if (e.taskId == plugin.id || regexp.test(e.msg)) {
+        if (e.taskId == plugin.id || regexp.test(e.msg?e.msg:msg)) {
             const { message } = plugin
             let msgSegList = []
             for (let item of message) {
@@ -312,14 +323,15 @@ async function sendMessage(e:any = { taskId: '' }) {
             }
             setTimeout(async () => {
                 if (e.reply) {
-                    const res = await e.reply(msg.message, msg.isQuote, { at: msg.isAt })
-                    if(!res) {
-                        if(e.group_id) {
-                            await bot[e.self_id].pickGroup(e.group_id).sendMsg(msg.message)
-                        } else {
-                            await bot[e.self_id].pickFriend(e.user_id).sendMsg(msg.message)
-                        }
-                    }
+                    await e.reply(msg.message, msg.isQuote, { at: msg.isAt })
+                    // if(!res) {
+                    //     if(e.group_id) {
+                    //         await bot[e.self_id].pickGroup(e.group_id).sendMsg(msg.message)
+                    //     } else {
+                    //         await bot[e.self_id].pickFriend(e.user_id).sendMsg(msg.message)
+                    //     }
+                    // }
+                    
                 } else {
                     if (e.taskId) {
                         if (msg.isGlobal === false) {
@@ -338,14 +350,14 @@ async function sendMessage(e:any = { taskId: '' }) {
 
         } else {
             if (e.reply) {
-                const res = await e.reply(msg.message, msg.isQuote, { at: msg.isAt })
-                if(!res) {
-                    if(e.group_id) {
-                        await bot[e.self_id].pickGroup(e.group_id).sendMsg(msg.message)
-                    } else {
-                        await bot[e.self_id].pickFriend(e.user_id).sendMsg(msg.message)
-                    }
-                }
+                await e.reply(msg.message, msg.isQuote, { at: msg.isAt })
+                // if(!res) {
+                //     if(e.group_id) {
+                //         await bot[e.self_id].pickGroup(e.group_id).sendMsg(msg.message)
+                //     } else {
+                //         await bot[e.self_id].pickFriend(e.user_id).sendMsg(msg.message)
+                //     }
+                // }
 
             } else {
                 if (e.taskId) {
@@ -408,6 +420,7 @@ async function init() {
     pluginsList = getPluginsList() || []
 
     bot.on?.("message", async (e) => {
+        // console.log(e)
         await sendMessage(e);
     });
 

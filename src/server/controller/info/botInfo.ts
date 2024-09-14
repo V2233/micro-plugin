@@ -83,12 +83,10 @@ function getCountContacts(bot) {
 function _getBotList(selfId:number) {
   /** bot列表 */
   let BotList = [selfId];
-
-  if (Bot?.adapter) {
-      BotList = Bot.adapter;
-      // if (selfId && !Bot.adapter.includes(selfId)) {
-      //     BotList.push(selfId)
-      // } 
+  if (Array.isArray(Bot.uin)) {
+    BotList = Bot.uin
+  } else {
+    BotList = Bot.adapter;
   }
   return BotList
 }

@@ -36,7 +36,7 @@ const startServer = async (port) => {
                         `内网地址：${local[0]}`);
                 }
                 catch (error) {
-                    logger.mark('[Micro]Bot实例不存在或未配置主人QQ，部分功能可能失效' + error);
+                    logger.mark('[Micro]' + error);
                 }
                 resolve('ok');
             }
