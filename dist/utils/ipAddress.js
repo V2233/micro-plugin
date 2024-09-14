@@ -1,11 +1,10 @@
 import os from 'os';
 import fetch from 'node-fetch';
 import '../config/index.js';
-import { Redis, Logger } from '../adapter/index.js';
+import { Redis } from '../adapter/index.js';
 import Cfg from '../config/config.js';
 
 const redis = await Redis();
-const logger = await Logger();
 async function getAllWebAddress(auto = true) {
     const { server } = Cfg.getConfig('server');
     let host = server.host;

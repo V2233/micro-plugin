@@ -24,9 +24,15 @@ export default async function getBotInfo(selfId: number) {
       const messageCount = await getMessageCount(bot);
       const countContacts = getCountContacts(bot);
       const botRunTime = formatDuration(Date.now() / 1000 - bot?.stat?.start_time, "dd天hh:mm:ss", true);
+      let platformVersion = ''
+      try {
+        platformVersion = `ICQQ v${require("icqq/package.json").version}`
+      } catch(err) {
+        platformVersion = '未知协议版本'
+      }
       const botVersion = version
           ? `${version.name}${apk ? ` ${version.version}` : ""}`
-          : `ICQQ v${require("icqq/package.json").version}`;
+          : platformVersion;
       return {
           avatarUrl,
           nickname,

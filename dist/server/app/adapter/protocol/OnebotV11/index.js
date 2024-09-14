@@ -995,33 +995,6 @@ class OnebotV11 {
         Stdlog.mark(data.self_id, `${this.name}(${this.id}) ${data.bot.version.version} 连接成功，协议通过，执行消息处理...`);
         BotAPI.$emit(`connect.${data.self_id}`, data);
         BotAPI.$emit("system.online", data.bot);
-        Bot = new Proxy(Bot, {
-            get: (target, prop) => {
-                if (prop in target) {
-                    if (typeof target[prop] === 'function') {
-                        return (...args) => {
-                            target[prop].apply(target, args);
-                        };
-                    }
-                    else {
-                        return target[prop];
-                    }
-                }
-                else {
-                    if (prop in BotAPI) {
-                        if (typeof BotAPI[prop] === 'function') {
-                            return (...args) => BotAPI[prop].apply(BotAPI, args);
-                        }
-                        else {
-                            return BotAPI[prop];
-                        }
-                    }
-                    else {
-                        return undefined;
-                    }
-                }
-            }
-        });
     }
     async sendReplyMsg(data, msg, quote, option) {
         if (typeof msg == 'string') {

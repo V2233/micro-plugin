@@ -3,7 +3,6 @@ import { createHash } from 'node:crypto';
 import { botInfo } from '../env.js';
 export { default as formatDuration } from './formatDuration.js';
 export { default as common } from './common.js';
-export { default as logger } from './logger.js';
 export { default as Pager } from './pager.js';
 export { default as Stdlog } from './stdlog.js';
 export { autowired } from './injection.js';

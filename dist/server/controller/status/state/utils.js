@@ -1,9 +1,6 @@
-import { Logger } from '../../../../adapter/index.js';
-
 let si = false;
 let osInfo = null;
 let colorthief = null;
-const logger = await Logger();
 async function initDependence() {
     if (si)
         return si;

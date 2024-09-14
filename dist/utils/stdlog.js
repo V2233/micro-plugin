@@ -1,8 +1,5 @@
-import { Logger, Bot } from '../adapter/index.js';
 import chalk from 'chalk';
 
-const logger = await Logger();
-const bot = await Bot();
 class Stdlog {
     nickname(id) {
         let symbol = "";
@@ -14,7 +11,7 @@ class Stdlog {
         else {
             symbol = ">";
         }
-        return chalk.hex('#00FFFF')(bot?.[id]?.nickname ? `<${bot?.[id]?.nickname}:${id}${symbol}` : (id ? `<Bot:${id}${symbol}` : ''));
+        return chalk.hex('#00FFFF')(Bot?.[id]?.nickname ? `<${Bot?.[id]?.nickname}:${id}${symbol}` : (id ? `<Bot:${id}${symbol}` : ''));
     }
     info(id, ...log) {
         logger.info(this.nickname(id) || '', ...log);

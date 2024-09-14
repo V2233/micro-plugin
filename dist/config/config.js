@@ -17,10 +17,10 @@ class Cfg {
         this.mergeYamlFile();
     }
     get qq() {
-        return Number(this.getBotConfig('qq').qq);
+        return Number(this.getBotConfig('qq')?.qq || 114514514);
     }
     get pwd() {
-        return this.getBotConfig('qq').pwd;
+        return this.getBotConfig('qq')?.pwd || 114514514;
     }
     get bot() {
         const bot = this.getBotConfig('bot');
@@ -112,13 +112,18 @@ class Cfg {
         this.setYaml('config', name, data, parentKeys);
     }
     getYaml(type, name, path = ROOT_PATH) {
-        const file = join(path, `config/${type}/${name}.yaml`);
-        const key = `${type}.${name}`;
-        if (this.config[key])
+        try {
+            const file = join(path, `config/${type}/${name}.yaml`);
+            const key = `${type}.${name}`;
+            if (this.config[key])
+                return this.config[key];
+            this.config[key] = YAML.parse(readFileSync(file, 'utf8'));
+            this.watch(file, name, type);
             return this.config[key];
-        this.config[key] = YAML.parse(readFileSync(file, 'utf8'));
-        this.watch(file, name, type);
-        return this.config[key];
+        }
+        catch (err) {
+            return undefined;
+        }
     }
     setYaml(type, name, data, parentKeys) {
         const file = join(ROOT_PATH, `config/${type}/${name}.yaml`);

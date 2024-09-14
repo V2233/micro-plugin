@@ -1,8 +1,5 @@
 import { execSync } from "#utils"
 import { pluginInfo } from '#env'
-import { Logger } from '#bot';
-
-const logger = await Logger()
 
 /**
  * 获取FastFetch

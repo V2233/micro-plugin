@@ -11,7 +11,7 @@ import schedule from 'node-schedule'
 import { join } from 'path'
 import { botInfo, pluginInfo } from '#env';
 import { Pager } from '#utils';
-import { Segment, Puppeteer, Plugin, Bot, Logger, Loader } from '#bot';
+import { Segment, Puppeteer, Plugin, Bot, Loader } from '#bot';
 import { copyDirectory } from '../server/controller/fs/tools.js';
 
 import type { messageType, pluginType } from '../server/controller/plugin/pluginType.js'
@@ -20,7 +20,6 @@ const plugin = await Plugin();
 const segment = await Segment();
 const puppeteer = await Puppeteer();
 const bot = await Bot()
-const logger = await Logger();
 const loader = await Loader()
 
 const indexPath = join(pluginInfo.DATA_PATH, 'regs.json');

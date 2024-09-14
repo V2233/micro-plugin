@@ -4,7 +4,6 @@ import { botInfo } from "#env"
 
 import formatDuration from './formatDuration.js'
 import common from './common.js'
-import logger from './logger.js'
 import Pager from './pager.js'
 import Stdlog from './stdlog.js'
 
@@ -81,7 +80,6 @@ function isPrivateIP(ip) {
 
 export {
   Pager,
-  logger,
   common,
   Stdlog,
   path2URI,

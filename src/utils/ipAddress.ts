@@ -1,10 +1,9 @@
 import os from 'os'
 import fetch from 'node-fetch'
 import { Cfg } from "#cfg"
-import { Redis, Logger } from '#bot'
+import { Redis } from '#bot'
 
 const redis = await Redis()
-const logger = await Logger()
 
 /**
  * 获取所有web地址，包括内网、外网

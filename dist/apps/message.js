@@ -4,7 +4,7 @@ import schedule from 'node-schedule';
 import { join } from 'path';
 import { pluginInfo, botInfo } from '../env.js';
 import '../utils/index.js';
-import { Plugin, Segment, Puppeteer, Bot, Logger, Loader } from '../adapter/index.js';
+import { Plugin, Segment, Puppeteer, Bot, Loader } from '../adapter/index.js';
 import { copyDirectory } from '../server/controller/fs/tools.js';
 import Pager from '../utils/pager.js';
 
@@ -12,7 +12,6 @@ const plugin = await Plugin();
 const segment = await Segment();
 const puppeteer = await Puppeteer();
 const bot = await Bot();
-const logger = await Logger();
 const loader = await Loader();
 const indexPath = join(pluginInfo.DATA_PATH, 'regs.json');
 const pluginsPath = join(pluginInfo.DATA_PATH, 'plugins');

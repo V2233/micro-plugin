@@ -1534,39 +1534,29 @@ class OnebotV11 {
     BotAPI.$emit("system.online", data.bot)
 
     /** 重写Bot公共方法，比较危险 */
-    Bot = new Proxy(Bot, {
-      get: (target, prop) => {
-        if (prop in target) {
-          if (typeof target[prop] === 'function') {
-            // if (Bot.adapter && Bot.adapter.length > 0) {
-            //   return (...args) => {
-            //     target[prop].apply(target, args)
-            //     Bot.adapter.forEach((botId) => {
-            //       if (prop in target[botId]) {
-            //         target[botId][prop].apply(target, args)
-            //       }
-            //     })
-            //   }
-            // }
-            return (...args) => {
-              target[prop].apply(target, args)
-            }
-          } else {
-            return target[prop]
-          }
-        } else {
-          if (prop in BotAPI) {
-            if (typeof BotAPI[prop] === 'function') {
-              return (...args) => BotAPI[prop].apply(BotAPI, args)
-            } else {
-              return BotAPI[prop]
-            }
-          } else {
-            return undefined
-          }
-        }
-      }
-    })
+    // Bot = new Proxy(Bot, {
+    //   get: (target, prop) => {
+    //     if (prop in target) {
+    //       if (typeof target[prop] === 'function') {
+    //         return (...args) => {
+    //           target[prop].apply(target, args)
+    //         }
+    //       } else {
+    //         return target[prop]
+    //       }
+    //     } else {
+    //       if (prop in BotAPI) {
+    //         if (typeof BotAPI[prop] === 'function') {
+    //           return (...args) => BotAPI[prop].apply(BotAPI, args)
+    //         } else {
+    //           return BotAPI[prop]
+    //         }
+    //       } else {
+    //         return undefined
+    //       }
+    //     }
+    //   }
+    // })
   }
 
   /**

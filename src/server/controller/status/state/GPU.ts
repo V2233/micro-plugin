@@ -1,7 +1,4 @@
 import { si, initDependence } from "./utils.js"
-import { Logger } from '#bot';
-
-const logger = await Logger()
 
 let isGPU = false;
 

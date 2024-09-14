@@ -2,10 +2,6 @@ export let si: any = false
 export let osInfo = null
 export let colorthief = null
 
-import { Logger } from '#bot';
-
-const logger = await Logger()
-
 /**
  * 异步初始化系统信息依赖
  * 该函数尝试导入'systeminformation'模块，并获取操作系统信息。

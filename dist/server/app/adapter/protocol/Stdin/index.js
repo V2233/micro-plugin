@@ -7,8 +7,8 @@ import { fileTypeFromBuffer } from 'file-type';
 import '../../../../../config/index.js';
 import { pluginInfo } from '../../../../../env.js';
 import '../../../../../utils/index.js';
-import Cfg from '../../../../../config/config.js';
 import Stdlog from '../../../../../utils/stdlog.js';
+import Cfg from '../../../../../config/config.js';
 
 const { uin, user_id, avatar, name } = Cfg.getConfig('protocol').stdin;
 const path = join(pluginInfo.DATA_PATH, 'stdin');

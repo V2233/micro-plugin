@@ -1,7 +1,5 @@
 import { initDependence, si } from './utils.js';
-import { Logger } from '../../../../adapter/index.js';
 
-const logger = await Logger();
 let isGPU = false;
 (async function initGetIsGPU() {
     if (!await initDependence())

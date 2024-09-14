@@ -1,25 +1,31 @@
-import { Logger } from '#bot';
 import { Cfg } from '#cfg';
 import { Stdlog } from '#utils';
+import { botInfo } from '#env';
 import { WebSocket } from 'ws';  
 import { Duplex } from 'stream'; 
 import { IncomingMessage } from 'http'; 
 import { handleReplyMsg } from './webui/plugins/msgHandler.js';
 import BotAPI from './adapter/protocol/tools.js'
-import Stdin from './adapter/protocol/Stdin/index.js';
+// import Stdin from './adapter/protocol/Stdin/index.js';
 import OnebotV11 from './adapter/protocol/OnebotV11/index.js';
 import TerminalWs from './webui/terminal/index.js';
 import Screenchat from './webui/chat/index.js';
-
-const logger = await Logger()
 
 export default class MicroWs {
     cfg: any
     constructor() {
         this.cfg = Cfg.getConfig('protocol')
         // 标准输入输出
-        if(this.cfg.stdin.disabled == false) Stdin()
+        this.openStdin()
         this.openForwardWs()
+        
+    }
+
+    async openStdin() {
+        if(this.cfg.stdin.disabled == false && !(/trss|Trss|TRSS/.test(botInfo.BOT_NAME))) {
+            const Stdin = (await import('./adapter/protocol/Stdin/index.js')).default
+            Stdin()
+        } 
     }
 
     onOpen(ws:WebSocket, req: IncomingMessage) {
