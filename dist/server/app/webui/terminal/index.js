@@ -3,7 +3,6 @@ import { randomUUID } from 'crypto';
 import { exec } from 'child_process';
 import { resolve } from 'path';
 import { Logger } from '../../../../adapter/index.js';
-import { Client } from 'ssh2';
 import { TermCfg } from './config.js';
 
 const logger = await Logger();
@@ -85,6 +84,14 @@ class TerminalWs {
         }
     }
     async ssh(ws, account) {
+        let Client;
+        try {
+            Client = (await import('ssh2')).Client;
+        }
+        catch (err) {
+            logger.error('[Micro]未成功安装ssh2，无法使用ssh连接功能：' + err.message);
+            return;
+        }
         const sendStdout = (data) => {
             ws.send(JSON.stringify({ type: 'ssh', action: 'stdout', params: data }));
         };

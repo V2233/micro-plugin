@@ -1609,14 +1609,14 @@ class OnebotV11 {
 
     switch (data.message_type) {
       case "private": {
-        const name = data.sender.card || data.sender.nickname || data.bot.fl.get(data.user_id)?.nickname
+        const name = data.sender?.card || data.sender?.nickname || data.bot.fl.get(data.user_id)?.nickname
         Stdlog.info(`${data.self_id} <= ${data.user_id}`, `好友消息：${name ? `[${name}] ` : ""}${log_message}`)
         break
       } case "group": {
         if (!data.group_name) data.group_name = data.bot.gl.get(data.group_id)?.group_name
         const group_name = data.group_name
 
-        let user_name = data.sender.card || data.sender.nickname
+        let user_name = data.sender?.card || data.sender?.nickname
         if (!user_name) {
           const user = data.bot.gml.get(data.group_id)?.get(data.user_id) || data.bot.fl.get(data.user_id)
           if (user) user_name = user?.card || user?.nickname

@@ -4,7 +4,6 @@ import { WebSocket } from 'ws'
 import { exec } from "child_process"
 import { resolve as resolvePath } from 'path'
 import { Logger } from '#bot'
-import { Client } from 'ssh2'
 import { TermCfg } from './config'
 
 const logger = await Logger()
@@ -139,6 +138,14 @@ class TerminalWs {
         password: string
     }) {
 
+        let Client:any
+        try {
+            Client = (await import('ssh2')).Client
+        } catch(err) {
+            logger.error('[Micro]未成功安装ssh2，无法使用ssh连接功能：' + err.message)
+            return
+        }
+        
         const sendStdout = (data:string) => {
             ws.send(JSON.stringify({ type: 'ssh', action: 'stdout', params: data }))
         }

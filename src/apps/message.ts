@@ -13,6 +13,7 @@ import { botInfo, pluginInfo } from '#env';
 import { Pager } from '#utils';
 import { Segment, Puppeteer, Plugin, Bot, Loader } from '#bot';
 import { copyDirectory } from '../server/controller/fs/tools.js';
+import BotAPI from '../server/app/adapter/protocol/tools.js'
 
 import type { messageType, pluginType } from '../server/controller/plugin/pluginType.js'
 
@@ -259,24 +260,24 @@ async function sendMessage(e:any = { taskId: '' }) {
                     // 视频
                     case 'video':
                         if (item.url) {
-                            msgSegList.push(segment.video(item.url))
+                            msgSegList.push({type: 'video', file: await BotAPI.Buffer(item.url, { http: true }), url: item.url})
                         }
                         break
                     // 表情
                     case 'face':
-                        msgSegList.push(segment.face(Number(item.data)))
+                        msgSegList.push({type: 'face', id: Number(item.data)})
                         break
                     // 骰子
                     case 'dice':
-                        msgSegList.push(segment.dice(Number(item.data)))
+                        msgSegList.push({type: 'dice', id: item.data})
                         break
                     // 猜拳
                     case 'rps':
-                        msgSegList.push(segment.rps(Number(item.data)))
+                        msgSegList.push({type: 'rps', id: item.data})
                         break
                     // 戳一戳(窗口抖动)
                     case 'poke':
-                        msgSegList.push(segment.poke(Number(item.data)))
+                        msgSegList.push({type: 'poke', id: Number(item.data)})
                         break
                     // md
                     case 'markdown':

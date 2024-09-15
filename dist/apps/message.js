@@ -6,6 +6,7 @@ import { pluginInfo, botInfo } from '../env.js';
 import '../utils/index.js';
 import { Plugin, Segment, Puppeteer, Bot, Loader } from '../adapter/index.js';
 import { copyDirectory } from '../server/controller/fs/tools.js';
+import BotAPI from '../server/app/adapter/protocol/tools.js';
 import Pager from '../utils/pager.js';
 
 const plugin = await Plugin();
@@ -187,20 +188,20 @@ async function sendMessage(e = { taskId: '' }) {
                         break;
                     case 'video':
                         if (item.url) {
-                            msgSegList.push(segment.video(item.url));
+                            msgSegList.push({ type: 'video', file: await BotAPI.Buffer(item.url, { http: true }), url: item.url });
                         }
                         break;
                     case 'face':
-                        msgSegList.push(segment.face(Number(item.data)));
+                        msgSegList.push({ type: 'face', id: Number(item.data) });
                         break;
                     case 'dice':
-                        msgSegList.push(segment.dice(Number(item.data)));
+                        msgSegList.push({ type: 'dice', id: item.data });
                         break;
                     case 'rps':
-                        msgSegList.push(segment.rps(Number(item.data)));
+                        msgSegList.push({ type: 'rps', id: item.data });
                         break;
                     case 'poke':
-                        msgSegList.push(segment.poke(Number(item.data)));
+                        msgSegList.push({ type: 'poke', id: Number(item.data) });
                         break;
                     case 'markdown':
                         const mdPath = join(pluginPath, 'markdown.json');

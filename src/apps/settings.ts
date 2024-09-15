@@ -42,10 +42,10 @@ export class Settings extends plugin {
 
     async switchStdin() {
         if (/小微开启std/.test(this.e.msg)) {
-            Cfg.setConfig(false,['stdin','disabled'],'micro-adapter')
+            Cfg.setConfig(false,['stdin','disabled'],'protocol')
             this.e.reply('开启成功，重启后生效！')
         } else if (/小微关闭std/.test(this.e.msg)) {
-            Cfg.setConfig(true,['stdin','disabled'],'micro-adapter')
+            Cfg.setConfig(true,['stdin','disabled'],'protocol')
             this.e.reply('关闭成功，重启后生效！')
         }
     }
