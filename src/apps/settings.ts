@@ -1,5 +1,6 @@
 import { Plugin } from '#bot'
 import { Cfg } from '#cfg'
+import { permission } from 'node:process'
 import { startServer, stopServer, restartServer } from '../server/index.js'
 // import type { RuleType, EventType } from '../adapter/types/types.js'
 
@@ -15,27 +16,33 @@ export class Settings extends plugin {
         this.rule = [
             {
                 reg: /小微(开启|关闭)std/,
-                fnc: "switchStdin"
+                fnc: "switchStdin",
+                permission: "master"
             },
             {
                 reg: /小微设置面板Ip(.*)/,
-                fnc: "setWebIp"
+                fnc: "setWebIp",
+                permission: "master"
             },
             {
                 reg: /小微设置面板端口(.*)/,
-                fnc: "setWebPort"
+                fnc: "setWebPort",
+                permission: "master"
             },
             {
                 reg: /小微开启面板服务/,
-                fnc: "startWeb"
+                fnc: "startWeb",
+                permission: "master"
             },
             {
                 reg: /小微关闭面板服务/,
-                fnc: "closeWeb"
+                fnc: "closeWeb",
+                permission: "master"
             },
             {
                 reg: /小微重启面板服务/,
-                fnc: "reStartWeb"
+                fnc: "reStartWeb",
+                permission: "master"
             },
         ]
     }

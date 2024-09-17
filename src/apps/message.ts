@@ -46,6 +46,7 @@ class RunPlugin extends plugin {
             {
                 reg: /小微删除指令(.*)/,
                 fnc: "deletePlugin",
+                permission: "master"
             },
         ];
         
