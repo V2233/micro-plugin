@@ -1,6 +1,5 @@
 import { Plugin } from '#bot'
 import { Cfg } from '#cfg'
-import { permission } from 'node:process'
 import { startServer, stopServer, restartServer } from '../server/index.js'
 // import type { RuleType, EventType } from '../adapter/types/types.js'
 
