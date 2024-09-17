@@ -18,6 +18,7 @@ const indexPath = join(pluginInfo.DATA_PATH, 'regs.json');
 const pluginsPath = join(pluginInfo.DATA_PATH, 'plugins');
 let pluginsList = [];
 let cronTask = {};
+const isTrss = /trss|Trss|TRSS/.test(botInfo.BOT_NAME);
 init();
 class RunPlugin extends plugin {
     constructor() {
@@ -37,6 +38,11 @@ class RunPlugin extends plugin {
                 permission: "master"
             },
         ];
+    }
+    async accept(e) {
+        if (!isTrss)
+            return;
+        await sendMessage(e);
     }
     async setPluginsList(value) {
         writeFileSync(indexPath, JSON.stringify(value, null, 2), 'utf-8');
@@ -162,7 +168,7 @@ async function sendMessage(e = { taskId: '' }) {
                     case 'text':
                         try {
                             let compileText = new Function('e', 'Bot', 'return ' + '`' + item.data + '`');
-                            msgSegList.push(compileText(e, Bot));
+                            msgSegList.push({ type: 'text', text: compileText(e, Bot) });
                         }
                         catch (err) {
                             logger.error(err);
@@ -312,9 +318,11 @@ async function init() {
         copyDirectory(join(pluginInfo.PUBLIC_PATH, 'help', 'micro-help'), join(pluginsPath, 'micro-help'));
     }
     pluginsList = getPluginsList() || [];
-    bot.on?.("message", async (e) => {
-        await sendMessage(e);
-    });
+    if (!isTrss) {
+        bot.on?.("message", async (e) => {
+            await sendMessage(e);
+        });
+    }
     pluginsList.forEach((plugin) => {
         if (plugin && plugin?.cron) {
             cronTask[plugin.id].job = schedule.scheduleJob(plugin.cron, async () => {

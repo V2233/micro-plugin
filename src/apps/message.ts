@@ -29,6 +29,8 @@ const pluginsPath = join(pluginInfo.DATA_PATH, 'plugins');
 let pluginsList:pluginType[] = [];
 let cronTask = {};
 
+const isTrss = /trss|Trss|TRSS/.test(botInfo.BOT_NAME)
+
 init()
 
 class RunPlugin extends plugin {
@@ -50,6 +52,16 @@ class RunPlugin extends plugin {
             },
         ];
         
+    }
+
+    /**
+     * 接收plugin事件
+     * @param e 
+     * @returns 
+     */
+    async accept(e:any) {
+        if(!isTrss) return
+        await sendMessage(e);
     }
    
     /**
@@ -233,7 +245,7 @@ async function sendMessage(e:any = { taskId: '' }) {
                     case 'text':
                         try {
                             let compileText = new Function('e', 'Bot', 'return ' + '`' + item.data + '`')
-                            msgSegList.push(compileText(e, Bot))
+                            msgSegList.push({type: 'text', text: compileText(e, Bot)})
                         } catch (err) {
                             logger.error(err)
                         }
@@ -421,10 +433,12 @@ async function init() {
     // 获取插件列表
     pluginsList = getPluginsList() || []
 
-    bot.on?.("message", async (e) => {
-        // console.log(e)
-        await sendMessage(e);
-    });
+    if(!isTrss) {
+        bot.on?.("message", async (e) => {
+            await sendMessage(e);
+        });
+    }
+    
 
     // 定时任务
     pluginsList.forEach((plugin: pluginType) => {

@@ -2,7 +2,7 @@
     {
         "id": "micro-help",
         "event": "message",
-        "reg": "小微帮助",
+        "reg": "^小微帮助",
         "cron": "",
         "delayTime": 0,
         "flag": "",
