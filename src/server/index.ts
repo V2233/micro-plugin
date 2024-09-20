@@ -44,7 +44,7 @@ const startServer = async (port: number): Promise<'ok' | void> => {
             `内网地址：${local[0]}`
           )
         } catch (error) {
-          logger.mark('[Micro]' + error)
+          logger.mark('[Micro]' + error.message)
         }
         resolve('ok');
       }

@@ -73,6 +73,6 @@ function getPluginNum(e = { isPro: false }) {
 
 export async function getEnvVersion() {
   // 环境版本
-  const { node, v8, git, redis } = await si.versions("node,v8,git,redis")
-  return { node, v8, git, redis }
+  const { node, git } = await si.versions("node,git")
+  return { node, git }
 }

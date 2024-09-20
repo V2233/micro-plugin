@@ -8,8 +8,6 @@ declare const _default: {
     fsStats: any;
     init(): Promise<void>;
     getData(): Promise<any>;
-    getRedisChartData(): Promise<boolean>;
-    setRedisChartData(): Promise<void>;
     _addData(arr: any, data: any, maxLen?: number): void;
 };
 export default _default;

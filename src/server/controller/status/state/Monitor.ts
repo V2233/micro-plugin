@@ -1,10 +1,6 @@
 import _ from "lodash"
 import { si, initDependence } from "./utils.js"
 
-import { Redis } from '#bot';
-
-const redis = await Redis()
-
 export default new class Monitor {
   _network: any
   _fsStats: any
@@ -40,7 +36,6 @@ export default new class Monitor {
       currentLoad: "currentLoad",
       mem: "active",
     }
-    this.chartDataKey = "Micro:state:chartData"
 
     this.init()
   }
@@ -71,14 +66,8 @@ export default new class Monitor {
 
   async init() {
     if (!await initDependence()) return
-    await this.getRedisChartData()
 
     this.getData()
-    // 网速
-    const Timer = setInterval(async () => {
-      let data = await this.getData()
-      if (_.isEmpty(data)) clearInterval(Timer)
-    }, 60000)
   }
 
   async getData() {
@@ -97,25 +86,8 @@ export default new class Monitor {
     if (_.isNumber(currentLoad)) {
       this._addData(this.chartData.cpu, [Date.now(), currentLoad])
     }
-    this.setRedisChartData()
+
     return data
-  }
-
-  async getRedisChartData() {
-    let data = await redis.get(this.chartDataKey)
-    if (data) {
-      this.chartData = JSON.parse(data)
-      return true
-    }
-    return false
-  }
-
-  async setRedisChartData() {
-    try {
-      await redis.set(this.chartDataKey, JSON.stringify(this.chartData), { EX: 86400 })
-    } catch (error) {
-      console.log(error)
-    }
   }
 
   /**
@@ -125,7 +97,7 @@ export default new class Monitor {
    * @param {number} [maxLen] - 数组允许的最大长度，默认值为60
    * @returns {void}
    */
-  _addData(arr, data, maxLen = 60) {
+  _addData(arr:any, data:any, maxLen = 60) {
     if (data === null || data === undefined) return
     // 如果数组长度超过允许的最大值，删除第一个元素
     if (arr.length >= maxLen) {

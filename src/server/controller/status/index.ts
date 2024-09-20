@@ -11,15 +11,37 @@ class StateController {
 
     // 系统状态
     async sysInfo(ctx: any) {
-        let cpuInfo = await getCpuInfo()
-        let gpuInfo = await getGPU()
-        let swapInfo = await getSwapInfo()
-        let ramInfo = await getMemUsage()
-        let diskSizeInfo = await getFsSize()
-        // let diskSpeedInfo = await getDiskSpeed()
-        let nodeInfo = await getNodeInfo()
-        let otherInfo = await getOtherInfo()
-        let networkInfo = await getNetwork()
+        // let cpuInfo = await getCpuInfo()
+        // let gpuInfo = await getGPU()
+        // let swapInfo = await getSwapInfo()
+        // let ramInfo = await getMemUsage()
+        // let diskSizeInfo = await getFsSize()
+        // // let diskSpeedInfo = await getDiskSpeed()
+        // let nodeInfo = await getNodeInfo()
+        // let otherInfo = await getOtherInfo()
+        // let networkInfo = await getNetwork()
+
+        const promises = [  
+            getCpuInfo(),  
+            getGPU(),  
+            getSwapInfo(),  
+            getMemUsage(),  
+            getFsSize(),  
+            getNodeInfo(),  
+            getOtherInfo(),  
+            getNetwork()  
+        ];  
+
+        const [  
+            cpuInfo,  
+            gpuInfo,  
+            swapInfo,  
+            ramInfo,  
+            diskSizeInfo,  
+            nodeInfo,  
+            otherInfo,  
+            networkInfo  
+        ] = await Promise.all(promises);
 
         ctx.body = {
             code: 200,

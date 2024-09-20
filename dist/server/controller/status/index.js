@@ -9,14 +9,17 @@ import { getFsSize } from './state/FsSize.js';
 
 class StateController {
     async sysInfo(ctx) {
-        let cpuInfo = await getCpuInfo();
-        let gpuInfo = await getGPU();
-        let swapInfo = await getSwapInfo();
-        let ramInfo = await getMemUsage();
-        let diskSizeInfo = await getFsSize();
-        let nodeInfo = await getNodeInfo();
-        let otherInfo = await getOtherInfo();
-        let networkInfo = await getNetwork();
+        const promises = [
+            getCpuInfo(),
+            getGPU(),
+            getSwapInfo(),
+            getMemUsage(),
+            getFsSize(),
+            getNodeInfo(),
+            getOtherInfo(),
+            getNetwork()
+        ];
+        const [cpuInfo, gpuInfo, swapInfo, ramInfo, diskSizeInfo, nodeInfo, otherInfo, networkInfo] = await Promise.all(promises);
         ctx.body = {
             code: 200,
             message: 'success',

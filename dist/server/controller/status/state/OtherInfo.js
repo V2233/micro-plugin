@@ -58,8 +58,8 @@ function getPluginNum(e = { isPro: false }) {
     return pluginsStr;
 }
 async function getEnvVersion() {
-    const { node, v8, git, redis } = await si.versions("node,v8,git,redis");
-    return { node, v8, git, redis };
+    const { node, git } = await si.versions("node,git");
+    return { node, git };
 }
 
 export { getOtherInfo as default, getEnvVersion };

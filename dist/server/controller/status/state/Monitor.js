@@ -1,8 +1,6 @@
 import _ from 'lodash';
 import { initDependence, si } from './utils.js';
-import { Redis } from '../../../../adapter/index.js';
 
-const redis = await Redis();
 var Monitor = new class Monitor {
     _network;
     _fsStats;
@@ -29,7 +27,6 @@ var Monitor = new class Monitor {
             currentLoad: "currentLoad",
             mem: "active",
         };
-        this.chartDataKey = "Micro:state:chartData";
         this.init();
     }
     set network(value) {
@@ -55,13 +52,7 @@ var Monitor = new class Monitor {
     async init() {
         if (!await initDependence())
             return;
-        await this.getRedisChartData();
         this.getData();
-        const Timer = setInterval(async () => {
-            let data = await this.getData();
-            if (_.isEmpty(data))
-                clearInterval(Timer);
-        }, 60000);
     }
     async getData() {
         const data = await si.get(this.valueObject);
@@ -73,24 +64,7 @@ var Monitor = new class Monitor {
         if (_.isNumber(currentLoad)) {
             this._addData(this.chartData.cpu, [Date.now(), currentLoad]);
         }
-        this.setRedisChartData();
         return data;
-    }
-    async getRedisChartData() {
-        let data = await redis.get(this.chartDataKey);
-        if (data) {
-            this.chartData = JSON.parse(data);
-            return true;
-        }
-        return false;
-    }
-    async setRedisChartData() {
-        try {
-            await redis.set(this.chartDataKey, JSON.stringify(this.chartData), { EX: 86400 });
-        }
-        catch (error) {
-            console.log(error);
-        }
     }
     _addData(arr, data, maxLen = 60) {
         if (data === null || data === undefined)
