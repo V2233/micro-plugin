@@ -2,7 +2,7 @@ import YAML from 'yaml'
 import chokidar from 'chokidar'
 import { join } from 'node:path'
 import { pluginInfo, botInfo } from '#env'
-import { Bot, Logger } from '#bot';
+import { Bot } from '#bot';
 import yamlHandler from './yamlHandler.js'
 import {
   copyFileSync,
@@ -13,7 +13,6 @@ import {
 } from 'node:fs'
 
 const bot = await Bot()
-const logger = await Logger()
 
 const { ROOT_PATH } = pluginInfo
 const { WORK_PATH } = botInfo
@@ -292,6 +291,8 @@ class Cfg {
         const doc = new yamlHandler(cfgFileDef)
         const defCfg = doc.jsonData
         const cfgKeys = Object.keys(cfg)
+        // 更改写入路径文件
+        doc.yamlPath = cfgFile
 
         // 删掉废弃的属性
         cfgKeys.forEach(key => {
@@ -310,9 +311,7 @@ class Cfg {
             } else {
               doc.set(key, cfg[key])
             }
-            // 写入文件
-            doc.yamlPath = cfgFile
-            doc.save()
+            doc.save(cfgFile)
           }
         })
       }
