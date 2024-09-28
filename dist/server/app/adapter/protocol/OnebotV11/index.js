@@ -973,7 +973,7 @@ class OnebotV11 {
             setGroupAddRequest: (flag, sub_type, approve, reason) => this.setGroupAddRequest(data, flag, sub_type, approve, reason),
         };
         data.bot = Bot[data.self_id];
-        if (!Bot.adapter.includes(data.self_id))
+        if (!Bot.adapter?.includes(data.self_id))
             Bot.adapter.push(data.self_id);
         data.bot.sendApi("_set_model_show", {
             model: data.bot.model,

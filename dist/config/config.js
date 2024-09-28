@@ -2,12 +2,11 @@ import YAML from 'yaml';
 import chokidar from 'chokidar';
 import { join } from 'node:path';
 import { pluginInfo, botInfo } from '../env.js';
-import { Bot, Logger } from '../adapter/index.js';
+import { Bot } from '../adapter/index.js';
 import YamlHandler from './yamlHandler.js';
 import { readFileSync, existsSync, mkdirSync, readdirSync, copyFileSync } from 'node:fs';
 
 const bot = await Bot();
-const logger = await Logger();
 const { ROOT_PATH } = pluginInfo;
 const { WORK_PATH } = botInfo;
 class Cfg {
@@ -152,6 +151,7 @@ class Cfg {
                 const doc = new YamlHandler(cfgFileDef);
                 const defCfg = doc.jsonData;
                 const cfgKeys = Object.keys(cfg);
+                doc.yamlPath = cfgFile;
                 cfgKeys.forEach(key => {
                     if (!defCfg.hasOwnProperty(key)) {
                         delete cfg[key];
@@ -165,8 +165,7 @@ class Cfg {
                         else {
                             doc.set(key, cfg[key]);
                         }
-                        doc.yamlPath = cfgFile;
-                        doc.save();
+                        doc.save(cfgFile);
                     }
                 });
             }

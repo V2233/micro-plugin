@@ -1506,7 +1506,7 @@ class OnebotV11 {
 
     data.bot = Bot[data.self_id]
 
-    if (!Bot.adapter.includes(data.self_id))
+    if (!Bot.adapter?.includes(data.self_id))
       Bot.adapter.push(data.self_id)
 
     data.bot.sendApi("_set_model_show", {

@@ -1,4 +1,4 @@
-import fs from 'fs';
+import { readFileSync, writeFileSync } from 'fs';
 import YAML from 'yaml';
 import _ from 'lodash';
 import chokidar from 'chokidar';
@@ -18,7 +18,7 @@ class YamlHandler {
     }
     initYaml() {
         try {
-            this.document = YAML.parseDocument(fs.readFileSync(this.yamlPath, 'utf8'));
+            this.document = YAML.parseDocument(readFileSync(this.yamlPath, 'utf8'));
         }
         catch (error) {
             throw error;
@@ -95,7 +95,7 @@ class YamlHandler {
     save(path = this.yamlPath) {
         this.isSave = true;
         let yaml = this.document.toString();
-        fs.writeFileSync(path, yaml, 'utf8');
+        writeFileSync(path, yaml, 'utf8');
     }
 }
 

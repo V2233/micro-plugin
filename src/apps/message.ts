@@ -258,6 +258,7 @@ async function sendMessage(e:any = { taskId: '' }) {
                             const img = await puppeteer.screenshot('micro-plugin/plugins', {
                                 saveId: item.hash,
                                 tplFile: join(pluginPath, item.hash + '.html'),
+                                quality: 100,
                                 e: e,
                                 Bot: Bot
                             })
