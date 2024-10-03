@@ -117,9 +117,6 @@ function getPluginsList() {
 async function sendMessage(e = { taskId: '' }) {
     if (!e.message && !e.taskId)
         return false;
-    if (e.taskId) {
-        e = {};
-    }
     let msg = '1145145141314521';
     if (e.message) {
         if (!e.msg) {
@@ -245,45 +242,55 @@ async function sendMessage(e = { taskId: '' }) {
     ;
     if (msgQueue.length == 0)
         return false;
+    const sendMsgs = async (e, msg) => {
+        if (e.reply) {
+            await e.reply(msg.message, msg.isQuote, { at: msg.isAt });
+        }
+        else {
+            if (e.taskId) {
+                if (msg.isGlobal === false) {
+                    let bots = [];
+                    for (let key in bot) {
+                        if (bot[key]?.pickGroup || bot[key]?.pickFriend) {
+                            bots.push(key);
+                        }
+                    }
+                    for (let bot_id of bots) {
+                        try {
+                            for (let g_id of msg.groups) {
+                                await bot[bot_id].pickGroup(g_id).sendMsg(msg.message);
+                            }
+                            for (let f_id of msg.friends) {
+                                await bot[bot_id].pickFriend(f_id).sendMsg(msg.message);
+                            }
+                        }
+                        catch (err) {
+                            logger.mark(`[Micro定时任务][${bot_id}]${err.message}`);
+                        }
+                    }
+                }
+            }
+            else {
+                if (e.group_id) {
+                    await bot[e.self_id].pickGroup(e.group_id).sendMsg(msg.message);
+                }
+                else {
+                    await bot[e.self_id].pickFriend(e.user_id).sendMsg(msg.message);
+                }
+            }
+        }
+    };
     for (let msg of msgQueue) {
         if (msg.delayTime) {
             if (typeof msg.delayTime != 'number') {
                 msg.delayTime = Number(msg.delayTime);
             }
             setTimeout(async () => {
-                if (e.reply) {
-                    await e.reply(msg.message, msg.isQuote, { at: msg.isAt });
-                }
-                else {
-                    if (e.taskId) {
-                        if (msg.isGlobal === false) {
-                            msg.groups.forEach(async (group_id) => {
-                                await bot.sendGroupMsg(group_id, msg.message);
-                            });
-                            msg.friends.forEach(async (user_id) => {
-                                await bot.sendPrivateMsg(user_id, msg.message);
-                            });
-                        }
-                    }
-                }
+                await sendMsgs(e, msg);
             }, msg.delayTime);
         }
         else {
-            if (e.reply) {
-                await e.reply(msg.message, msg.isQuote, { at: msg.isAt });
-            }
-            else {
-                if (e.taskId) {
-                    if (msg.isGlobal === false) {
-                        msg.groups.forEach(async (group_id) => {
-                            await bot.sendGroupMsg(group_id, msg.message);
-                        });
-                        msg.friends.forEach(async (user_id) => {
-                            await bot.sendPrivateMsg(user_id, msg.message);
-                        });
-                    }
-                }
-            }
+            await sendMsgs(e, msg);
         }
     }
     return true;
@@ -296,16 +303,23 @@ function checkAuth(plugin, e) {
             if (plugin.groups.includes(String(e.group_id)))
                 return false;
         }
-        if (plugin.friends.includes(String(e.user_id)))
-            return false;
+        else {
+            if (plugin.friends.includes(String(e.user_id)))
+                return false;
+        }
     }
     else {
         if (e.group_id) {
             if (!plugin.groups.includes(String(e.group_id)))
                 return false;
         }
-        if (!plugin.friends.includes(String(e.user_id)))
-            return false;
+        else if (e.user_id) {
+            if (!plugin.friends.includes(String(e.user_id)))
+                return false;
+        }
+        else if (e.taskId) {
+            return true;
+        }
     }
     return true;
 }
@@ -326,13 +340,13 @@ async function init() {
     }
     pluginsList.forEach((plugin) => {
         if (plugin && plugin?.cron) {
-            cronTask[plugin.id].job = schedule.scheduleJob(plugin.cron, async () => {
+            cronTask[plugin.id] = schedule.scheduleJob(plugin.cron, async () => {
                 try {
                     logger.mark(`执行定时任务：${plugin.id}`);
-                    await this.run({ taskId: plugin.id });
+                    await sendMessage({ taskId: plugin.id });
                 }
                 catch (error) {
-                    logger.error(`定时任务报错：${plugin.id}`);
+                    logger.error(`定时任务报错：\n任务Id: ${plugin.id}\n正则表达式：${plugin.reg}\ncron表达式：${plugin.reg}\n推送群：${plugin.groups.toString()}\n推送好友：${plugin.friends.toString()}`);
                     logger.error(error);
                 }
             });
@@ -351,10 +365,10 @@ async function init() {
                 cronTask[plugin.id] = schedule.scheduleJob(plugin.cron, async () => {
                     try {
                         logger.mark(`执行定时任务：${plugin.id}`);
-                        await this.run({ taskId: plugin.id });
+                        await sendMessage({ taskId: plugin.id });
                     }
                     catch (error) {
-                        logger.error(`定时任务报错：${plugin.id}`);
+                        logger.error(`定时任务报错：\n任务Id: ${plugin.id}\n正则表达式：${plugin.reg}\ncron表达式：${plugin.reg}\n推送群：${plugin.groups.toString()}\n推送好友：${plugin.friends.toString()}`);
                         logger.error(error);
                     }
                 });
