@@ -19,23 +19,43 @@ class DatabaseController {
     async getKey(ctx: any) {
         const { key } = ctx.request.query
 
-        ctx.body = {
-            code: 200,
-            message: 'ok',
-            data: await redis.get(key)
+        try {
+            const value = await redis.get(key)
+            ctx.body = {
+                code: 200,
+                message: 'ok',
+                data: value?value.toString():value
+            }
+        } catch(err) {
+            ctx.body = {
+                code: 503,
+                message: err.message,
+                data: ''
+            }
+            logger.error(err)
         }
+        
     }
 
     // 设置键
     async setKey(ctx: any) {
 
         const { key,value } = ctx.request.body
-        await redis.set(key,value)
 
-        ctx.body = {
-            code: 200,
-            message: 'ok',
-            data: ''
+        try {
+            await redis.set(key,value)
+            ctx.body = {
+                code: 200,
+                message: 'ok',
+                data: ''
+            }
+        } catch(err) {
+            ctx.body = {
+                code: 503,
+                message: err.message,
+                data: ''
+            }
+            logger.error(err)
         }
     }
 
@@ -43,26 +63,43 @@ class DatabaseController {
     async delKey(ctx: any) {
 
         const { key } = ctx.request.query
-        await redis.del(key)
 
-        ctx.body = {
-            code: 200,
-            message: 'ok',
-            data: ''
+        try {
+            await redis.del(key)
+            ctx.body = {
+                code: 200,
+                message: 'ok',
+                data: ''
+            }
+        } catch(err) {
+            ctx.body = {
+                code: 503,
+                message: err.message,
+                data: ''
+            }
+            logger.error(err)
         }
     }
 
     // 批量删除键
     async delKeys(ctx: any) {
         const { key } = ctx.request.query
-        const keys = await redis.keys(key);
-        
-        await redis.del(keys); 
 
-        ctx.body = {
-            code: 200,
-            message: 'ok',
-            data: ''
+        try {
+            const keys = await redis.keys(key);
+            await redis.del(keys); 
+            ctx.body = {
+                code: 200,
+                message: 'ok',
+                data: ''
+            }
+        } catch(err) {
+            ctx.body = {
+                code: 503,
+                message: err.message,
+                data: ''
+            }
+            logger.error(err)
         }
     }
 }

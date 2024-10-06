@@ -12,39 +12,80 @@ class DatabaseController {
     }
     async getKey(ctx) {
         const { key } = ctx.request.query;
-        ctx.body = {
-            code: 200,
-            message: 'ok',
-            data: await redis.get(key)
-        };
+        try {
+            const value = await redis.get(key);
+            ctx.body = {
+                code: 200,
+                message: 'ok',
+                data: value ? value.toString() : value
+            };
+        }
+        catch (err) {
+            ctx.body = {
+                code: 503,
+                message: err.message,
+                data: ''
+            };
+            logger.error(err);
+        }
     }
     async setKey(ctx) {
         const { key, value } = ctx.request.body;
-        await redis.set(key, value);
-        ctx.body = {
-            code: 200,
-            message: 'ok',
-            data: ''
-        };
+        try {
+            await redis.set(key, value);
+            ctx.body = {
+                code: 200,
+                message: 'ok',
+                data: ''
+            };
+        }
+        catch (err) {
+            ctx.body = {
+                code: 503,
+                message: err.message,
+                data: ''
+            };
+            logger.error(err);
+        }
     }
     async delKey(ctx) {
         const { key } = ctx.request.query;
-        await redis.del(key);
-        ctx.body = {
-            code: 200,
-            message: 'ok',
-            data: ''
-        };
+        try {
+            await redis.del(key);
+            ctx.body = {
+                code: 200,
+                message: 'ok',
+                data: ''
+            };
+        }
+        catch (err) {
+            ctx.body = {
+                code: 503,
+                message: err.message,
+                data: ''
+            };
+            logger.error(err);
+        }
     }
     async delKeys(ctx) {
         const { key } = ctx.request.query;
-        const keys = await redis.keys(key);
-        await redis.del(keys);
-        ctx.body = {
-            code: 200,
-            message: 'ok',
-            data: ''
-        };
+        try {
+            const keys = await redis.keys(key);
+            await redis.del(keys);
+            ctx.body = {
+                code: 200,
+                message: 'ok',
+                data: ''
+            };
+        }
+        catch (err) {
+            ctx.body = {
+                code: 503,
+                message: err.message,
+                data: ''
+            };
+            logger.error(err);
+        }
     }
 }
 var DatabaseController$1 = new DatabaseController();
