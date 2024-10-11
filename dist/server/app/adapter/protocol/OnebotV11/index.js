@@ -1002,11 +1002,19 @@ class OnebotV11 {
         if (typeof msg == 'string') {
             msg = [{ type: 'text', data: { text: msg } }];
         }
+        if (!Array.isArray(msg)) {
+            msg = [msg];
+        }
+        if (quote && data.message_id) {
+            msg.unshift({ type: 'reply', data: { id: String(data.message_id) } });
+        }
         if (option?.at) {
             msg.unshift({ type: 'at', data: { qq: String(data.user_id) } });
         }
-        if (quote) {
-            msg.unshift({ type: 'reply', data: { id: String(data.message_id) } });
+        if (option?.recallMsg || option?.recallMsg === 0) {
+            setTimeout(async () => {
+                await this.recallMsg(data, data.message_id);
+            }, option.recallMsg * 1000);
         }
         if (data.group_id)
             return await data.bot.sendGroupMsg(data.group_id, msg);

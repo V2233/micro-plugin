@@ -1575,12 +1575,22 @@ class OnebotV11 {
       msg = [{ type: 'text', data: { text: msg } }]
     }
 
+    if(!Array.isArray(msg)) {
+      msg = [msg]
+    }
+
+    if (quote && data.message_id) {
+      msg.unshift({ type: 'reply', data: { id: String(data.message_id) } })
+    }
+
     if (option?.at) {
       msg.unshift({ type: 'at', data: { qq: String(data.user_id) } })
     }
 
-    if (quote) {
-      msg.unshift({ type: 'reply', data: { id: String(data.message_id) } })
+    if(option?.recallMsg || option?.recallMsg === 0) {
+      setTimeout(async() => {
+        await this.recallMsg(data, data.message_id)
+      }, option.recallMsg * 1000)
     }
 
     // console.log('打印msg：')
