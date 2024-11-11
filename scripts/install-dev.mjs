@@ -13,7 +13,7 @@ const packages = {
     "rollup": "^4.18.1",
     "ts-node": "^10.9.2",
     "typescript": "^5.4.5",
-    "yunzai": "1.1.3" 
+    "yunzaijs": "^1.0.0-rc.5"
 }  
 
 // 将包列表转换为npm install命令的字符串  

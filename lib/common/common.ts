@@ -1,5 +1,5 @@
-import * as core from 'yunzai'
-import * as utils from 'yunzai'
+import * as core from 'yunzaijs'
+import * as utils from 'yunzaijs'
 /**
  * @deprecated 已废弃
  */

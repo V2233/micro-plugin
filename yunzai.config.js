@@ -1,4 +1,4 @@
-import { defineConfig } from 'yunzai'
+import { defineConfig } from 'yunzaijs'
 import Micro from './src/index.js'
 
 export default defineConfig({

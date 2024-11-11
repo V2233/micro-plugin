@@ -1,4 +1,4 @@
-import { Application, applicationOptions } from 'yunzai'
+import { Application, applicationOptions } from 'yunzaijs'
 
 import * as apps from './apps.js'
 import chalk from 'chalk'

@@ -38,7 +38,7 @@ const startServer = async (port: number): Promise<'ok' | void> => {
           logger.mark('[Micro]未找到主人QQ，请确定是否已配置')
         }
         try {
-          await Bot.pickFriend(Number(Cfg.masterQQ[0])).sendMsg(
+          Bot && await Bot?.pickFriend(Number(Cfg.masterQQ[0]))?.sendMsg(
             `开发服务器启动成功，您可打开浏览器进入以下地址开发管理：\n` +
             `公网地址：${remote[0]}\n` +
             `内网地址：${local[0]}`

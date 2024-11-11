@@ -1,4 +1,4 @@
-import { Renderer } from 'yunzai'
+import { Renderer } from 'yunzaijs'
 /**
  * @deprecated 已废弃
  */

@@ -261,7 +261,7 @@ class ConfigController {
                         // }
                         
                         // 防止name不是真实包名
-                        pluginInfoArr.push(Object.assign(pkgCfg.pluginInfo, {pluginName: pkg}))
+                        pluginInfoArr.push(Object.assign(pkgCfg.pluginInfo || {}, {pluginName: pkg}))
                     }
                 }
             }
@@ -324,7 +324,7 @@ class ConfigController {
         }
     }
 
-    // 获取单个插件配置
+    // 设置单个插件配置
     async setPluginConfig(ctx) {
         const {pluginName , source} = ctx.request.query
         const data = ctx.request.body

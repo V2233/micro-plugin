@@ -1,4 +1,4 @@
-import { Plugin } from "yunzai"
+import { Plugin } from "yunzaijs"
 /**
  * @deprecated 已废弃
  */

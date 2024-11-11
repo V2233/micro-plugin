@@ -1,4 +1,4 @@
-import { puppeteer } from 'yunzai'
+import { puppeteer } from 'yunzaijs'
 /**
  * @deprecated 已废弃
  */

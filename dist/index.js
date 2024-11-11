@@ -1,4 +1,4 @@
-import { applicationOptions } from 'yunzai';
+import { applicationOptions } from 'yunzaijs';
 import * as apps from './apps.js';
 import chalk from 'chalk';
 import { pluginInfo } from './env.js';

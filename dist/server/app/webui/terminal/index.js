@@ -1,6 +1,7 @@
 import iconvLite from 'iconv-lite';
+import os from 'os';
 import { randomUUID } from 'crypto';
-import { exec } from 'child_process';
+import { spawn } from 'child_process';
 import { resolve } from 'path';
 import { Logger } from '../../../../adapter/index.js';
 import { TermCfg } from './config.js';
@@ -52,21 +53,24 @@ class TerminalWs {
             ws.send(JSON.stringify({ type: 'exec', action: 'stdout', params: data }));
         };
         if (cmd.trim() !== 'exit') {
-            exec(cmd, {
-                encoding: 'buffer',
-                cwd: this.execPath
-            }, (error, stdout, stderr) => {
-                if (error) {
-                    logger.error(error.message);
-                    sendStdout(error.message);
-                    return;
-                }
-                if (stderr) {
-                    logger.info(`stderr: ${iconvLite.decode(stderr, 'cp936')}`);
-                    sendStdout(iconvLite.decode(stderr, 'cp936'));
-                }
-                logger.info(`stdout: ${iconvLite.decode(stdout, 'cp936')}`);
-                sendStdout(iconvLite.decode(stdout, 'cp936'));
+            try {
+                const command = cmd.trim();
+                const child = spawn(command, command.split(" ").slice(1), {
+                    cwd: this.execPath,
+                    shell: os.platform() === 'win32' ? 'powershell.exe' : true
+                });
+                child.stdout.on('data', (data) => {
+                    sendStdout(iconvLite.decode(data, 'gbk'));
+                });
+                child.stderr.on('data', (data) => {
+                    sendStdout(iconvLite.decode(data, 'gbk'));
+                });
+                child.on('error', (err) => {
+                    sendStdout(err.message);
+                });
+                child.on('close', (code) => {
+                    sendStdout(`Command finished with code ${code}`);
+                });
                 if (cmd.startsWith('cd')) {
                     if (path) {
                         this.execPath = path;
@@ -77,7 +81,15 @@ class TerminalWs {
                         sendStdout('UpdateCwd:' + this.execPath);
                     }
                 }
-            });
+            }
+            catch (err) {
+                if (err instanceof Error) {
+                    sendStdout(`Error executing command: ${err.message}\nStderr: ${err.stderr || ''}`);
+                }
+                else {
+                    sendStdout(`Unexpected error: ${err.toString()}`);
+                }
+            }
         }
         else {
             ws.close();

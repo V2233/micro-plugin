@@ -1,3 +1,10 @@
+## v0.1.0-rc.17
+
+- 默认命令行改为spawn
+- 修复部分插件配置文件缺少字段读取失败问题
+- 尝试修复TrssYunzai加载Onebot前调用Bot问题
+- 废弃yunzai开发依赖更改为yunzaijs
+
 ## v0.1.0-rc.16
 
 - 修复添加正则flag未生效问题

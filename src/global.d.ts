@@ -9,6 +9,6 @@ declare module 'icqq' {
   }  
 }
 
-/// <reference types="yunzai/global" />
-/// <reference types="yunzai/node_modules/chalk" />
+/// <reference types="yunzaijs/global" />
+/// <reference types="yunzaijs/node_modules/chalk" />
 

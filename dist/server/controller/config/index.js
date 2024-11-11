@@ -172,7 +172,7 @@ class ConfigController {
                     if (existsSync(guobaSupportPath)) {
                         const guobaCfg = await import(pathToFileURL(guobaSupportPath).toString());
                         const pkgCfg = await guobaCfg.supportGuoba();
-                        pluginInfoArr.push(Object.assign(pkgCfg.pluginInfo, { pluginName: pkg }));
+                        pluginInfoArr.push(Object.assign(pkgCfg.pluginInfo || {}, { pluginName: pkg }));
                     }
                 }
             }

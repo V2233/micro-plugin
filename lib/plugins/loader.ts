@@ -1,4 +1,4 @@
-import { Loader } from "yunzai";
+import { Loader } from "yunzaijs";
 /**
  * @deprecated 已废弃
  */
