@@ -26,7 +26,7 @@ const loader = await Loader()
 const indexPath = join(pluginInfo.DATA_PATH, 'regs.json');
 const pluginsPath = join(pluginInfo.DATA_PATH, 'plugins');
 
-let pluginsList:pluginType[] = [];
+let pluginsList: pluginType[] = [];
 let cronTask = {};
 
 const isTrss = /trss|Trss|TRSS/.test(botInfo.BOT_NAME)
@@ -51,7 +51,7 @@ class RunPlugin extends plugin {
                 permission: "master"
             },
         ];
-        
+
     }
 
     /**
@@ -59,11 +59,11 @@ class RunPlugin extends plugin {
      * @param e 
      * @returns 
      */
-    async accept(e:any) {
-        if(!isTrss) return
+    async accept(e: any) {
+        if (!isTrss) return
         await sendMessage(e);
     }
-   
+
     /**
      * 存储插件列表
      * @param value 插件对象
@@ -84,7 +84,7 @@ class RunPlugin extends plugin {
         } else {
             pageNo = Number((/.*小微指令列表(\d+)/.exec(this.e.msg))[1])
         }
-        
+
         const pluginList = JSON.parse(JSON.stringify(pluginsList))
 
         const pagerInstance = new Pager(pluginList, pageNo, 40)
@@ -93,11 +93,11 @@ class RunPlugin extends plugin {
         }
 
         let orderList = []
-        
-        pagerInstance.records.forEach((plugin:pluginType,index) => {
 
-            const msgType = plugin.message.map((msg:messageType) => msg.type)
-            
+        pagerInstance.records.forEach((plugin: pluginType, index) => {
+
+            const msgType = plugin.message.map((msg: messageType) => msg.type)
+
             const order = {
                 id: index,
                 reg: plugin.reg,
@@ -178,7 +178,7 @@ function getPluginsList() {
  * @param e 
  * @returns 
  */
-async function sendMessage(e:any = { taskId: '' }) {
+async function sendMessage(e: any = { taskId: '' }) {
     if (!e.message && !e.taskId) return false
 
     // if (e.taskId) {
@@ -187,13 +187,13 @@ async function sendMessage(e:any = { taskId: '' }) {
     // }
 
     let msg = '1145145141314521'
-    if(e.message) {
+    if (e.message) {
         if (!e.msg) {
-          msg = e.message.reduce((prev:string,next:any)=>{
-            if(next.type === 'text') {
-              return prev + next.text
-            }
-          },'')
+            msg = e.message.reduce((prev: string, next: any) => {
+                if (next.type === 'text') {
+                    return prev + next.text
+                }
+            }, '')
         }
     }
 
@@ -203,7 +203,7 @@ async function sendMessage(e:any = { taskId: '' }) {
     // 匹配插件正则
     for (let plugin of pluginList) {
         // 鉴权
-        if (!checkAuth(plugin,e)) continue
+        if (!checkAuth(plugin, e)) continue
 
         // 匹配消息
         const regexp = new RegExp(plugin.reg, plugin.flag)
@@ -212,13 +212,13 @@ async function sendMessage(e:any = { taskId: '' }) {
         const pluginPath = join(pluginsPath, plugin.id)
 
         // 制作消息段
-        if (e.taskId == plugin.id || regexp.test(e.msg?e.msg:msg)) {
+        if (e.taskId == plugin.id || regexp.test(e.msg ? e.msg : msg)) {
             const { message } = plugin
             let msgSegList = []
             for (let item of message) {
                 switch (item.type) {
                     case 'code':
-                        const codeString = readFileSync(join(pluginPath, item.hash + '.code.js'),'utf-8')
+                        const codeString = readFileSync(join(pluginPath, item.hash + '.code.js'), 'utf-8')
                         const asyncCodeString = `
                             return (async () => { 
                                 try {    
@@ -227,25 +227,25 @@ async function sendMessage(e:any = { taskId: '' }) {
                                     throw error;    
                                 }    
                             })()
-                        `; 
+                        `;
                         const dynamicAsyncFunction = new Function('e', 'Bot', 'segment', 'puppeteer', 'logger', 'loader', asyncCodeString);
 
                         // 调用动态创建的异步函数，并处理 Promise  
                         try {
                             const startTime = Date.now()
-                            await dynamicAsyncFunction(e,Bot,segment, puppeteer, logger, loader)
+                            await dynamicAsyncFunction(e, bot, segment, puppeteer, logger, loader)
                             const endTime = Date.now()
-                            logger.info(`[micro]执行[${plugin.id}]代码成功，耗时${endTime - startTime}ms!`) 
-                        } catch(err) {
-                            logger.error(`[micro]执行[${plugin.id}]代码出错：`);  
-                            logger.error(err);  
+                            logger.info(`[micro]执行[${plugin.id}]代码成功，耗时${endTime - startTime}ms!`)
+                        } catch (err) {
+                            logger.error(`[micro]执行[${plugin.id}]代码出错：`);
+                            logger.error(err);
                         }
                         return
                     // 文本
                     case 'text':
                         try {
                             let compileText = new Function('e', 'Bot', 'return ' + '`' + item.data + '`')
-                            msgSegList.push({type: 'text', text: compileText(e, Bot)})
+                            msgSegList.push({ type: 'text', text: compileText(e, bot) })
                         } catch (err) {
                             logger.error(err)
                         }
@@ -274,24 +274,24 @@ async function sendMessage(e:any = { taskId: '' }) {
                     // 视频
                     case 'video':
                         if (item.url) {
-                            msgSegList.push({type: 'video', file: await BotAPI.Buffer(item.url, { http: true }), url: item.url})
+                            msgSegList.push({ type: 'video', file: await BotAPI.Buffer(item.url, { http: true }), url: item.url })
                         }
                         break
                     // 表情
                     case 'face':
-                        msgSegList.push({type: 'face', id: Number(item.data)})
+                        msgSegList.push({ type: 'face', id: Number(item.data) })
                         break
                     // 骰子
                     case 'dice':
-                        msgSegList.push({type: 'dice', id: item.data})
+                        msgSegList.push({ type: 'dice', id: item.data })
                         break
                     // 猜拳
                     case 'rps':
-                        msgSegList.push({type: 'rps', id: item.data})
+                        msgSegList.push({ type: 'rps', id: item.data })
                         break
                     // 戳一戳(窗口抖动)
                     case 'poke':
-                        msgSegList.push({type: 'poke', id: Number(item.data)})
+                        msgSegList.push({ type: 'poke', id: Number(item.data) })
                         break
                     // md
                     case 'markdown':
@@ -315,7 +315,7 @@ async function sendMessage(e:any = { taskId: '' }) {
                     case 'button':
                         if (existsSync(join(pluginPath, 'button.json'))) {
                             let btnContent = JSON.parse(readFileSync(join(pluginPath, 'button.json'), 'utf8'))
-                            msgSegList.push({type: 'button', content: btnContent})
+                            msgSegList.push({ type: 'button', content: btnContent })
                         }
 
                         break
@@ -329,7 +329,7 @@ async function sendMessage(e:any = { taskId: '' }) {
 
     if (msgQueue.length == 0) return false
 
-    const sendMsgs = async(e:any,msg:any) => {
+    const sendMsgs = async (e: any, msg: any) => {
         if (e.reply) {
             await e.reply(msg.message, msg.isQuote, { at: msg.isAt })
         } else {
@@ -337,21 +337,21 @@ async function sendMessage(e:any = { taskId: '' }) {
             if (e.taskId) {
                 if (msg.isGlobal === false) {
                     let bots = []
-                    for(let key in bot) {
-                        if(bot[key]?.pickGroup || bot[key]?.pickFriend) {
+                    for (let key in bot) {
+                        if (bot[key]?.pickGroup || bot[key]?.pickFriend) {
                             bots.push(key)
                         }
                     }
 
-                    for(let bot_id of bots) {
+                    for (let bot_id of bots) {
                         try {
-                            for(let g_id of msg.groups) {
+                            for (let g_id of msg.groups) {
                                 await bot[bot_id].pickGroup(g_id).sendMsg(msg.message)
                             }
-                            for(let f_id of msg.friends) {   
+                            for (let f_id of msg.friends) {
                                 await bot[bot_id].pickFriend(f_id).sendMsg(msg.message)
                             }
-                        } catch(err) {
+                        } catch (err) {
                             logger.mark(`[Micro定时任务][${bot_id}]${err.message}`)
                         }
                     }
@@ -366,7 +366,7 @@ async function sendMessage(e:any = { taskId: '' }) {
                     // }
                 }
             } else {
-                if(e.group_id) {
+                if (e.group_id) {
                     await bot[e.self_id].pickGroup(e.group_id).sendMsg(msg.message)
                 } else {
                     await bot[e.self_id].pickFriend(e.user_id).sendMsg(msg.message)
@@ -383,11 +383,11 @@ async function sendMessage(e:any = { taskId: '' }) {
                 msg.delayTime = Number(msg.delayTime)
             }
             setTimeout(async () => {
-                await sendMsgs(e,msg)
+                await sendMsgs(e, msg)
             }, msg.delayTime)
 
         } else {
-            await sendMsgs(e,msg)
+            await sendMsgs(e, msg)
         }
     }
 
@@ -400,26 +400,26 @@ async function sendMessage(e:any = { taskId: '' }) {
  * @param e 
  * @returns 
  */
-function checkAuth(plugin:pluginType, e:any) {
+function checkAuth(plugin: pluginType, e: any) {
     if (plugin.reg == '' && plugin.cron == '')
         return false;
 
     if (plugin.isGlobal) {
-        if(e.group_id) {
+        if (e.group_id) {
             if (plugin.groups.includes(String(e.group_id))) return false;
         } else {
             if (plugin.friends.includes(String(e.user_id))) return false;
         }
-        
+
     } else {
-        if(e.group_id) {
+        if (e.group_id) {
             if (!plugin.groups.includes(String(e.group_id))) return false;
-        } else if(e.user_id) {
+        } else if (e.user_id) {
             if (!plugin.friends.includes(String(e.user_id))) return false;
-        } else if(e.taskId) {
+        } else if (e.taskId) {
             return true
-        } 
-        
+        }
+
     }
     return true;
 }
@@ -442,12 +442,12 @@ async function init() {
     // 获取插件列表
     pluginsList = getPluginsList() || []
 
-    if(!isTrss) {
+    if (!isTrss) {
         bot.on?.("message", async (e) => {
             await sendMessage(e);
         });
     }
-    
+
 
     // 定时任务
     pluginsList.forEach((plugin: pluginType) => {
@@ -471,12 +471,12 @@ async function init() {
         pluginsList = getPluginsList()
         logger.mark(`[Micro][更改指令列表][当前${pluginsList.length}条指令]`)
         // 清理旧的定时任务
-        Object.keys(cronTask).forEach((key:string) => {
+        Object.keys(cronTask).forEach((key: string) => {
             cronTask[key].cancel()
             delete cronTask[key]
         });
         pluginsList.forEach((plugin: pluginType) => {
-            
+
             if (plugin && plugin?.cron) {
                 cronTask[plugin.id] = schedule.scheduleJob(plugin.cron, async () => {
                     // 指令

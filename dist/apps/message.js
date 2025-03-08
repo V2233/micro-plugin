@@ -153,7 +153,7 @@ async function sendMessage(e = { taskId: '' }) {
                         const dynamicAsyncFunction = new Function('e', 'Bot', 'segment', 'puppeteer', 'logger', 'loader', asyncCodeString);
                         try {
                             const startTime = Date.now();
-                            await dynamicAsyncFunction(e, Bot, segment, puppeteer, logger, loader);
+                            await dynamicAsyncFunction(e, bot, segment, puppeteer, logger, loader);
                             const endTime = Date.now();
                             logger.info(`[micro]执行[${plugin.id}]代码成功，耗时${endTime - startTime}ms!`);
                         }
@@ -165,7 +165,7 @@ async function sendMessage(e = { taskId: '' }) {
                     case 'text':
                         try {
                             let compileText = new Function('e', 'Bot', 'return ' + '`' + item.data + '`');
-                            msgSegList.push({ type: 'text', text: compileText(e, Bot) });
+                            msgSegList.push({ type: 'text', text: compileText(e, bot) });
                         }
                         catch (err) {
                             logger.error(err);
