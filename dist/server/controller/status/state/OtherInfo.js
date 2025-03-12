@@ -59,7 +59,11 @@ function getPluginNum(e = { isPro: false }) {
 }
 async function getEnvVersion() {
     const { node, git } = await si.versions("node,git");
-    return { node, git };
+    return {
+        node,
+        git,
+        platform: os.platform()
+    };
 }
 
 export { getOtherInfo as default, getEnvVersion };

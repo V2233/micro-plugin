@@ -20,14 +20,14 @@ class UserController {
             }
             return
         }
-        const skey = crypto.randomBytes(32).toString('hex')
-        const token = jwt.sign({ username }, skey, { expiresIn: '60' })
+        const skey = crypto.createHash('sha256').update(password).digest('hex');
+        const expires = userInfo[checkUserIndex].expires || '86400s'
+        const token = jwt.sign({ username }, skey, { expiresIn: expires })
+        Cfg.setConfig({ ...userInfo[checkUserIndex], token, skey, expires }, ['userInfo', String(checkUserIndex)], 'server')
         ctx.body = {
             code: 200,
             data: token
         }
-        Cfg.setConfig(token, ['userInfo', String(checkUserIndex), 'token'], 'server')
-        Cfg.setConfig(skey, ['userInfo', String(checkUserIndex), 'skey'], 'server')
     }
 
     // 登出
@@ -79,8 +79,8 @@ class UserController {
 
     // 获取本机web地址
     async getWebAddress(ctx) {
-        const {hostname} = ctx.request.body;
-        if(hostname) {
+        const { hostname } = ctx.request.body;
+        if (hostname) {
             Cfg.setConfig(hostname, ['server', 'host'], 'server')
             const { port } = (await Cfg.getConfig('server')).server
             ctx.body = {
@@ -98,7 +98,7 @@ class UserController {
                 data: '保存服务端地址失败'
             }
         }
-        
+
     }
 
 }

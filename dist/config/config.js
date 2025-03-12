@@ -2,11 +2,9 @@ import YAML from 'yaml';
 import chokidar from 'chokidar';
 import { join } from 'node:path';
 import { pluginInfo, botInfo } from '../env.js';
-import { Bot } from '../adapter/index.js';
 import YamlHandler from './yamlHandler.js';
 import { readFileSync, existsSync, mkdirSync, readdirSync, copyFileSync } from 'node:fs';
 
-const bot = await Bot();
 const { ROOT_PATH } = pluginInfo;
 const { WORK_PATH } = botInfo;
 class Cfg {
@@ -177,13 +175,8 @@ class Cfg {
             return;
         const watcher = chokidar.watch(file);
         watcher.on('change', () => {
-            delete this.config[key];
-            if (typeof bot == 'undefined')
-                return;
-            logger.mark(`[Micro][读取|修改配置文件][${type}][${name}]`);
-            if (this[`change_${name}`]) {
-                this[`change_${name}`]();
-            }
+            this.config[key] = YAML.parse(readFileSync(file, 'utf8'));
+            logger.mark(`[Micro][修改配置文件][${type}][${name}]`);
         });
         this.watcher[key] = watcher;
     }

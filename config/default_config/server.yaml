@@ -12,3 +12,4 @@ userInfo:
     routes: []
     token: ""
     skey: ""
+    expires: "86400s"

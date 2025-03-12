@@ -19,6 +19,11 @@ export declare const userInfo: {
         value: string;
         type: string;
     };
+    expires: {
+        desc: string;
+        value: string;
+        type: string;
+    };
     routes: {
         desc: string;
         value: string;

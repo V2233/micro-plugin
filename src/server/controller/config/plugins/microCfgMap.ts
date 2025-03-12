@@ -19,6 +19,11 @@ export const userInfo = {
         value: '普通管理员',
         type: 'string'
     },
+    "expires": {
+        desc: 'token过期时间',
+        value: '86400',
+        type: 'string'
+    },
     "routes": {
         desc: '勾选后该模块对此管理员隐藏',
         value: '普通管理员',

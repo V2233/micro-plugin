@@ -4,4 +4,5 @@ export default function getOtherInfo(e?: {
 export declare function getEnvVersion(): Promise<{
     node: any;
     git: any;
+    platform: NodeJS.Platform;
 }>;
