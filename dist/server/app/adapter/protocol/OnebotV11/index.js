@@ -424,7 +424,7 @@ class OnebotV11 {
         return msgs;
     }
     async getFriendMsgHistory(data, message_seq, count) {
-        const msgs = (await data.bot.sendApi("get_group_msg_history", {
+        const msgs = (await data.bot.sendApi("get_friend_msg_history", {
             user_id: data.user_id,
             message_seq,
             message_id: message_seq,

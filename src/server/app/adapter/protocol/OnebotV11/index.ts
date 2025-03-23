@@ -29,7 +29,7 @@ class OnebotV11 {
       await this.message(data, bot)
     })
     // 监听错误
-    bot.on('error', async (error: Error) => Stdlog.error('',error))
+    bot.on('error', async (error: Error) => Stdlog.error('', error))
     /** 监听连接关闭事件 */
     bot.on('close', () => Stdlog.info('Onebotv11', `${this.id} 连接已断开!`))
 
@@ -139,7 +139,7 @@ class OnebotV11 {
 
       return source
     } catch (error) {
-      Stdlog.error('',error)
+      Stdlog.error('', error)
       return false
     }
   }
@@ -162,7 +162,7 @@ class OnebotV11 {
    * @returns 
    */
   async makeMsg(msg) {
-    
+
     if (!Array.isArray(msg))
       msg = [msg]
     const msgs = []
@@ -584,7 +584,7 @@ class OnebotV11 {
  * @returns 
  */
   async getFriendMsgHistory(data, message_seq, count) {
-    const msgs = (await data.bot.sendApi("get_group_msg_history", {
+    const msgs = (await data.bot.sendApi("get_friend_msg_history", {
       user_id: data.user_id,
       message_seq,
       message_id: message_seq,
@@ -1506,7 +1506,7 @@ class OnebotV11 {
 
     data.bot = Bot[data.self_id]
 
-    if(!Bot.adapter) Bot.adapter = []
+    if (!Bot.adapter) Bot.adapter = []
 
     if (!Bot.adapter?.includes(data.self_id))
       Bot.adapter.push(data.self_id)
@@ -1570,12 +1570,12 @@ class OnebotV11 {
    * @returns 
    */
   async sendReplyMsg(data, msg, quote, option) {
-    
+
     if (typeof msg == 'string') {
       msg = [{ type: 'text', data: { text: msg } }]
     }
 
-    if(!Array.isArray(msg)) {
+    if (!Array.isArray(msg)) {
       msg = [msg]
     }
 
@@ -1587,8 +1587,8 @@ class OnebotV11 {
       msg.unshift({ type: 'at', data: { qq: String(data.user_id) } })
     }
 
-    if(option?.recallMsg || option?.recallMsg === 0) {
-      setTimeout(async() => {
+    if (option?.recallMsg || option?.recallMsg === 0) {
+      setTimeout(async () => {
         await this.recallMsg(data, data.message_id)
       }, option.recallMsg * 1000)
     }

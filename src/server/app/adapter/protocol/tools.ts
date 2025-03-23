@@ -18,22 +18,22 @@ interface fileInfoType {
 class BotAPI {
 
     // constructor() {
-        // const CopyBot = Bot
-        //@ts-ignore
-        // Bot = new Proxy({}, {
-        //     get (target, prop, receiver) {
-        //         if (prop in target) {
-        //             if(typeof target[prop] === 'function') return target[prop].bind(this)
-        //                 else return target[prop]
-        //         }
-        //         if (prop in this) {
-        //             if(typeof this[prop] === 'function') return this[prop].bind(this)
-        //                 else return this[prop]
-        //         }
-        //         return Reflect.get(CopyBot, prop, receiver)
-        //     }
-        // })
-        
+    // const CopyBot = Bot
+    //@ts-ignore
+    // Bot = new Proxy({}, {
+    //     get (target, prop, receiver) {
+    //         if (prop in target) {
+    //             if(typeof target[prop] === 'function') return target[prop].bind(this)
+    //                 else return target[prop]
+    //         }
+    //         if (prop in this) {
+    //             if(typeof this[prop] === 'function') return this[prop].bind(this)
+    //                 else return this[prop]
+    //         }
+    //         return Reflect.get(CopyBot, prop, receiver)
+    //     }
+    // })
+
     // }
 
     fs = Object.create(null)
@@ -41,17 +41,17 @@ class BotAPI {
     stat = { start_time: Date.now() / 1000 }
 
     get uin() {
-        return Bot.adapter??[]
+        return Bot.adapter ?? []
     }
 
-    
+
     /**
      * 延时
      * @param time (ms)
      * @param promise 
      * @returns 
      */
-    sleep(time:number, promise?) {
+    sleep(time: number, promise?) {
         if (promise) return Promise.race([promise, this.sleep(time)])
         return new Promise(resolve => setTimeout(resolve, time))
     }
@@ -62,7 +62,7 @@ class BotAPI {
      * @param opts 
      * @returns 
      */
-    async fsStat(path:string, opts?): Promise<any> {
+    async fsStat(path: string, opts?): Promise<any> {
         try {
             return await stat(path, opts)
         } catch (err) {
@@ -77,7 +77,7 @@ class BotAPI {
      * @param opts 
      * @returns 
      */
-    async mkdir(dir:string, opts?) {
+    async mkdir(dir: string, opts?) {
         try {
             await mkdir(dir, { recursive: true, ...opts })
             return true
@@ -93,7 +93,7 @@ class BotAPI {
      * @param opts 
      * @returns 
      */
-    async rm(file:string, opts?) {
+    async rm(file: string, opts?) {
         try {
             await rm(file, { force: true, recursive: true, ...opts })
             return true
@@ -110,7 +110,7 @@ class BotAPI {
      * @param opts 
      * @returns 
      */
-    async download(url:string, file:string, opts) {
+    async download(url: string, file: string, opts) {
         let buffer
         if (!file || (await this.fsStat(file))?.isDirectory?.()) {
             const type = await this.fileType(url, opts)
@@ -162,7 +162,7 @@ class BotAPI {
             Object.defineProperty(data, "member", {
                 value: data.group.pickMember(data.user_id),
             })
-        
+
         if (data.bot.adapter?.id)
             data.adapter_id = data.bot.adapter.id
         if (data.bot.adapter?.name)
@@ -271,6 +271,7 @@ class BotAPI {
             return opts.http ? data : Buffer.from(await (await fetch(data, opts)).arrayBuffer())
         else if (data.startsWith('file://')) {
             if (await this.fsStat(data.replace(/^file:\/\//, ""))) {
+                //@ts-ignore
                 return opts.file ? data : Buffer.from(await readFile(data.replace(/^file:\/\//, "")))
             }
         }
@@ -308,6 +309,7 @@ class BotAPI {
                 file.buffer = await this.Buffer(data.file, opts)
             }
             if (Buffer.isBuffer(file.buffer)) {
+                //@ts-ignore
                 file.type = await fileTypeFromBuffer(file.buffer)
                 file.md5 = makeMd5(file.buffer)
                 file.name ??= `${Date.now().toString(36)}.${file.md5.slice(0, 8)}.${file.type.ext}`
