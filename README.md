@@ -122,6 +122,12 @@ pnpm run restart
 - ```小微指令列表```
 - ```小微删除指令 + 序号```
 
+## 后台使用方法
+
+- 直接使用浏览器访问开机之后机器人向你发送的后台地址
+> 注意：如果你使用的是云服务器，请使用公网地址进行访问，如果你使用的是内网服务器则可以使用内网地址进行访问
+
+- 前往[Micro Panel下载地址](https://tianstudio.lanzoub.com/b004iib74j)下载Micro Panel的安卓APP并填写服务器IP地址以及账号密码后进行访问
 
 ## 特性
 
@@ -158,3 +164,5 @@ pnpm run restart
 - [Yenai-Plugin](https://gitee.com/yeyang52/yenai-plugin) 系统状态接口参考
 
 - [es-drager](https://github.com/vangleer/es-drager) 拖拽组件
+
+- [TianStudio](https://github.com/tiancra) Micro Panel安卓APP开发
