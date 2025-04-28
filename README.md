@@ -127,7 +127,7 @@ pnpm run restart
 - 直接使用浏览器访问开机之后机器人向你发送的后台地址
 > 注意：如果你使用的是云服务器，请使用公网地址进行访问，如果你使用的是内网服务器则可以使用内网地址进行访问
 
-- 前往[Micro Panel下载地址](https://tianstudio.lanzoub.com/b004iib74j)下载Micro Panel的安卓APP并填写服务器IP地址以及账号密码后进行访问
+- 前往[Micro Panel下载地址](https://tianstudio.lanzoub.com/b004iib74j)下载Micro Panel的安卓APP（密码：micro）并填写服务器IP地址以及账号密码后进行访问
 
 ## 特性
 
