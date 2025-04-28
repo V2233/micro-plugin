@@ -80,8 +80,16 @@ pnpm run restart
 | [button]        |       🔴        |
 | [Forward]       |       🔴        |
 
+## Backend usage
+
+- Directly use the browser to access the backend address sent to you by the robot after booting
+> Note: If you are using a cloud server, please use the public network address to access it. If you are using an intranet server, you can use the intranet address to access it
+
+- Go to [Micro Panel download address](https://tianstudio.lanzoub.com/b004iib74j) to download the Android APP of Micro Panel and fill in the server IP address and account password to access it
+
 ## Thanks
 
 - [yunzaijs](https://github.com/yunzai-org/yunzaijs) Plugin runtime environment
 - [Yenai-Plugin](https://gitee.com/yeyang52/yenai-plugin) System State Interface Reference
 - [es-drager](https://github.com/vangleer/es-drager) Drageable Editor
+- [TianStudio](https://github.com/tiancra) Micro Panel APP Developer
