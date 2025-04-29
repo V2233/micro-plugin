@@ -25,32 +25,32 @@ const bot = {
         type: 'number'
     },
     "ffmpeg_path": {
-        desc: 'ffmpeg 路径',
+        desc: 'FFmpeg 路径',
         value: null,
         type: 'string',
     },
     "ffprobe_path": {
-        desc: 'ffprobe 路径',
+        desc: 'FFprobe 路径',
         value: null,
         type: 'string'
     },
     "chromium_path": {
-        desc: 'chromium其他路径',
+        desc: 'Chromium其他路径',
         value: null,
         type: 'string'
     },
     "puppeteer_ws": {
-        desc: 'puppeteer接口地址',
+        desc: 'Puppeteer接口地址',
         value: null,
         type: 'string'
     },
     "puppeteer_timeout": {
-        desc: 'puppeteer截图超时时间',
+        desc: 'Puppeteer截图超时时间',
         value: null,
         type: 'string'
     },
     "proxyAddress": {
-        desc: '米游社接口代理地址，国际服用',
+        desc: '米游社接口代理地址（仅供国际服使用）',
         value: null,
         type: 'string'
     },
@@ -189,7 +189,7 @@ const other = {
     },
     "disableMsg": {
         desc: '禁用私聊Bot提示内容',
-        value: "私聊功能已禁用，仅支持发送cookie，抽卡记录链接，记录日志文件",
+        value: "私聊功能已禁用，仅支持发送Cookie，抽卡记录链接，记录日志文件",
         type: 'string'
     },
     "disableAdopt": {
@@ -225,7 +225,7 @@ const other = {
 };
 const puppeteer = {
     "chromiumPath": {
-        desc: 'chromiumPath: C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe',
+        desc: 'chromiumPath（Windows：C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe，Linux：/snap/bin/chromium）',
         value: null,
         type: 'string'
     },
@@ -253,7 +253,7 @@ const puppeteer = {
 };
 const qq = {
     "qq": {
-        desc: 'qq账号',
+        desc: 'QQ账号',
         value: null,
         type: 'number'
     },
@@ -263,41 +263,41 @@ const qq = {
         type: 'string'
     },
     "platform": {
-        desc: '1:安卓手机、 2:aPad 、 3:安卓手表、 4:MacOS 、 5:iPad 、 6:Tim',
+        desc: '1:安卓手机、 2:安卓平板 、 3:安卓手表、 4:MacOS 、 5:iPad 、 6:Tim',
         value: 6,
         type: 'number'
     },
 };
 const redis = {
     "host": {
-        desc: 'redis地址',
+        desc: 'Redis地址',
         value: '127.0.0.1',
         type: 'string'
     },
     "port": {
-        desc: 'redis端口',
+        desc: 'Redis端口',
         value: 6379,
         type: 'number'
     },
     "username": {
-        desc: 'redis用户名，可以为空',
+        desc: 'Redis用户名，可以为空',
         value: null,
         type: 'string'
     },
     "password": {
-        desc: 'redis密码，没有密码可以为空',
+        desc: 'Redis密码，没有密码可以为空',
         value: null,
         type: 'string'
     },
     "db": {
-        desc: 'redis数据库',
+        desc: 'Redis数据库',
         value: 0,
         type: 'number'
     },
 };
 const renderer = {
     "name": {
-        desc: '渲染后端, 默认为 puppeteer',
+        desc: '渲染后端, 默认为 Puppeteer',
         value: null,
         type: 'string'
     },
