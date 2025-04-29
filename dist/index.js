@@ -28,6 +28,7 @@ var index = () => {
             logger.info(`${PLUGIN_DESC}`);
             logger.info('bug积累中...呜呜出错删掉不要骂我(˵¯͒〰¯͒˵)');
             logger.info(`Created By ${PLUGIN_AUTHOR}`);
+            logger.info(`感谢抖M天才威玩游戏提供的Micro Panel安卓APP`)
             logger.info(chalk.cyanBright('-----------------------------------'));
             startServer(Port);
         },
