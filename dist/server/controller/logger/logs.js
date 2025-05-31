@@ -20,5 +20,22 @@ function getLatestLog(logs) {
     }
     return latestLog;
 }
+function parseLog(log) {
+    const regex = /^(\[\d+:\d+:\d+.\d+\])\[([A-Z]+?)\](.*)/;
+    const match = regex.exec(log);
+    if (match && match.length >= 4) {
+        const time = match[1];
+        const level = match[2];
+        const detail = match[3];
+        return { time, level, detail };
+    }
+    else {
+        return {
+            time: '',
+            level: '',
+            detail: log,
+        };
+    }
+}
 
-export { getLatestLog };
+export { getLatestLog, parseLog };

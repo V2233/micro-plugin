@@ -3,11 +3,11 @@ import server from './app/index.js'
 import MicroWs from './app/ws.js'
 
 import { IncomingMessage } from 'http'
-import { WebSocketServer,WebSocket } from 'ws';
+import { WebSocketServer, WebSocket } from 'ws';
 import { getAllWebAddress } from '#utils'
 import { Cfg } from '#cfg'
 
-let wss:WebSocketServer
+let wss: WebSocketServer
 let microWs = new MicroWs()
 
 
@@ -18,12 +18,12 @@ let microWs = new MicroWs()
 const startServer = async (port: number): Promise<'ok' | void> => {
 
   wss = new WebSocketServer({ server });
-  wss.on('connection', (ws:WebSocket,req:IncomingMessage) => {
-    microWs.onOpen(ws,req)
+  wss.on('connection', (ws: WebSocket, req: IncomingMessage) => {
+    microWs.onOpen(ws, req)
   });
 
   await new Promise((resolve, reject) => {
-    server.listen(port, async(err?: Error) => {
+    server.listen(port, async (err?: Error) => {
       if (err) {
         reject(err);
       } else {
@@ -41,8 +41,8 @@ const startServer = async (port: number): Promise<'ok' | void> => {
           Bot && await Bot?.pickFriend(Number(Cfg.masterQQ[0]))?.sendMsg(
             `开发服务器启动成功，您可打开浏览器进入以下地址开发管理：\n` +
             `公网地址：${remote[0]}\n` +
-            `内网地址：${local[0]}`
-            `你也可以下载Micro Panel的安卓APP来对机器人进行管理`
+            `内网地址：${local[0]}` +
+            `你也可以下载Micro Panel的安卓APP来对机器人进行管理` +
             `Micro Panel下载地址：https://tianstudio.lanzoub.com/b004iib74j（密码：micro）`
           )
         } catch (error) {

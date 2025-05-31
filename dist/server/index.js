@@ -33,7 +33,9 @@ const startServer = async (port) => {
                 try {
                     Bot && await Bot?.pickFriend(Number(Cfg.masterQQ[0]))?.sendMsg(`开发服务器启动成功，您可打开浏览器进入以下地址开发管理：\n` +
                         `公网地址：${remote[0]}\n` +
-                        `内网地址：${local[0]}`);
+                        `内网地址：${local[0]}` +
+                        `你也可以下载Micro Panel的安卓APP来对机器人进行管理` +
+                        `Micro Panel下载地址：https://tianstudio.lanzoub.com/b004iib74j（密码：micro）`);
                 }
                 catch (error) {
                     logger.mark('[Micro]' + error.message);

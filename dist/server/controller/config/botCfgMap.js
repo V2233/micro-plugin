@@ -225,7 +225,7 @@ const other = {
 };
 const puppeteer = {
     "chromiumPath": {
-        desc: 'chromiumPath: C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe',
+        desc: 'chromiumPath: C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe',
         value: null,
         type: 'string'
     },

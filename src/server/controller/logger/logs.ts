@@ -32,4 +32,30 @@ export function getLatestLog(logs: string[]) {
 
     // 返回最新日期的日志文件名  
     return latestLog;
-}  
+}
+
+export function parseLog(log: string) {
+    // 正则表达式来匹配时间、日志等级和日志详情
+    // 时间格式：[HH:MM:SS.sss]
+    // 日志等级：ERRO、MARK等（这里假设它是大写且后面紧跟中括号）
+    // 日志详情：其余部分
+    const regex = /^(\[\d+:\d+:\d+.\d+\])\[([A-Z]+?)\](.*)/
+    const match = regex.exec(log)
+
+    if (match && match.length >= 4) {
+        // 提取时间、日志等级和日志详情
+        const time = match[1] as string
+        const level = match[2] as string
+        const detail = match[3] as string
+
+        // 返回提取出的结果
+        return { time, level, detail }
+    } else {
+        // 如果没有匹配到
+        return {
+            time: '',
+            level: '',
+            detail: log,
+        }
+    }
+}
