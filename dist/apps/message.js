@@ -218,11 +218,11 @@ async function sendMessage(e = { taskId: '' }) {
                             }
                             else {
                                 delete mdContent.content;
-                                mdContent = mdContent.map((item) => {
+                                mdContent.params = mdContent.params.map((item) => {
                                     delete item.tempString;
                                     return item;
                                 });
-                                msgSegList.push({ type: 'markdown', content: mdContent });
+                                msgSegList.push({ type: 'markdown', content: mdContent, params: mdContent.params });
                             }
                         }
                         break;
