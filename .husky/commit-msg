@@ -42,14 +42,14 @@ fi
 # fi
 
 # 执行 lint-staged 检查
-; echo -e "${CYAN}[lint-staged]${RESET} 开始格式化和语法检查...！"
-; if npm run lint-staged; then
-;     echo -e "\n${CYAN}[lint-staged]${RESET} eslint 语法检查通过！✅ "
-; else
-;     echo -e "\n${RED}[lint-staged]${RESET} eslint 语法检查失败！❌ "
-;     echo -e "\n${YELLOW}[lint-staged]${RESET} 可执行 ${YELLOW}npm run lint${RESET} 快速检查通过后再提交！"
-;     exit 1
-; fi
+# echo -e "${CYAN}[lint-staged]${RESET} 开始格式化和语法检查...！"
+# if npm run lint-staged; then
+#     echo -e "\n${CYAN}[lint-staged]${RESET} eslint 语法检查通过！✅ "
+# else
+#     echo -e "\n${RED}[lint-staged]${RESET} eslint 语法检查失败！❌ "
+#     echo -e "\n${YELLOW}[lint-staged]${RESET} 可执行 ${YELLOW}npm run lint${RESET} 快速检查通过后再提交！"
+#     exit 1
+# fi
 
 # 重置开发依赖
 if npm run reset-dev-deps; then

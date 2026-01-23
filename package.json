@@ -19,6 +19,7 @@
     "type-check:frontend": "vue-tsc --build src/frontend",
     "preview:frontend": "vite preview --config ./src/frontend/vite.config.ts",
     "diff-code": "git diff --exit-code",
+    "prepare": "husky",
     "test:unit": "vitest",
     "test:e2e": "playwright test",
     "lint": "eslint --fix ./",
