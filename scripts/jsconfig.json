@@ -1,0 +1,11 @@
+{
+  "extends": "@tsconfig/node24/tsconfig.json",
+  "include": ["./*"],
+  "compilerOptions": {
+    "noEmit": true,
+    "tsBuildInfoFile": "../node_modules/.tmp/tsconfig.node.tsbuildinfo",
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    "types": ["node"]
+  }
+}

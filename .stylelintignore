@@ -1,0 +1,11 @@
+/node_modules/*
+/dist/*
+/html/*
+/public/*
+/logs/*
+/lib/*
+/.husky/*
+/.vscode/*
+/docs/*
+/renderers/*
+/resources/*

@@ -1,0 +1,1 @@
+import{a8 as e}from"./index-B1mlpXhi.js";const t=localStorage.getItem("THEME"),a=e("SettingStore",{state:()=>({foldMode:2,refresh:!1,theme:t??(window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"),globalTerminal:{running:!1,visible:!1}})});export{a as u};

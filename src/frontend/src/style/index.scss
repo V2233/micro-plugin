@@ -1,0 +1,572 @@
+@use './reset.scss' as *;
+@use './variable.scss' as *;
+
+// 全局字体设置 - 强制使用浏览器默认字体
+// * {
+//   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
+//   font-feature-settings: normal !important;
+//   font-variation-settings: normal !important;
+// }
+
+$background-light: linear-gradient(-45deg, #f5fffa, #d5ffd5, #b7ffd0, #e2fff1);
+
+.xterm .xterm-viewport {
+  background-color: transparent !important;
+}
+
+// 只有带有is-light或is-dark类的el-popper才居中显示，并拉宽宽度
+.el-popper.is-light.el-popover,
+.el-popper.is-dark.el-popover {
+  //   z-index: 99999 !important;
+  /* 恢复最开始的属性，居中显示 */
+  position: fixed !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  /* 拉宽宽度 */
+  width: 400px !important;
+}
+
+// el-tag 改为椭圆形
+.el-tag {
+  border-radius: 9999px !important; // 使用很大的值实现椭圆形
+  padding: 4px 12px !important;
+  height: auto !important;
+  line-height: 1.5 !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+
+  &:hover {
+    transform: translateY(-1px) !important;
+    box-shadow: $shadow-small !important;
+  }
+}
+
+// 调整el-card的z-index，确保内部按钮可以正常点击
+.el-card {
+  z-index: 1 !important; // 恢复正常z-index，确保内部按钮可点击
+  position: relative !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+
+  &:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: $shadow-medium !important;
+  }
+}
+
+.el-popover {
+  /* 恢复默认定位和层级，不添加强制定位 */
+  /* 保持默认宽度，适应内容大小 */
+  margin: 0 !important;
+  padding: 20px !important;
+  border-radius: $border-radius-medium !important;
+  box-shadow: $shadow-medium !important;
+  background: rgba(255, 255, 255, 0.95) !important;
+  backdrop-filter: none !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  color: inherit !important;
+
+  // 移除默认的箭头
+  .el-popper__arrow {
+    display: none !important;
+  }
+
+  // 标题样式
+  .el-popover__title {
+    font-size: 16px !important;
+    font-weight: 600 !important;
+    margin-bottom: 15px !important;
+    padding-bottom: 10px !important;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1) !important;
+  }
+}
+
+// 暗黑模式下弹窗样式
+.dark {
+  .el-popover {
+    background: rgba(26, 26, 26, 0.95) !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+
+    .el-popover__title {
+      border-bottom-color: rgba(255, 255, 255, 0.1) !important;
+    }
+  }
+}
+
+// 全局动画效果
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+// 应用全局动画
+.fade-in {
+  animation: fadeIn 0.5s ease-out;
+}
+
+.slide-in-left {
+  animation: slideInLeft 0.4s ease-out;
+}
+
+.pulse {
+  animation: pulse 2s infinite;
+}
+
+// 滚动条外观设置
+::-webkit-scrollbar {
+  width: 6px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: $base-menu-background;
+  border-radius: $border-radius-small;
+}
+
+::-webkit-scrollbar-thumb {
+  width: 6px;
+  background-color: rgb(82, 255, 235);
+  border-radius: $border-radius-small;
+  transition: $transition-fast;
+
+  &:hover {
+    background-color: lightcyan;
+    transform: scale(1.1);
+  }
+}
+
+// 恢复el-scrollbar__wrap样式，确保Element Plus滚动条组件正常工作
+.el-scrollbar {
+  &__wrap {
+    overflow: scroll !important;
+    margin-bottom: -17px !important;
+    margin-right: -17px !important;
+    padding-bottom: 17px !important;
+    padding-right: 17px !important;
+
+    &::-webkit-scrollbar {
+      width: 6px;
+      height: 8px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: $base-menu-background;
+      border-radius: $border-radius-small;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      width: 6px;
+      background-color: rgb(82, 255, 235);
+      border-radius: $border-radius-small;
+      transition: $transition-fast;
+
+      &:hover {
+        background-color: lightcyan;
+        transform: scale(1.1);
+      }
+    }
+  }
+
+  &__view {
+    overflow: hidden !important;
+  }
+
+  &__bar {
+    opacity: 0;
+    transition: opacity 0.3s;
+
+    .el-scrollbar__thumb {
+      background-color: cyan;
+      border-radius: $border-radius-small;
+
+      &:hover {
+        background-color: lightcyan;
+      }
+    }
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+}
+
+// 全局元素圆角样式
+.el-card,
+.el-button,
+.el-input,
+.el-select,
+.el-cascader,
+.el-date-picker,
+.el-dialog,
+.el-drawer,
+.el-popover,
+.el-dropdown-menu,
+.el-menu,
+.el-tabs__nav-wrap,
+.el-tabs__content {
+  border-radius: $border-radius-medium;
+  transition: $transition-base;
+}
+
+// 卡片悬停效果
+.el-card {
+  box-shadow: $shadow-small;
+
+  &:hover {
+    box-shadow: $shadow-medium;
+    transform: translateY(-2px);
+  }
+}
+
+// 按钮样式优化
+.el-button {
+  box-shadow: $shadow-small;
+
+  &:hover {
+    box-shadow: $shadow-medium;
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+// 输入框和选择器样式优化
+.el-input__wrapper,
+.el-select__wrapper,
+.el-cascader__wrapper {
+  border-radius: $border-radius-small;
+  transition: $transition-base;
+
+  &:hover {
+    box-shadow: $shadow-small;
+  }
+
+  &.is-focus {
+    box-shadow: 0 0 0 2px rgba(64, 158, 255, 0.2);
+  }
+}
+
+// 下拉框样式优化 - 添加四周厚度和圆角，设置50%透明度
+.el-select-dropdown,
+.el-cascader-dropdown,
+.el-date-picker,
+.el-time-picker,
+.el-time-select-dropdown,
+.el-color-picker-dropdown {
+  border-radius: $border-radius-medium !important;
+  background: rgba(255, 255, 255, 0.5) !important; /* 50%透明度 */
+  backdrop-filter: blur(6px) !important;
+  color: inherit !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  box-shadow: $shadow-medium !important;
+  transition: $transition-base;
+  max-height: none !important; // 不限制最大高度，避免影响卡片内部部件
+
+  // 下拉项样式
+  .el-select-dropdown__item,
+  .el-cascader-node,
+  .el-date-picker__header,
+  .el-date-picker__body,
+  .el-time-picker__header,
+  .el-time-picker__body,
+  .el-time-select__item,
+  .el-color-picker__panel {
+    transition: $transition-base;
+  }
+
+  // 选中项样式
+  .el-select-dropdown__item.selected,
+  .el-cascader-node.is-active,
+  .el-time-select__item.selected,
+  .el-time-select__item:hover {
+    background: rgba(64, 158, 255, 0.2) !important;
+  }
+
+  // 悬停项样式
+  .el-select-dropdown__item:hover,
+  .el-cascader-node:hover,
+  .el-time-select__item:hover {
+    background: rgba(64, 158, 255, 0.1) !important;
+  }
+}
+
+// 暗黑模式下下拉框样式
+.dark {
+  .el-select-dropdown,
+  .el-cascader-dropdown,
+  .el-date-picker,
+  .el-time-picker,
+  .el-time-select-dropdown,
+  .el-color-picker-dropdown {
+    background: rgba(26, 26, 26, 0.5) !important;
+    backdrop-filter: none !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4) !important;
+
+    // 暗黑模式下选中项样式
+    .el-select-dropdown__item.selected,
+    .el-cascader-node.is-active,
+    .el-time-select__item.selected,
+    .el-time-select__item:hover {
+      background: rgba(64, 158, 255, 0.2) !important;
+    }
+
+    // 暗黑模式下悬停项样式
+    .el-select-dropdown__item:hover,
+    .el-cascader-node:hover,
+    .el-time-select__item:hover {
+      background: rgba(64, 158, 255, 0.1) !important;
+    }
+  }
+}
+
+// 菜单样式优化
+.el-menu {
+  border-radius: 0 $border-radius-medium $border-radius-medium 0;
+
+  .el-menu-item,
+  .el-sub-menu__title {
+    border-radius: $border-radius-small;
+    margin: 4px 8px;
+    transition: $transition-fast;
+
+    &:hover {
+      transform: translateX(4px);
+    }
+  }
+
+  // 二级菜单样式 - 透明度调整为45%
+  .el-sub-menu__content {
+    background: rgba(255, 255, 255, 0.45) !important;
+    margin: 0 8px !important;
+    overflow: hidden;
+    border: none !important;
+    backdrop-filter: none !important;
+
+    // 二级菜单中的菜单项
+    .el-menu-item {
+      background: transparent !important;
+      margin: 4px 8px !important;
+    }
+  }
+}
+
+// 标签页样式优化
+.el-tabs__item {
+  border-radius: $border-radius-small;
+  padding: 8px 16px;
+  transition: $transition-fast;
+
+  &:hover {
+    background-color: rgba(64, 158, 255, 0.1);
+  }
+
+  &.is-active {
+    background-color: rgba(64, 158, 255, 0.2);
+  }
+}
+
+// 对话框样式优化
+.el-dialog__header {
+  border-radius: $border-radius-large $border-radius-large 0 0;
+}
+
+.el-dialog__footer {
+  border-radius: 0 0 $border-radius-large $border-radius-large;
+}
+
+// Element Plus CSS变量配置
+:root {
+  // 圆角变量
+  --el-border-radius-base: #{$border-radius-small};
+  --el-border-radius-small: #{$border-radius-small - 2};
+  --el-border-radius-round: 50%;
+  --el-border-radius-circle: 50%;
+
+  // 过渡动画
+  --el-transition-duration: 0.3s;
+  --el-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+
+  // 阴影
+  --el-box-shadow-light: #{$shadow-small};
+  --el-box-shadow: #{$shadow-medium};
+  --el-box-shadow-dark: #{$shadow-large};
+}
+
+// 重写为静态背景 - 解决掉帧问题
+body {
+  /* 使用静态背景 */
+  background: $background-light; /* 更白的背景色 */
+  background-size: cover;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+}
+
+// 控件背景半透明化 - 卡片透明度改为50%
+.el-card,
+.el-button,
+.el-input__wrapper,
+.el-select__wrapper,
+.el-cascader__wrapper,
+.el-date-picker,
+.el-dialog,
+.el-drawer,
+.el-popover,
+.el-dropdown-menu,
+.el-menu,
+.el-tabs__nav-wrap,
+.el-tabs__content {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+// 按钮样式特殊处理
+.el-button {
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.6);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  &.el-button--primary {
+    background: rgba(64, 158, 255, 0.5); /* 控件透明度50% */
+
+    &:hover {
+      background: rgba(64, 158, 255, 0.6); /* 悬停时略提高透明度 */
+    }
+  }
+}
+
+// 输入框文字颜色保持不变
+.el-input__inner,
+.el-select__input,
+.el-cascader__input {
+  color: inherit;
+}
+
+// 暗黑模式适配
+.dark {
+  body {
+    opacity: 0.8; /* 暗黑模式下背景透明度提高 */
+    background: linear-gradient(-45deg, #1a1a2e, #16213e, #0f3460, #16213e);
+    background-size: cover;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+  }
+
+  .layout_container {
+    .layout_slider,
+    .layout_tabbar,
+    .layout_main {
+      background: rgba(26, 26, 26, 0.5) !important; /* 控件透明度50% */
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+      backdrop-filter: none !important;
+    }
+  }
+
+  // 暗黑模式下控件半透明 - 卡片透明度改为50%
+  .el-card,
+    .el-button,
+    .el-input__wrapper,
+    .el-select__wrapper,
+    .el-cascader__wrapper,
+    .el-date-picker,
+    .el-dialog,
+    .el-drawer,
+    .el-popover,
+    .el-dropdown-menu,
+    /* 移除el-menu，单独处理 */
+    .el-tabs__nav-wrap,
+    .el-tabs__content {
+    background: rgba(26, 26, 26, 0.5); /* 控件透明度50% */
+    backdrop-filter: none !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  }
+
+  // 暗黑模式下菜单特殊处理 - 无边框
+  .el-menu {
+    background: rgba(26, 26, 26, 0.5) !important;
+    backdrop-filter: none !important;
+    border: none !important; /* 确保菜单无边框 */
+  }
+
+  // 暗黑模式下按钮样式
+  .el-button {
+    background: rgba(26, 26, 26, 0.5) !important; /* 控件透明度50% */
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+
+    &:hover {
+      background: rgba(26, 26, 26, 0.6) !important; /* 悬停时略提高透明度 */
+    }
+
+    &.el-button--primary {
+      background: rgba(64, 158, 255, 0.5) !important; /* 控件透明度50% */
+
+      &:hover {
+        background: rgba(64, 158, 255, 0.6) !important; /* 悬停时略提高透明度 */
+      }
+    }
+  }
+
+  // 暗黑模式下二级菜单样式 - 透明度调整为45%
+  .el-menu {
+    border: none !important;
+
+    .el-sub-menu__content {
+      background: rgba(26, 26, 26, 0.45) !important;
+      backdrop-filter: none !important;
+      border: none !important;
+
+      .el-menu-item {
+        background: transparent !important;
+      }
+    }
+
+    .el-menu-item,
+    .el-sub-menu__title {
+      border: none !important;
+    }
+  }
+}

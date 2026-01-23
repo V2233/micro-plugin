@@ -2,9 +2,9 @@
  * @type {import('tailwindcss').Config}
  */
 export default {
-  content: ['./react/src/**/*.{jsx,tsx}','./react/src/*.{jsx,tsx}'],
+  content: ['./src/frontend/**/*.{jsx,tsx}', './src/frontend/*.{jsx,tsx}'],
   theme: {
-    extend: {}
+    extend: {},
   },
-  plugins: []
-}
+  plugins: [],
+};

@@ -1,0 +1,7 @@
+{
+  "name": "yunzai-micro-package",
+  "version": "0.0.1",
+  "description": "Yunzai开发管理面板",
+  "main": "./index.js",
+  "type": "module"
+}

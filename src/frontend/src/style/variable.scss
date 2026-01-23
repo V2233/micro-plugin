@@ -1,0 +1,29 @@
+//左侧的菜单的宽度
+$base-menu-width: 160px;
+//左侧菜单的背景颜色
+$base-menu-background: #001529;
+$base-menu-min-width: 50px;
+
+// 顶部导航的高度
+$base-tabbar-height: 50px;
+
+//左侧菜单logo高度设置
+$base-menu-logo-height: 50px;
+
+//左侧菜单logo右侧文字大小
+$base-logo-title-fontSize: 20px;
+
+// 圆角
+$border-radius-small: 8px;
+$border-radius-medium: 12px;
+$border-radius-large: 16px;
+$border-radius-xl: 20px;
+
+// 全局过渡动画
+$transition-base: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+$transition-fast: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+
+// 阴影效果
+$shadow-small: 0 2px 8px rgba(0, 0, 0, 0.1);
+$shadow-medium: 0 4px 16px rgba(0, 0, 0, 0.12);
+$shadow-large: 0 8px 24px rgba(0, 0, 0, 0.15);

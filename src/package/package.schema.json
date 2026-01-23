@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "yunzai-micro-package-schema",
+  "title": "micro包配置",
+  "type": "object",
+  "allOf": [
+    {
+      "$ref": "https://json.schemastore.org/package.json"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "baseDevDependencies": {
+          "description": "micro基础开发依赖，执行yarn install:dev可合并到devDependencies",
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "frontendDevDependencies": {
+          "description": "micro前端依赖，执行yarn install:dev可合并到devDependencies",
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": true
+    }
+  ]
+}

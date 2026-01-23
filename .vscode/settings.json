@@ -1,0 +1,25 @@
+{
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "editor.tabSize": 2,
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": "explicit",
+    "source.fixAll.eslint": "explicit"
+  },
+  "editor.formatOnSaveMode": "file",
+  "editor.formatOnType": true,
+  "editor.formatOnPaste": false,
+  "[typescript]": {
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": "explicit",
+      "source.fixAll.eslint": "explicit",
+      "source.fixAll.tslint": "explicit"
+    },
+    "editor.formatOnSaveMode": "file",
+    "editor.formatOnType": true,
+    "editor.formatOnPaste": false
+  }
+}

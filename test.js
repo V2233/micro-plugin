@@ -1,3 +1,3 @@
-const a = [4]
-a.push(...[1, 2, 3])
-console.log(a)
+import { fileURLToPath } from 'node:url';
+console.log(import.meta.url);
+console.log(fileURLToPath(new URL('./src/frontend', import.meta.url)));
