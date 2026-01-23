@@ -60,3 +60,5 @@ else
 fi
 
 echo -e "\n🎉 ${GREEN}所有预提交检查均已通过，正在完成提交操作...${RESET}\n"
+
+git add .
