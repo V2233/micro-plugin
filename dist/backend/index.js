@@ -19,7 +19,7 @@ import {
   path2URI,
   pluginInfo,
   stdlog_default
-} from "./chunk-KGTRQR2J.js";
+} from "./chunk-4A22Q7QC.js";
 
 // src/backend/index.ts
 import chalk2 from "chalk";
@@ -228,8 +228,8 @@ var LogController = class {
     const logs = readdirSync(join(botInfo.WORK_PATH, "logs"));
     let logText = "";
     let resLogs = [];
-    let p = page || 0;
-    let pageSize = +size || 50;
+    const p = page || 0;
+    const pageSize = +size || 50;
     if (logs.length == 0) {
       resLogs = [
         {
@@ -249,7 +249,7 @@ var LogController = class {
         }
         curLogs = logText.split("\n");
       }
-      let start = pageSize * p;
+      const start = pageSize * p;
       const sliceLogs = curLogs.slice(start, Math.min(start + pageSize, curLogs.length));
       resLogs = sliceLogs.map((line) => parseLog(line.trim()));
     }
@@ -345,7 +345,7 @@ async function getGPU() {
   if (!isGPU) return false;
   try {
     const { controllers } = await si.graphics();
-    let graphics = controllers?.find(
+    const graphics = controllers?.find(
       (item) => item.memoryUsed && item.memoryFree && item.utilizationGpu
     );
     if (!graphics) {
@@ -419,11 +419,11 @@ async function getMemUsage() {
 // src/backend/server/controller/status/state/NodeInfo.ts
 import os2 from "os";
 async function getNodeInfo() {
-  let memory = process.memoryUsage();
-  let rss = getFileSize(memory.rss);
-  let heapTotal = getFileSize(memory.heapTotal);
-  let heapUsed = getFileSize(memory.heapUsed);
-  let occupy = Number((memory.rss / (os2.totalmem() - os2.freemem())).toFixed(2));
+  const memory = process.memoryUsage();
+  const rss = getFileSize(memory.rss);
+  const heapTotal = getFileSize(memory.heapTotal);
+  const heapUsed = getFileSize(memory.heapUsed);
+  const occupy = Number((memory.rss / (os2.totalmem() - os2.freemem())).toFixed(2));
   return {
     inner: Math.round(occupy * 100),
     title: "Node",
@@ -593,7 +593,7 @@ var Monitor_default = new class Monitor {
 
 // src/backend/server/controller/status/state/FsSize.ts
 async function getFsSize() {
-  let HardDisk = _3.uniqWith(
+  const HardDisk = _3.uniqWith(
     await si.fsSize(),
     (a, b) => a.used === b.used && a.size === b.size && a.use === b.use && a.available === b.available
   ).filter((item) => item.size && item.used && item.available && item.use);
@@ -1082,7 +1082,7 @@ var PluginHandler = class {
     this.pluginsArr = this.pluginsList;
     const pluginPath = join5(this.pluginsPath, this.curPlugin.id);
     const { message } = this.curPlugin;
-    let newMessage = message.map((item) => {
+    const newMessage = message.map((item) => {
       switch (item.type) {
         case "code":
           if (!existsSync2(pluginPath)) {
@@ -1149,7 +1149,7 @@ var PluginHandler = class {
       return item;
     });
     if (id !== "") {
-      let index = this.pluginsArr.findIndex((item) => item.id == id);
+      const index = this.pluginsArr.findIndex((item) => item.id == id);
       this.pluginsArr[index] = Object.assign(this.curPlugin, { message: newMessage });
     } else {
       this.pluginsArr.unshift(Object.assign(this.curPlugin, { message: newMessage }));
@@ -1668,12 +1668,12 @@ var other = {
     type: "number"
   },
   autoQuit: {
-    desc: "Server\u9171(https://sct.ftqq.com/)",
+    desc: "\u81EA\u52A8\u9000\u7FA4\u4EBA\u6570\uFF08\u673A\u5668\u4EBA\u52A0\u5165\u7FA4\u804A\u540E\uFF0C\u82E5\u7FA4\u804A\u4EBA\u6570\u5C0F\u4E8E\u8BBE\u5B9A\u4EBA\u6570\u5219\u81EA\u52A8\u9000\u7FA4\uFF09",
     value: 50,
     type: "number"
   },
   masterQQ: {
-    desc: "\u98DE\u4E66\u81EA\u5B9A\u4E49\u673A\u5668\u4EBAWebhook (https://open.feishu.cn/document/client-docs/bot-v3/add-custom-bot)",
+    desc: "\u4E3B\u4EBAQQ\u53F7",
     value: [2330660495],
     type: "array",
     subType: "number"
@@ -4983,7 +4983,7 @@ var MicroWs = class {
   }
   async openStdin() {
     if (this.cfg.stdin.disabled == false && !/trss|Trss|TRSS/.test(botInfo.BOT_NAME)) {
-      const Stdin = (await import("./Stdin-E6I6XKMQ.js")).default;
+      const Stdin = (await import("./Stdin-CFMVPNIJ.js")).default;
       Stdin();
     }
   }
@@ -5044,7 +5044,7 @@ var startServer = (port) => {
         reject(err);
       } else {
         const { local, remote } = await getAllWebAddress();
-        logger.info(chalk.cyanBright("----------Micro---------"));
+        logger.info(chalk.cyanBright("------------------------"));
         logger.info(
           chalk.cyanBright(`\u5FAE\u4EE3\u7801\u5F00\u53D1\u670D\u52A1\u5668\u542F\u52A8\u6210\u529F\uFF01\u60A8\u53EF\u5C1D\u8BD5\u9009\u62E9\u8BBF\u95EE\u4EE5\u4E0B\u5730\u5740\u8FDB\u884C\u5F00\u53D1\u7BA1\u7406\uFF1A`)
         );

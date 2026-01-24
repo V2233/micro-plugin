@@ -2,7 +2,7 @@ import {
   config_default,
   pluginInfo,
   stdlog_default
-} from "./chunk-KGTRQR2J.js";
+} from "./chunk-4A22Q7QC.js";
 
 // src/backend/server/app/adapter/common/index.ts
 import crypto from "crypto";

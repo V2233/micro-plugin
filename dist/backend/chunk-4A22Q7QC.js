@@ -784,7 +784,7 @@ var Pager = class {
   }
   /** 计算当前分页偏移量 */
   get offset() {
-    let current = this.$pageNum;
+    const current = this.$pageNum;
     if (current <= 1) {
       return 0;
     }
