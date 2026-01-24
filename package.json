@@ -1,6 +1,6 @@
 {
   "name": "yunzai-micro-plugin",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Yunzai开发管理面板",
   "main": "dist/backend/index.js",
   "type": "module",
@@ -12,7 +12,7 @@
     "app": "node scripts/check-backend-deps.mjs && (tsx --no-warnings --tsconfig ./src/backend/tsconfig.json ./yunzaijs.js)",
     "build": "tsup --clean",
     "test": "tsx --no-warnings test/test.ts",
-    "install:dev": "node --experimental-modules scripts/check-dev-deps.mjs && yarn install",
+    "install:dev": "node --experimental-modules scripts/check-frontend-deps.mjs && yarn install",
     "dev:frontend": "node scripts/check-frontend-deps.mjs && vite --config ./src/frontend/vite.config.ts",
     "build:frontend": "node scripts/check-frontend-deps.mjs && node scripts/clear-frontend-assets.js && run-p type-check:frontend \"build-only:frontend {@}\" --",
     "build-only:frontend": "vite build --config ./src/frontend/vite.config.ts",
@@ -157,6 +157,7 @@
     "vite-plugin-svg-icons": "^2.0.1"
   },
   "files": [
+    "lib/**/*",
     "src/**/*",
     "dist/**/*",
     "public/**/*",

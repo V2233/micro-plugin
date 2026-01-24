@@ -173,12 +173,12 @@ export const other = {
     type: 'number',
   },
   autoQuit: {
-    desc: 'Server酱(https://sct.ftqq.com/)',
+    desc: '自动退群人数（机器人加入群聊后，若群聊人数小于设定人数则自动退群）',
     value: 50,
     type: 'number',
   },
   masterQQ: {
-    desc: '飞书自定义机器人Webhook (https://open.feishu.cn/document/client-docs/bot-v3/add-custom-bot)',
+    desc: '主人QQ号',
     value: [2330660495],
     type: 'array',
     subType: 'number',
